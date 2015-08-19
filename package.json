@@ -1,0 +1,25 @@
+{
+  "name": "fh-api-mapper",
+  "version": "0.0.1",
+  "dependencies": {
+    "body-parser": "~1.0.2",
+    "cors": "~2.2.0",
+    "express": "4.0.0",
+    "fh-mbaas-api": "~4.11.0",
+    "request": "^2.61.0"
+  },
+  "devDependencies": {
+    "grunt-contrib-clean": "0.6.0",
+    "grunt-contrib-jshint": "^0.10.0",
+    "grunt-fh-build": "~0.0.8",
+    "jshint": "^2.7.0",
+    "mocha": "^2.2.4",
+    "grunt": "0.4.5"
+  },
+  "scripts": {
+    "test": "grunt test",
+    "start": "node application.js"
+  },
+  "license": "mit",
+  "main": "application.js"
+}
