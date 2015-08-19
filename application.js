@@ -11,9 +11,6 @@ securableEndpoints = [];
 
 var app = express();
 
-// Enable CORS for all requests
-app.use(cors());
-
 // Note: the order which we add middleware to Express here is important!
 app.use('/sys', mbaasExpress.sys(securableEndpoints));
 app.use('/mbaas', mbaasExpress.mbaas);
