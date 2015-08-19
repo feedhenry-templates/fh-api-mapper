@@ -11,8 +11,8 @@ securableEndpoints = [];
 
 var app = express();
 
-// Enable CORS for all requests
-app.use(cors());
+// TODO: Cors is disabled as of now, since it prevents /try route to proxy simply (see #3)
+//app.use(cors());
 
 // Note: the order which we add middleware to Express here is important!
 app.use('/sys', mbaasExpress.sys(securableEndpoints));
