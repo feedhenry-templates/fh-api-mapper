@@ -3,9 +3,41 @@
     <title>API Mapper</title>
   </head>
   <body>
-    <form>
-      <input type="text" name="url" placeholder="Url">
-      <button type="submit">Try it</button>
+    <form class="try">
+
+      <h2>Request</h2>
+
+      <div class="row">
+        <select name="method">
+          <option>GET</option>
+          <option>PUT</option>
+          <option>POST</option>
+          <option>HEAD</option>
+        </select>
+        <input type="text" name="url" placeholder="Url">
+      </div>
+
+      <div>
+        <p><label>Headers:</label></p>
+        <p><textarea name="headers-raw" rows="18" cols="50"></textarea></p>
+      </div>
+
+      <div>
+        <button type="reset">Clean</button>
+        <button type="submit">Send</button>
+      </div>
+
+      <hr />
+
+      <h2>Response</h2>
+
+      <div>
+        <textarea name="body-raw" rows="25" cols="100" disabled></textarea>
+      </div>
     </form>
+
+
+    <script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+    <script src="js/main.js"></script>
   </body>
 </html>
