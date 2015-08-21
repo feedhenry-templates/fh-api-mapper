@@ -12,9 +12,10 @@
   $('form.try').submit(function( e ) {
     try {
       tryRequest( this );
-    } finally {
-      return false;
+    } catch (e) {
+      log.error(e);
     }
+    return false;
   });
 
   var $url = $('input[name=url]', $form)
@@ -25,32 +26,80 @@
     .val(localStorage.method || 'GET')
     .change( saveToLocalStorage('method') );
 
+  var $contentType = $('select[name=content-type]', $form)
+    .val(localStorage.contentType || 'GET')
+    .change( saveToLocalStorage('contentType') );
+
   var $headersRaw = $('textarea[name=headers-raw]', $form)
     .val(localStorage.headersRaw)
     .change( saveToLocalStorage('headersRaw') );
 
-  var $bodyRaw = $('textarea[name=body-raw]', $form);
+  var $payloadRaw = $('textarea[name=payload-raw]', $form)
+    .val(localStorage.payloadRaw)
+    .change( saveToLocalStorage('payloadRaw') );
+
+  var $responseRaw = $('textarea[name=response-raw]', $form);
+
+  var $status = $('.status', $form);
 
   function tryRequest( form ) {
     log.debug('trying');
-    var headers = $.extend( {}, parseHeaders( $headersRaw.val() ), {
-      'x-request-url': form.url.value
-    });
+    var url = $url.val();
+    var method = $method.val();
+    var payload = $payloadRaw.val();
+
+    $responseRaw.val();
+    $status.text('');
+    $form.addClass('request-pending').removeClass('request-failed');
+
     $.ajax({
-      method: form.method.value,
+      method: method,
       url: '/try',
-      headers: $.extend({ 'x-request-url': form.url.value }, headers)
+      headers: getHeaders( url ),
+      data: method == 'GET' ? undefined : payload
     }).done(function( data, textStatus, xhr ) {
       log.debug('done');
-      log.debug( xhr );
+      $form.removeClass('request-pending');
+      $status.text( getStatusText( xhr ) );
       if ( xhr.responseJSON ) {
-        $bodyRaw.val( JSON.stringify( xhr.responseJSON, null, '  ') );
+        $responseRaw.val( JSON.stringify( xhr.responseJSON, null, '  ') );
       } else {
-        $bodyRaw.val( xhr.responseText );
+        $responseRaw.val( xhr.responseText );
       }
-    }).fail(function() {
+    }).fail(function( xhr, textStatus, errorThrown ) {
       log.error('fail');
+      log.error( textStatus );
+      $status.text( getStatusText( xhr ) );
+      $responseRaw.val( getErrorMessage.apply(this, arguments) );
+      $form.addClass('request-failed').removeClass('request-pending');
     });
+  }
+
+  function getStatusText( xhr ) {
+    return xhr.status + ' ' + xhr.statusText;
+  }
+
+  function getHeaders( url ) {
+    var baseHeaders = {
+      'content-type': $contentType.val()
+    };
+    var parsedHeaders = parseHeaders( $headersRaw.val() );
+    var overrideHeaders = {
+      'x-request-url': url
+    };
+    var headers = $.extend( baseHeaders, parsedHeaders, overrideHeaders );
+    log.debug(headers);
+    return headers;
+  }
+
+  function getErrorMessage( xhr, textStatus, errorThrown ) {
+    if (xhr.status == 0) {
+      return 'Failed to reach endpoint';
+    }
+    if (xhr.responseText) {
+      return xhr.responseText;
+    }
+    return textStatus;
   }
 
   function parseHeaders( raw ) {

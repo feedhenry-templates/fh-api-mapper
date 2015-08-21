@@ -1,25 +1,44 @@
 <html>
   <head>
     <title>API Mapper</title>
+    <link rel="stylesheet" href="css/main.css" />
   </head>
   <body>
     <form class="try">
 
-      <h2>Request</h2>
+      <h2>Request1</h2>
 
       <div class="row">
         <select name="method">
           <option>GET</option>
-          <option>PUT</option>
           <option>POST</option>
+          <option>PUT</option>
+          <option>PATCH</option>
+          <option>DELETE</option>
           <option>HEAD</option>
+          <option>OPTIONS</option>
         </select>
         <input type="text" name="url" placeholder="Url">
       </div>
 
       <div>
-        <p><label>Headers:</label></p>
-        <p><textarea name="headers-raw" rows="18" cols="50"></textarea></p>
+        <p><label>Headers / Payload:</label></p>
+        <p>
+          Content-type:
+          <select name="content-type">
+            <option>application/json</option>
+            <option>application/atom+xml</option>
+            <option>application/x-www-form-urlencoded</option>
+            <option>application/xml</option>
+            <option>multipart/form-data</option>
+            <option>text/html</option>
+            <option>text/plain</option>
+          </select>
+        </p>
+        <p>
+          <textarea name="headers-raw" rows="18" cols="50"></textarea>
+          <textarea name="payload-raw" rows="18" cols="50"></textarea>
+        </p>
       </div>
 
       <div>
@@ -32,7 +51,8 @@
       <h2>Response</h2>
 
       <div>
-        <textarea name="body-raw" rows="25" cols="100" disabled></textarea>
+        <h4 class="status"></h4>
+        <p><textarea name="response-raw" rows="25" cols="100" disabled></textarea></p>
       </div>
     </form>
 
