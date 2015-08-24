@@ -38,6 +38,8 @@
     .val(localStorage.payloadRaw)
     .change( saveToLocalStorage('payloadRaw') );
 
+  var $requestHeaders = $('textarea[name=request-headers]', $form);
+  var $responseHeaders = $('textarea[name=response-headers]', $form);
   var $responseRaw = $('textarea[name=response-raw]', $form);
 
   var $status = $('.status', $form);
@@ -61,6 +63,11 @@
       log.debug('done');
       $form.removeClass('request-pending');
       $status.text( getStatusText( xhr ) );
+      var requestHeaders = atob(xhr.getResponseHeader('x-try-headers'));
+      $requestHeaders.val( requestHeaders );
+      var responseHeaders = xhr.getAllResponseHeaders();
+      responseHeaders = responseHeaders.split('\n').filter(function( line ) { return !/^x-try-headers/.test(line); }).join('\n');
+      $responseHeaders.val( responseHeaders );
       if ( xhr.responseJSON ) {
         $responseRaw.val( JSON.stringify( xhr.responseJSON, null, '  ') );
       } else {
