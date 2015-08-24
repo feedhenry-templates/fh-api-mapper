@@ -50,8 +50,10 @@
     var method = $method.val();
     var payload = $payloadRaw.val();
 
-    $responseRaw.val();
-    $status.text('');
+    $requestHeaders.val('');
+    $responseHeaders.val('');
+    $responseRaw.val('');
+    $status.text('In progress...');
     $form.addClass('request-pending').removeClass('request-failed');
 
     $.ajax({
