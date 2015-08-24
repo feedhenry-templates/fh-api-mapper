@@ -39,6 +39,7 @@
     .change( saveToLocalStorage('payloadRaw') );
 
   var $requestHeaders = $('textarea[name=request-headers]', $form);
+  var $requestRaw = $('textarea[name=request-raw]', $form);
   var $responseHeaders = $('textarea[name=response-headers]', $form);
   var $responseRaw = $('textarea[name=response-raw]', $form);
 
@@ -67,8 +68,10 @@
       $status.text( getStatusText( xhr ) );
       var requestHeaders = atob(xhr.getResponseHeader('x-try-headers'));
       $requestHeaders.val( requestHeaders );
+      var requestRaw = atob(xhr.getResponseHeader('x-try-payload') || btoa(''));
+      $requestRaw.val( requestRaw );
       var responseHeaders = xhr.getAllResponseHeaders();
-      responseHeaders = responseHeaders.split('\n').filter(function( line ) { return !/^x-try-headers/.test(line); }).join('\n');
+      responseHeaders = responseHeaders.split('\n').filter(function( line ) { return !/^x-try-/.test(line); }).join('\n');
       $responseHeaders.val( responseHeaders );
       if ( xhr.responseJSON ) {
         $responseRaw.val( JSON.stringify( xhr.responseJSON, null, '  ') );

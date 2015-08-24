@@ -6,7 +6,8 @@
     "cors": "2.7.1",
     "express": "4.13.3",
     "fh-mbaas-api": "5.2.0",
-    "request": "2.61.0"
+    "request": "2.61.0",
+    "stream-buffers": "2.2.0"
   },
   "devDependencies": {
     "grunt-contrib-clean": "0.6.0",
