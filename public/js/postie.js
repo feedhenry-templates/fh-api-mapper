@@ -42,13 +42,15 @@
   var $requestRaw = $('textarea[name=request-raw]', $form);
   var $responseHeaders = $('textarea[name=response-headers]', $form);
   var $responseRaw = $('textarea[name=response-raw]', $form);
-
   var $status = $('.status', $form);
+  var $sampleNodejs = $('textarea[name=sample-nodejs]', $form);
+
 
   function tryRequest( form ) {
     log.debug('trying');
     var url = $url.val();
     var method = $method.val();
+    var headers = getHeaders( url );
     var payload = $payloadRaw.val();
 
     $requestHeaders.val('');
@@ -57,10 +59,24 @@
     $status.text('In progress...');
     $form.addClass('request-pending').removeClass('request-failed');
 
+
+    $sampleNodejs.val('');
+    var reqData = {
+      url: url,
+      method: method,
+      headers: headers,
+      data: payload
+    };
+    resolveTemplate( 'nodejs-request.js', reqData ).then(function( sample ) {
+      $sampleNodejs.val( sample );
+    });
+
+
+
     $.ajax({
       method: method,
       url: '/try',
-      headers: getHeaders( url ),
+      headers: headers,
       data: method == 'GET' ? undefined : payload
     }).done(function( data, textStatus, xhr ) {
       log.debug('done');
@@ -85,6 +101,22 @@
       $responseRaw.val( getErrorMessage.apply(this, arguments) );
       $form.addClass('request-failed').removeClass('request-pending');
     });
+  }
+
+  function resolveTemplate( templateName, req ) {
+    return $.ajax({
+      url: 'templates/' + templateName,
+      method: 'GET',
+      dataType: 'text'
+    }).then(
+      function( template ) {
+        template = template.replace( '__URL__', req.url );
+        template = template.replace( '__METHOD__', req.method );
+        template = template.replace( '__HEADERS__', JSON.stringify(req.headers, null, 4) );
+        template = template.replace( '__DATA__', req.data );
+        return template;
+      }
+    );
   }
 
   function getStatusText( xhr ) {
