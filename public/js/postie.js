@@ -50,7 +50,7 @@
     log.debug('trying');
     var url = $url.val();
     var method = $method.val();
-    var headers = getHeaders( url );
+    var headers = getHeaders();
     var payload = $payloadRaw.val();
 
     $requestHeaders.val('');
@@ -61,13 +61,13 @@
 
 
     $sampleNodejs.val('');
-    var reqData = {
+    var reqParams = {
       url: url,
       method: method,
       headers: headers,
       data: payload
     };
-    resolveTemplate( 'nodejs-request.js', reqData ).then(function( sample ) {
+    resolveTemplate( 'nodejs-request.js', reqParams ).then(function( sample ) {
       $sampleNodejs.val( sample );
     });
 
@@ -76,7 +76,7 @@
     $.ajax({
       method: method,
       url: '/try',
-      headers: headers,
+      headers: $.extend( {}, headers, getOverrideHeaders( url ) ),
       data: method == 'GET' ? undefined : payload
     }).done(function( data, textStatus, xhr ) {
       log.debug('done');
@@ -103,17 +103,14 @@
     });
   }
 
-  function resolveTemplate( templateName, req ) {
+  function resolveTemplate( templateName, reqParams ) {
     return $.ajax({
       url: 'templates/' + templateName,
       method: 'GET',
       dataType: 'text'
     }).then(
       function( template ) {
-        template = template.replace( '__URL__', req.url );
-        template = template.replace( '__METHOD__', req.method );
-        template = template.replace( '__HEADERS__', JSON.stringify(req.headers, null, 4) );
-        template = template.replace( '__DATA__', req.data );
+        template = template.replace( '__REQUEST_PARAMS__', JSON.stringify(reqParams, null, 2) );
         return template;
       }
     );
@@ -123,17 +120,19 @@
     return xhr.status + ' ' + xhr.statusText;
   }
 
-  function getHeaders( url ) {
+  function getHeaders() {
     var baseHeaders = {
       'content-type': $contentType.val()
     };
     var parsedHeaders = parseHeaders( $headersRaw.val() );
-    var overrideHeaders = {
+    var headers = $.extend( baseHeaders, parsedHeaders );
+    return headers;
+  }
+
+  function getOverrideHeaders( url ) {
+    return {
       'x-request-url': url
     };
-    var headers = $.extend( baseHeaders, parsedHeaders, overrideHeaders );
-    log.debug(headers);
-    return headers;
   }
 
   function getErrorMessage( xhr, textStatus, errorThrown ) {

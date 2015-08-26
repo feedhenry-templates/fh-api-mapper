@@ -1,10 +1,5 @@
 var request = require('request');
-request({
-  url: '__URL__',
-  method: '__METHOD__',
-  headers : __HEADERS__,
-  data: __DATA__;
-}, function (error, response, body) {
+request(__REQUEST_PARAMS__, function (error, response, body) {
   if (error) {
     return console.error('An error occured:', error);
   }
