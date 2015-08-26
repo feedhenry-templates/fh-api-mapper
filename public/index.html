@@ -2,85 +2,125 @@
   <head>
     <title>API Mapper</title>
     <link rel="stylesheet" href="css/postie.css" />
+    <link rel="stylesheet" href="lib/bootstrap/bootstrap.css" />
   </head>
   <body>
-    <form class="try">
+    <div class="container-fluid">
 
-      <h2>Request</h2>
+      
+    </div>
 
-      <div class="row">
-        <select name="method">
-          <option>GET</option>
-          <option>POST</option>
-          <option>PUT</option>
-          <option>PATCH</option>
-          <option>DELETE</option>
-          <option>HEAD</option>
-          <option>OPTIONS</option>
-        </select>
-        <input type="text" name="url" placeholder="Url">
-      </div>
+    <script id="tplResponseHeaders" type="text/x-handlebars-template">
+      {{#each headers}}
+        <strong>{{name}}</strong> : {{value}}<br />
+      {{/each}}
+    </script>
+    <script id="tplForm" type="text/x-handlebars-template">
+      <form class="try form-horizontal">
+        <fieldset>
+          <legend>Request</legend>
+          {{#controlGroup "Method" "The HTTP Verb to make your request with."}}
+            <select name="method" class="span2">
+              <option>GET</option>
+              <option>POST</option>
+              <option>PUT</option>
+              <option>PATCH</option>
+              <option>DELETE</option>
+              <option>HEAD</option>
+              <option>OPTIONS</option>
+            </select>
+          {{/controlGroup}}
+          
+          {{#controlGroup "URL" "The full URL of the service you wish to integrate with."}}
+            <input type="text" name="url" placeholder="Url" class="span6">
+          {{/controlGroup}}
+        </fieldset>  
+        <fieldset>
+          <legend>Headers</legend>
+          
+          {{#controlGroup "Content-type" "The type of content you will send in your request."}}
+            <select name="content-type" class="span2">
+              <option>application/json</option>
+              <option>application/atom+xml</option>
+              <option>application/x-www-form-urlencoded</option>
+              <option>application/xml</option>
+              <option>multipart/form-data</option>
+              <option>text/html</option>
+              <option>text/plain</option>
+            </select>
+          {{/controlGroup}}
+          <br />
+          <span class="help-block offset2">You can also specify additional headers to send in your request</span>
+          
+          {{#controlGroup "Headers"}}
+            <textarea class="span12" name="headers-raw"></textarea>
+          {{/controlGroup}}
+        </fieldset>
+        
+        <fieldset>
+          <legend>Request Body</legend>
+          
+          {{#controlGroup "Request body"}}
+            <textarea class="span12" name="payload-raw"></textarea>
+          {{/controlGroup}}
+        </fieldset>
+          
+        <fieldset>
+          {{#controlGroup}}
+            <button class="btn" type="reset">Clean</button>
+            <button class="btn btn-primary" type="submit">Send Request</button>
+          {{/controlGroup}}
+        </fieldset>
+        <fieldset>
+          <legend><a class="toggleable collapsed" data-toggle="collapse" href="#rawRequestCollapsible">Raw request </a></legend>
+          <div id="rawRequestCollapsible" class="collapse">
+            
+            {{#controlGroup "Reqeust Headers"}}
+              <textarea class="span12" name="request-headers" disabled></textarea>
+            {{/controlGroup}}
+            
+            {{#controlGroup "Raw Request"}}
+              <textarea class="span12" name="request-raw" disabled></textarea>
+            {{/controlGroup}}
+          </div>
+        </fieldset>
 
-      <div>
-        <p><label>Headers / Payload:</label></p>
-        <p>
-          Content-type:
-          <select name="content-type">
-            <option>application/json</option>
-            <option>application/atom+xml</option>
-            <option>application/x-www-form-urlencoded</option>
-            <option>application/xml</option>
-            <option>multipart/form-data</option>
-            <option>text/html</option>
-            <option>text/plain</option>
-          </select>
-        </p>
-        <p>
-          <textarea name="headers-raw" rows="18" cols="50"></textarea>
-          <textarea name="payload-raw" rows="18" cols="50"></textarea>
-        </p>
-      </div>
-
-      <div>
-        <button type="reset">Clean</button>
-        <button type="submit">Send</button>
-      </div>
-
-      <h3>Raw request</h3>
-      <div>
-        <p><textarea name="request-headers" rows="12" cols="100" disabled></textarea></p>
-        <p><textarea name="request-raw" rows="12" cols="100" disabled></textarea></p>
-      </div>
-
-      <hr />
-
-      <h2>Response</h2>
-
-      <div>
-        <h4 class="status"></h4>
-        <p><textarea name="response-headers" rows="6" cols="100" disabled></textarea></p>
-        <p><textarea name="response-raw" rows="24" cols="100" disabled></textarea></p>
-      </div>
-
-      <hr />
-
-      <h2>Samples Code</h2>
-
-      <div>
-        <h4>Node.js Request</h4>
-        <p><textarea name="sample-nodejs" rows="15" cols="100" disabled></textarea></p>
-      </div>
-
-      <div>
-        <button>Save API Mapping</button>
-      </div>
-
-
-
-    </form>
-
-
+        <fieldset>
+          <legend>Response</legend>
+          {{#controlGroup "Status"}}
+            <div class="status"></div>
+          {{/controlGroup}}
+          
+          {{#controlGroup "Response Headers"}}
+            <div class="responseHeaders"></div>
+          {{/controlGroup}}
+          
+          {{#controlGroup "Response Body"}}
+            <textarea name="response-raw" rows="24" cols="100" disabled class="span12"></textarea>
+          {{/controlGroup}}
+        </fieldset>
+        
+        <fieldset>
+          <legend><a class="toggleable collapsed" data-toggle="collapse" href="#sampleCodeCollapsible">Sample Code </a></legend>
+          <div id="sampleCodeCollapsible" class="collapse">
+            {{#controlGroup "Node.js Request"}}
+              <textarea class="span12" name="sample-nodejs" rows="15" cols="100" disabled></textarea>
+            {{/controlGroup}}
+          </div>
+        
+        </fieldset>
+        
+        {{#controlGroup}}
+          <button class="btn btn-primary">Save API Mapping</button>
+        {{/controlGroup}}
+      </form>
+    </script>
     <script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+    <script src="lib/underscore/underscore.js"></script>
+    <script src="lib/handlebars/handlebars.js"></script>
+    <script src="lib/bootstrap/bootstrap.js"></script>
     <script src="js/postie.js"></script>
+    
+    
   </body>
 </html>

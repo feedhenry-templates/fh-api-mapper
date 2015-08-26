@@ -1,3 +1,21 @@
+Handlebars.registerHelper('controlGroup', function(label, helpText, options) {
+  // ensure `options` is always set correctly
+  options = arguments[arguments.length-1];
+  
+  var field = '<div class="control-group">';
+  if (arguments.length >= 2){
+    field += '<label class="control-label">' + label + '</label>';  
+  }
+  field += '<div class="controls">';
+  field += options.fn(this);
+  if (arguments.length >= 3){
+    field += '<span class="help-inline">' + helpText + '</span>';  
+  }
+  field += '</div>';
+  field += '</div>';
+  return new Handlebars.SafeString(field);
+});
+
 (function( $ ) {
 
   var log = {
@@ -6,6 +24,10 @@
     warn: function() { console.warn.apply(console, arguments); },
     error: function() { console.error.apply(console, arguments); },
   };
+  
+  var $responseHeadersTpl = Handlebars.compile($('#tplResponseHeaders').html());
+  var $formTpl = Handlebars.compile($('#tplForm').html());
+  $('.container-fluid').html($formTpl());
 
   var $form = $('form.try');
 
@@ -40,7 +62,7 @@
 
   var $requestHeaders = $('textarea[name=request-headers]', $form);
   var $requestRaw = $('textarea[name=request-raw]', $form);
-  var $responseHeaders = $('textarea[name=response-headers]', $form);
+  var $responseHeaders = $('.responseHeaders', $form);
   var $responseRaw = $('textarea[name=response-raw]', $form);
   var $status = $('.status', $form);
   var $sampleNodejs = $('textarea[name=sample-nodejs]', $form);
@@ -87,8 +109,22 @@
       var requestRaw = atob(xhr.getResponseHeader('x-try-payload') || btoa(''));
       $requestRaw.val( requestRaw );
       var responseHeaders = xhr.getAllResponseHeaders();
-      responseHeaders = responseHeaders.split('\n').filter(function( line ) { return !/^x-try-/.test(line); }).join('\n');
-      $responseHeaders.val( responseHeaders );
+      responseHeaders = responseHeaders.split('\n');
+      responseHeaders = _.map(responseHeaders, function(header){
+        // Filter out our internal headers
+        if (/^x-try-/.test(header)){
+          return;
+        }
+        // use a regex over string because omitting global flag only matches first :
+        header = header.split(/:/);
+        if (header.length !== 2){
+          return;
+        }
+        return {name : header[0], value : header[1]};
+      });
+      responseHeaders = _.reject(responseHeaders, _.isEmpty);
+      $responseHeaders.html($responseHeadersTpl({ headers : responseHeaders }));
+      
       if ( xhr.responseJSON ) {
         $responseRaw.val( JSON.stringify( xhr.responseJSON, null, '  ') );
       } else {
