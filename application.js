@@ -1,6 +1,7 @@
 var mbaasApi = require('fh-mbaas-api');
 var express = require('express');
 var mbaasExpress = mbaasApi.mbaasExpress();
+require('./lib/db.js')();
 //var cors = require('cors');
 
 // list the endpoints which you want to make securable here
@@ -25,8 +26,9 @@ app.use(express['static'](__dirname + '/public'));
 app.use(mbaasExpress.fhmiddleware());
 
 // fhlint-begin: custom-routes
-app.use('/try', require('./lib/try.js')());
-app.use('/tester', require('./lib/tester.js')());
+app.use('/try', require('./lib/routes/try.js')());
+app.use('/tester', require('./lib/routes/tester.js')());
+app.use('/mappings', require('./lib/routes/mappings.js')());
 // fhlint-end
 
 // Important that this is last!
