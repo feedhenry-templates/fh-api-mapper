@@ -2,16 +2,20 @@ var log = App.logger;
 
 App.RequestView = Backbone.View.extend({
   className: "request",
-  initialize : function(){
-    this.tpl = Handlebars.compile($('#tplForm').html());
-  },
+  el : '.container-fluid',
   events : {
-    'submit form.try' : 'onFormSubmit',
+    'submit form.try' : 'tryRequest',
     'change input' : 'inputChanged',
     'change select' : 'inputChanged',
     'change textarea' : 'inputChanged'
   },
-  el : '.container-fluid',
+  initialize : function(){
+    this.tpl = Handlebars.compile($('#tplForm').html());
+    this.model = new App.RequestModel();
+    this.listenTo(this.model, 'success', this.onRequestSuccess);
+    this.listenTo(this.model, 'fail', this.onRequestFailed);
+    this.listenTo(this.model, 'trying', this.onRequestTrying);
+  },
   render : function(){
     this.$el.html(this.tpl());
     this.$form = this.$el.find('form');
@@ -43,106 +47,58 @@ App.RequestView = Backbone.View.extend({
     name = input.attr('name'),
     value = input.val();
     localStorage.setItem(name, value);
+    this.model.set(name, value);
   },
-  onFormSubmit : function(e){
+  tryRequest : function(e){
     if (e) e.preventDefault();
-    
-    var self = this;
-    
-    var url = this.$url.val();
-    var method = this.$method.val();
-    var headers = this.getHeaders();
-    var payload = this.$payloadRaw.val();
-
+    var formData = {
+      method : this.$method.val(),
+      url : this.$url.val(),
+      headers : this.getHeaders(),
+      'content-type' : this.$contentType.val(),
+      data : this.$payloadRaw.val()
+    };
+    this.model.set(formData);
+    this.model.execute();
+    return false;
+  },
+  onRequestTrying : function(){
+    // Empty all the fields
     this.$requestHeaders.val('');
     this.$responseHeaders.val('');
     this.$responseRaw.val('');
     this.$status.text('In progress...');
     this.$form.addClass('request-pending').removeClass('request-failed');
-
-
     this.$sampleNodejs.val('');
     
-    var reqParams = {
-      url: url,
-      method: method,
-      headers: headers,
-      data: payload
-    };
+    // Set up sample snippets
     var $tplNodejsRequest = Handlebars.compile($('#tplNodejsRequest').html());
-    this.$sampleNodejs.html($tplNodejsRequest(reqParams));
+    this.$sampleNodejs.html($tplNodejsRequest(this.model.toJSON()));
     var $tplCurlRequest = Handlebars.compile($('#tplCurlRequest').html());
-    this.$sampleCurl.html($tplCurlRequest(reqParams));
+    this.$sampleCurl.html($tplCurlRequest(this.model.toJSON()));
+  },
+  onRequestSuccess : function(status, requestHeaders, requestRaw, responseHeaders, responseBody){
+    this.$form.removeClass('request-pending');
+    this.$status.text(status);
+    this.$requestHeaders.val( requestHeaders );
+    this.$requestRaw.val( requestRaw );
     
-    $.ajax({
-      method: method,
-      url: '/try',
-      headers: $.extend( {}, headers, this.getOverrideHeaders( url ) ),
-      data: method === 'GET' ? undefined : payload
-    }).done(function( data, textStatus, xhr ) {
-      log.debug('done');
-      self.$form.removeClass('request-pending');
-      self.$status.text( self.getStatusText( xhr ) );
-      var requestHeaders = atob(xhr.getResponseHeader('x-try-headers'));
-      self.$requestHeaders.val( requestHeaders );
-      var requestRaw = atob(xhr.getResponseHeader('x-try-payload') || btoa(''));
-      self.$requestRaw.val( requestRaw );
-      var responseHeaders = xhr.getAllResponseHeaders();
-      responseHeaders = responseHeaders.split('\n');
-      responseHeaders = _.map(responseHeaders, function(header){
-        // Filter out our internal headers
-        if (/^x-try-/.test(header)){
-          return;
-        }
-        // use a regex over string because omitting global flag only matches first :
-        header = header.split(/:/);
-        if (header.length !== 2){
-          return;
-        }
-        return {name : header[0], value : header[1]};
-      });
-      responseHeaders = _.reject(responseHeaders, _.isEmpty);
-      var $responseHeadersTpl = Handlebars.compile($('#tplResponseHeaders').html());
-      self.$responseHeaders.html($responseHeadersTpl({ headers : responseHeaders }));
-      
-      if ( xhr.responseJSON ) {
-        self.$responseRaw.val( JSON.stringify( xhr.responseJSON, null, '  ') );
-      } else {
-        self.$responseRaw.val( xhr.responseText );
-      }
-    }).fail(function( xhr, textStatus ) {
-      log.error('fail');
-      log.error( textStatus );
-      self.$status.text( self.getStatusText( xhr ) );
-      self.$responseRaw.val( self.getErrorMessage.apply(self, arguments) );
-      self.$form.addClass('request-failed').removeClass('request-pending');
-    });
-    return false;
+    var $responseHeadersTpl = Handlebars.compile($('#tplResponseHeaders').html());
+    this.$responseHeaders.html($responseHeadersTpl({ headers : responseHeaders }));
+    this.$responseRaw.val( responseBody );
+  },
+  onRequestFailed : function(status, responseRaw){
+    this.$status.text(status);
+    this.$responseRaw.val(responseRaw);
+    this.$form.addClass('request-failed').removeClass('request-pending');
   },
   getHeaders : function() {
     var baseHeaders = {
       'content-type': this.$contentType.val()
     };
     var parsedHeaders = this.parseHeaders( this.$headersRaw.val() );
-    var headers = $.extend( baseHeaders, parsedHeaders );
+    var headers = _.extend( baseHeaders, parsedHeaders );
     return headers;
-  },
-  getStatusText : function( xhr ) {
-    return xhr.status + ' ' + xhr.statusText;
-  },
-  getOverrideHeaders : function( url ) {
-    return {
-      'x-request-url': url
-    };
-  },
-  getErrorMessage : function( xhr, textStatus ) {
-    if (xhr.status === 0) {
-      return 'Failed to reach endpoint';
-    }
-    if (xhr.responseText) {
-      return xhr.responseText;
-    }
-    return textStatus;
   },
   parseHeaders : function( raw ) {
     var headers = {};
