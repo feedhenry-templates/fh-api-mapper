@@ -1,11 +1,86 @@
 <html>
   <head>
     <title>API Mapper</title>
+    <link rel="stylesheet" href="css/postie.css" />
   </head>
   <body>
-    <form>
-      <input type="text" name="url" placeholder="Url">
-      <button type="submit">Try it</button>
+    <form class="try">
+
+      <h2>Request</h2>
+
+      <div class="row">
+        <select name="method">
+          <option>GET</option>
+          <option>POST</option>
+          <option>PUT</option>
+          <option>PATCH</option>
+          <option>DELETE</option>
+          <option>HEAD</option>
+          <option>OPTIONS</option>
+        </select>
+        <input type="text" name="url" placeholder="Url">
+      </div>
+
+      <div>
+        <p><label>Headers / Payload:</label></p>
+        <p>
+          Content-type:
+          <select name="content-type">
+            <option>application/json</option>
+            <option>application/atom+xml</option>
+            <option>application/x-www-form-urlencoded</option>
+            <option>application/xml</option>
+            <option>multipart/form-data</option>
+            <option>text/html</option>
+            <option>text/plain</option>
+          </select>
+        </p>
+        <p>
+          <textarea name="headers-raw" rows="18" cols="50"></textarea>
+          <textarea name="payload-raw" rows="18" cols="50"></textarea>
+        </p>
+      </div>
+
+      <div>
+        <button type="reset">Clean</button>
+        <button type="submit">Send</button>
+      </div>
+
+      <h3>Raw request</h3>
+      <div>
+        <p><textarea name="request-headers" rows="12" cols="100" disabled></textarea></p>
+        <p><textarea name="request-raw" rows="12" cols="100" disabled></textarea></p>
+      </div>
+
+      <hr />
+
+      <h2>Response</h2>
+
+      <div>
+        <h4 class="status"></h4>
+        <p><textarea name="response-headers" rows="6" cols="100" disabled></textarea></p>
+        <p><textarea name="response-raw" rows="24" cols="100" disabled></textarea></p>
+      </div>
+
+      <hr />
+
+      <h2>Samples Code</h2>
+
+      <div>
+        <h4>Node.js Request</h4>
+        <p><textarea name="sample-nodejs" rows="15" cols="100" disabled></textarea></p>
+      </div>
+
+      <div>
+        <button>Save API Mapping</button>
+      </div>
+
+
+
     </form>
+
+
+    <script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+    <script src="js/postie.js"></script>
   </body>
 </html>

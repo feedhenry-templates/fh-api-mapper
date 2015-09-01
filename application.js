@@ -26,6 +26,7 @@ app.use(mbaasExpress.fhmiddleware());
 
 // fhlint-begin: custom-routes
 app.use('/try', require('./lib/try.js')());
+app.use('/tester', require('./lib/tester.js')());
 // fhlint-end
 
 // Important that this is last!

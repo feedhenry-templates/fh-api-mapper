@@ -1,0 +1,8 @@
+form.request-failed textarea[name="response-raw"] {
+  background-color: indianred;
+  color: white;
+}
+
+form.request-failed .status {
+  color: indianred;
+}
