@@ -1,21 +1,3 @@
-Handlebars.registerHelper('controlGroup', function(label, helpText, options) {
-  // ensure `options` is always set correctly
-  options = arguments[arguments.length-1];
-  
-  var field = '<div class="control-group">';
-  if (arguments.length >= 2){
-    field += '<label class="control-label">' + label + '</label>';  
-  }
-  field += '<div class="controls">';
-  field += options.fn(this);
-  if (arguments.length >= 3){
-    field += '<span class="help-inline">' + helpText + '</span>';  
-  }
-  field += '</div>';
-  field += '</div>';
-  return new Handlebars.SafeString(field);
-});
-
 (function( $ ) {
 
   var log = {
@@ -65,7 +47,8 @@ Handlebars.registerHelper('controlGroup', function(label, helpText, options) {
   var $responseHeaders = $('.responseHeaders', $form);
   var $responseRaw = $('textarea[name=response-raw]', $form);
   var $status = $('.status', $form);
-  var $sampleNodejs = $('textarea[name=sample-nodejs]', $form);
+  var $sampleNodejs = $('#sample-nodejs', $form);
+  var $sampleCurl = $('#sample-curl', $form);
 
 
   function tryRequest( form ) {
@@ -89,12 +72,11 @@ Handlebars.registerHelper('controlGroup', function(label, helpText, options) {
       headers: headers,
       data: payload
     };
-    resolveTemplate( 'nodejs-request.js', reqParams ).then(function( sample ) {
-      $sampleNodejs.val( sample );
-    });
-
-
-
+    var $tplNodejsRequest = Handlebars.compile($('#tplNodejsRequest').html());
+    $sampleNodejs.html($tplNodejsRequest(reqParams));
+    var $tplCurlRequest = Handlebars.compile($('#tplCurlRequest').html());
+    $sampleCurl.html($tplCurlRequest(reqParams));
+    
     $.ajax({
       method: method,
       url: '/try',
@@ -137,19 +119,6 @@ Handlebars.registerHelper('controlGroup', function(label, helpText, options) {
       $responseRaw.val( getErrorMessage.apply(this, arguments) );
       $form.addClass('request-failed').removeClass('request-pending');
     });
-  }
-
-  function resolveTemplate( templateName, reqParams ) {
-    return $.ajax({
-      url: 'templates/' + templateName,
-      method: 'GET',
-      dataType: 'text'
-    }).then(
-      function( template ) {
-        template = template.replace( '__REQUEST_PARAMS__', JSON.stringify(reqParams, null, 2) );
-        return template;
-      }
-    );
   }
 
   function getStatusText( xhr ) {

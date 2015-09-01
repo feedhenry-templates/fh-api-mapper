@@ -9,7 +9,37 @@
 
       
     </div>
+    
+    <script id="tplNodejsRequest" type="text/x-handlebars-template">
+      <pre>
+var request = require('request');
+request({
+  url: "{{url}}",
+  method: "{{method}}",
+  {{#if headers}}
+  headers: {
+    {{#each headers}}
+      "{{@key}}" : "{{@this}}"{{#unless @last}},{{/unless}}
+    {{/each}}
+  }{{#if data}},{{/if}}
+  {{/if}}
+  {{#if data}}
+  data: '{{ escapeSingleQuotes data }}'
+  {{/if}}
+}, function (error, response, body) {
+  if (error) {
+    return console.error('An error occured:', error);
+  }
+  console.log('Server responded with:', body);
+});
+</pre>
 
+    <script id="tplCurlRequest" type="text/x-handlebars-template">
+      <pre>
+curl -X {{method}}{{#if headers}}{{#each headers}} -H "{{@key}}:{{@this}}" {{/each}} {{/if}} {{#if data}}--data "{{escapeSingleQuotes data}}"{{/if}} {{url}} 
+      </pre>
+    </script>
+    
     <script id="tplResponseHeaders" type="text/x-handlebars-template">
       {{#each headers}}
         <strong>{{name}}</strong> : {{value}}<br />
@@ -104,7 +134,10 @@
           <legend><a class="toggleable collapsed" data-toggle="collapse" href="#sampleCodeCollapsible">Sample Code </a></legend>
           <div id="sampleCodeCollapsible" class="collapse">
             {{#controlGroup "Node.js Request"}}
-              <textarea class="span12" name="sample-nodejs" rows="15" cols="100" disabled></textarea>
+              <div id="sample-nodejs"></div>
+            {{/controlGroup}}
+            {{#controlGroup "cURL Request"}}
+              <div id="sample-curl"></div>
             {{/controlGroup}}
           </div>
         
@@ -119,6 +152,7 @@
     <script src="lib/underscore/underscore.js"></script>
     <script src="lib/handlebars/handlebars.js"></script>
     <script src="lib/bootstrap/bootstrap.js"></script>
+    <script src="templates/helpers.js"></script>
     <script src="js/postie.js"></script>
     
     
