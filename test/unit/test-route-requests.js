@@ -3,29 +3,29 @@ var request = require('supertest');
 var proxyquire = require('proxyquire');
 var app = proxyquire('../../application.js', {
   './lib/db.js' : function(){},
-  '../models/mapping.js' : require('../fixtures/fixture-model-mapping')
+  '../models/request.js' : require('../fixtures/fixture-model-request')
 });
 
-exports.it_should_list_mappings = function(done){
+exports.it_should_list_requests = function(done){
   request(app)
-  .get('/mappings')
+  .get('/requests')
   .expect(200)
   .end(function(err, res){
-    assert.ok(!err, 'Error listing mappings: ' + err);  
+    assert.ok(!err, 'Error listing requests: ' + err);  
     assert.ok(res.body.length > 0);
     return done();
   });
 };
 
-exports.it_should_create_a_mapping = function(done){
+exports.it_should_create_a_request = function(done){
   request(app)
-  .post('/mappings')
+  .post('/requests')
   .send({
     url : 'http://www.google.ie', method : 'get'
   })
   .expect(200)
   .end(function(err, res){
-    assert.ok(!err, 'Error creating mapping: ' + err);  
+    assert.ok(!err, 'Error creating request: ' + err);  
     assert.ok(res.body);
     return done();
   });
