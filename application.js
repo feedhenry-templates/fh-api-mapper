@@ -1,7 +1,7 @@
 var mbaasApi = require('fh-mbaas-api');
 var express = require('express');
 var mbaasExpress = mbaasApi.mbaasExpress();
-var cors = require('cors');
+//var cors = require('cors');
 
 // list the endpoints which you want to make securable here
 var securableEndpoints;

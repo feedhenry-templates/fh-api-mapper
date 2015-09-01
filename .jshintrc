@@ -17,7 +17,7 @@
   "nonew"         : true,
   "plusplus"      : false,
   "regexp"        : true,
-  "undef"         : false,
+  "undef"         : true,
   "strict"        : false,
   "sub"           : true,
   "trailing"      : true,
@@ -25,5 +25,16 @@
   "maxerr"        : 100,
   "es3"           : true,
   "esnext"        : true,
-  "indent"        : 2
+  "indent"        : 2,
+  "browser" : true,
+  "jquery" : true,
+  "globals" : {
+    "$" : true,
+    "_" : true,
+    "App" : true,
+    "log" : true,
+    "Backbone" : true,
+    "Handlebars" : true,
+    "JSON" : true
+  }   
 }

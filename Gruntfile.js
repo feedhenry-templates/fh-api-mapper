@@ -2,7 +2,7 @@ module.exports = function(grunt) {
 
   grunt.initConfig({
     jshint: {
-      all: ['application.js', 'lib/**/*.js', 'test/**/**/*.js']
+      all: ['application.js', 'lib/**/*.js', 'test/**/*.js', 'public/js/*.js']
     },
     unit: ['mocha -A -u exports --recursive -t 10000 ./test/unit'],
     integrate : ['mocha -A -u exports --recursive -t 10000 ./test/integration ']
