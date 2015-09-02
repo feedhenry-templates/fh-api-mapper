@@ -1,15 +1,17 @@
 var log = App.logger;
 
-App.RequestView = Backbone.View.extend({
+App.RequestView = App.BaseMapperView.extend({
   className: "request",
   el : '.container-fluid',
   events : {
+    'click #saveRequest' : 'saveRequest',
     'submit form.try' : 'tryRequest',
     'change input' : 'inputChanged',
     'change select' : 'inputChanged',
     'change textarea' : 'inputChanged'
   },
   initialize : function(){
+    App.BaseMapperView.prototype.initialize.apply(this, arguments);
     this.tpl = Handlebars.compile($('#tplForm').html());
     this.model = new App.RequestModel();
     this.listenTo(this.model, 'success', this.onRequestSuccess);
@@ -28,11 +30,11 @@ App.RequestView = Backbone.View.extend({
     this.$contentType = this.$el.find('select[name=content-type]')
     .val(localStorage['content-type'] || 'GET');
     
-    this.$headersRaw = this.$el.find('textarea[name=headers-raw]')
-    .val(localStorage['headers-raw']);
+    this.$headersRaw = this.$el.find('textarea[name=headers]')
+    .val(localStorage['headers']);
     
-    this.$payloadRaw = this.$el.find('textarea[name=payload-raw]')
-    .val(localStorage['payload-raw']);
+    this.$data = this.$el.find('textarea[name=data]')
+    .val(localStorage['data']);
     
     this.$requestHeaders = this.$el.find('textarea[name=request-headers]');
     this.$requestRaw = this.$el.find('textarea[name=request-raw]');
@@ -42,6 +44,12 @@ App.RequestView = Backbone.View.extend({
     this.$sampleNodejs = this.$el.find('#sample-nodejs');
     this.$sampleCurl = this.$el.find('#sample-curl');
   },
+  getFormValuesAsJSON : function(){
+    var vals = this.$el.find('form').serializeArray();
+    vals = _.object(_.map(vals, _.values))
+    vals.headers = this.parseHeaders(vals.headers);
+    return vals;
+  },
   inputChanged : function(e){
     var input = $(e.target),
     name = input.attr('name'),
@@ -49,15 +57,41 @@ App.RequestView = Backbone.View.extend({
     localStorage.setItem(name, value);
     this.model.set(name, value);
   },
+  saveRequest : function(e){
+    var self = this,
+    request = this.getFormValuesAsJSON();
+    this.model.save(request, {
+      success : function(){
+        self.trigger('notify', 'success', 'Notification saved successfully');
+      }, 
+      error : function(model, xhr){
+        log.error(xhr.responseText);
+        self.trigger('notify', 'error', 'Error saving mapping');
+        self.saveError(xhr.responseJSON);
+      }
+    });
+  },
+  saveError : function(response){
+    if (!response){
+      return;
+    }
+    var self = this;
+    _.each(response.errors, function(errorObject, errorKey){
+      var el = self.$el.find('*[name=' + errorKey + ']'),
+      msg = errorObject.message;
+      if (!el){
+        return;
+      }
+      var controlGroup = $(el.parents('.control-group'));
+      controlGroup.addClass('error');
+      if (msg){
+        controlGroup.find('.help-inline').html(msg);  
+      }
+    });
+  },
   tryRequest : function(e){
     if (e) e.preventDefault();
-    var formData = {
-      method : this.$method.val(),
-      url : this.$url.val(),
-      headers : this.getHeaders(),
-      'content-type' : this.$contentType.val(),
-      data : this.$payloadRaw.val()
-    };
+    var formData = this.getFormValuesAsJSON();
     this.model.set(formData);
     this.model.execute();
     return false;
@@ -91,14 +125,6 @@ App.RequestView = Backbone.View.extend({
     this.$status.text(status);
     this.$responseRaw.val(responseRaw);
     this.$form.addClass('request-failed').removeClass('request-pending');
-  },
-  getHeaders : function() {
-    var baseHeaders = {
-      'content-type': this.$contentType.val()
-    };
-    var parsedHeaders = this.parseHeaders( this.$headersRaw.val() );
-    var headers = _.extend( baseHeaders, parsedHeaders );
-    return headers;
   },
   parseHeaders : function( raw ) {
     var headers = {};

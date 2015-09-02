@@ -1,6 +1,7 @@
 var log = App.logger;
 
 App.RequestModel = Backbone.Model.extend({
+  url : '/requests',
   execute : function(){
     this.trigger('trying');
     var self = this,

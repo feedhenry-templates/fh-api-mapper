@@ -19,3 +19,9 @@ form.request-failed .status {
 .toggleable.collapsed:after {
   content:"\25BC";
 }
+
+.alert.notification {
+  position: fixed;
+  top: 10%;
+  width: 100%;
+}
