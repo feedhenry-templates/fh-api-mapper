@@ -1,4 +1,5 @@
 var App = {};
 $(function(){
-  return new App.RequestView().render();  
+  return new App.RequestsListView().render();  
+  //return new App.RequestView().render();  
 });
