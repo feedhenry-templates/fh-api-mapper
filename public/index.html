@@ -2,7 +2,7 @@
   <head>
     <title>API Mapper</title>
     <link rel="stylesheet" href="css/postie.css" />
-    <link rel="stylesheet" href="lib/bootstrap/bootstrap.css" />
+    <link rel="stylesheet" href="lib/bootstrap/css/bootstrap.css" />
   </head>
   <body>
     <div class="container-fluid">
@@ -11,25 +11,31 @@
     </div>
     
     <script id="tplRequestsList" type="text/x-handlebars-template">
-      <button id="createRequest" class="btn btn-primary">Create new Request</button>
+      <h1>Saved Requests</h1>
+      <button id="createRequest" class="btn pull-right btn-primary"><i class="icon icon-white icon-plus"></i> Create new Request</button>
+      {{#if requests}}
       <table class="table table-hover">
         <thead>
           <tr>
-            <th>#</th>
+            <th>Id</th>
             <th>Method</th>
             <th>URL</th>
           </tr>
         </thead>
         <tbody>
           {{#each requests}}
-            <tr>
-              <td>1</td>
-              <td>{{url}}</td>
+            <tr data-id="{{_id}}">
+              <td>{{_id}}</td>
               <td>{{method}}</td>
+              <td>{{url}}</td>
             </tr>
           {{/each}}
         </tbody>
       </table>
+      {{else}}
+        You have no requests! To get started, use the "Create New Request" button
+      {{/if}}
+      
     </script>
     
     <script id="tplNotification" type="text/x-handlebars-template">
@@ -74,7 +80,9 @@ curl -X {{method}}{{#if headers}}{{#each headers}} -H "{{@key}}:{{@this}}" {{/ea
         <strong>{{name}}</strong> : {{value}}<br />
       {{/each}}
     </script>
-    <script id="tplForm" type="text/x-handlebars-template">
+    <script id="tplCreateEditRequestView" type="text/x-handlebars-template">
+      <a id="backButton" class="btn btn-back"><i class="icon icon-arrow-left pull-left"></i>Back</a>
+      <h1>{{#if isNew}}Create{{else}}Edit{{/if}} Request</h1>
       <form class="try form-horizontal">
         <fieldset>
           <legend>Request</legend>
@@ -91,7 +99,7 @@ curl -X {{method}}{{#if headers}}{{#each headers}} -H "{{@key}}:{{@this}}" {{/ea
           {{/controlGroup}}
           
           {{#controlGroup "URL" "The full URL of the service you wish to integrate with."}}
-            <input type="text" name="url" placeholder="Url" class="span6">
+            <input type="text" name="url" placeholder="Url" value="{{model.url}}" class="span6">
           {{/controlGroup}}
         </fieldset>  
         <fieldset>
@@ -99,21 +107,27 @@ curl -X {{method}}{{#if headers}}{{#each headers}} -H "{{@key}}:{{@this}}" {{/ea
           
           {{#controlGroup "Content-type" "The type of content you will send in your request."}}
             <select name="content-type" class="span2">
-              <option>application/json</option>
-              <option>application/atom+xml</option>
-              <option>application/x-www-form-urlencoded</option>
-              <option>application/xml</option>
-              <option>multipart/form-data</option>
-              <option>text/html</option>
-              <option>text/plain</option>
+              <option name="application/json">application/json</option>
+              <option name="application/atom+xml">application/atom+xml</option>
+              <option name="application/x-www-form-urlencoded">application/x-www-form-urlencoded</option>
+              <option name="application/xml">application/xml</option>
+              <option name="multipart/form-data">multipart/form-data</option>
+              <option name="text/html">text/html</option>
+              <option name="text/plain">text/plain</option>
             </select>
           {{/controlGroup}}
           
-          {{#controlGroup "Additional Headers" "Specify headers separated by new lines in the format key:value"}}
-            <textarea class="span12" name="headers"></textarea>
+          {{#controlGroup "Additional Headers" ""}}
+            {{#each model.headers}}
+              <input name="headerKey{{@key}}" placeholder="Header Key" value="{{key}}">:
+              <input name="headerValue{{@key}}" placeholder="Header Value" value="{{value}}">
+              {{#if @last}}<a class="btn fgbtn-new-header"><i class="icon-plus"></i></a>{{/if}}
+              <br />
+            {{/each}}
           {{/controlGroup}}
         </fieldset>
         
+        {{#if hasBody}}
         <fieldset>
           <legend>Request Body</legend>
           
@@ -121,6 +135,7 @@ curl -X {{method}}{{#if headers}}{{#each headers}} -H "{{@key}}:{{@this}}" {{/ea
             <textarea class="span12" name="data"></textarea>
           {{/controlGroup}}
         </fieldset>
+        {{/if}}
           
         <fieldset>
           {{#controlGroup}}
@@ -131,7 +146,7 @@ curl -X {{method}}{{#if headers}}{{#each headers}} -H "{{@key}}:{{@this}}" {{/ea
           <legend><a class="toggleable collapsed" data-toggle="collapse" href="#rawRequestCollapsible">Raw request </a></legend>
           <div id="rawRequestCollapsible" class="collapse">
             
-            {{#controlGroup "Reqeust Headers"}}
+            {{#controlGroup "Request Headers"}}
               <textarea class="span12" name="request-headers" disabled></textarea>
             {{/controlGroup}}
             
@@ -168,7 +183,15 @@ curl -X {{method}}{{#if headers}}{{#each headers}} -H "{{@key}}:{{@this}}" {{/ea
           </div>
         
         </fieldset>
+        
+        {{#unless isNew}}
+          {{#controlGroup}}
+            <a class="btn btn-danger btn-delete">Delete This Request</a>
+          {{/controlGroup}}
+        {{/unless}}
+        
         {{#controlGroup}}
+          <a class="btn btn-back">Cancel</a>
           <a id="saveRequest" class="btn btn-primary">Save Request</a>
         {{/controlGroup}}
       </form>
@@ -177,7 +200,7 @@ curl -X {{method}}{{#if headers}}{{#each headers}} -H "{{@key}}:{{@this}}" {{/ea
     <script src="lib/underscore/underscore.js"></script>
     <script src="lib/handlebars/handlebars.js"></script>
     <script src="lib/backbone/backbone.js"></script>
-    <script src="lib/bootstrap/bootstrap.js"></script>
+    <script src="lib/bootstrap/js/bootstrap.js"></script>
     <script src="templates/helpers.js"></script>
     <script src="js/app.js"></script>
     <script src="js/logger.js"></script>

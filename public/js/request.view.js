@@ -5,37 +5,40 @@ App.RequestView = App.BaseMapperView.extend({
   el : '.container-fluid',
   events : {
     'click #saveRequest' : 'saveRequest',
+    'click .btn-back' : 'back',
+    'click .btn-delete' : 'deleteRequest',
     'submit form.try' : 'tryRequest',
     'change input' : 'inputChanged',
     'change select' : 'inputChanged',
-    'change textarea' : 'inputChanged'
+    'change textarea' : 'inputChanged',
+    'click .btn-new-header' : 'addHeaderField',
+    'change  select[name=method]' : 'render'
   },
-  initialize : function(){
+  initialize : function(options){
     App.BaseMapperView.prototype.initialize.apply(this, arguments);
-    this.tpl = Handlebars.compile($('#tplForm').html());
-    this.model = new App.RequestModel();
+    this.tpl = Handlebars.compile($('#tplCreateEditRequestView').html());
+    this.model = options.model;
     this.listenTo(this.model, 'success', this.onRequestSuccess);
     this.listenTo(this.model, 'fail', this.onRequestFailed);
     this.listenTo(this.model, 'trying', this.onRequestTrying);
   },
   render : function(){
-    this.$el.html(this.tpl());
+    var model = this.model.toJSON();
+    if (!model.headers){
+      // Always render an empty form field for headers
+      model.headers = [{key : '', value : ''}];
+    }
+    this.$el.html(this.tpl({
+      model : model,
+      isNew : this.model.isNew(),
+      hasBody : model.method !== 'GET'
+    }));
+    
     this.$form = this.$el.find('form');
-    this.$url = this.$el.find('input[name=url]')
-    .val(localStorage.url);
-    
-    this.$method = this.$el.find('select[name=method]')
-    .val(localStorage.method || 'GET');
-    
-    this.$contentType = this.$el.find('select[name=content-type]')
-    .val(localStorage['content-type'] || 'GET');
-    
-    this.$headersRaw = this.$el.find('textarea[name=headers]')
-    .val(localStorage['headers']);
-    
-    this.$data = this.$el.find('textarea[name=data]')
-    .val(localStorage['data']);
-    
+    this.$url = this.$el.find('input[name=url]');
+    this.$method = this.$el.find('select[name=method]');
+    this.$contentType = this.$el.find('select[name=content-type]');
+    this.$data = this.$el.find('textarea[name=data]');
     this.$requestHeaders = this.$el.find('textarea[name=request-headers]');
     this.$requestRaw = this.$el.find('textarea[name=request-raw]');
     this.$responseHeaders = this.$el.find('.responseHeaders');
@@ -43,30 +46,58 @@ App.RequestView = App.BaseMapperView.extend({
     this.$status = this.$el.find('.status');
     this.$sampleNodejs = this.$el.find('#sample-nodejs');
     this.$sampleCurl = this.$el.find('#sample-curl');
+    
+    // Set the values for selects which we can't do in handlebars
+    this.$method.val(this.model.get('method'));
+    // TODO: Fix this
+    var contentType = _.findWhere(this.model.get('headers'), { key : 'content-type' });
+    if (contentType){
+      this.$contentType.find('option[name="' + contentType.value + '"]').attr('selected', true);
+    }
+    
+  },
+  back : function(){
+    this.trigger('back');
   },
   getFormValuesAsJSON : function(){
-    var vals = this.$el.find('form').serializeArray();
-    vals = _.object(_.map(vals, _.values))
-    vals.headers = this.parseHeaders(vals.headers);
-    return vals;
+    var vals = this.$el.find('form').serializeArray(),
+    mappedValues = {
+      headers : []
+    };
+    vals = _.object(_.map(vals, _.values));
+    _.each(vals, function(value, key){
+      if (key.match(/^headerKey[0-9]+$/)){
+        var headerName = vals[key],
+        headerValue = vals[key.replace('Key', 'Value')];
+        if (headerName === ""){
+          return;
+        }
+        mappedValues.headers.push({ key : headerName, value : headerValue });
+      }else if (key.match(/^headerValue[0-9]+$/)){
+        // handled in above clause - continue
+        return;
+      }else if (key === 'content-type'){
+        mappedValues.headers.push({ key : 'content-type', value : value });
+      }else{
+        mappedValues[key] = value;
+      }
+    });
+    return mappedValues;
   },
-  inputChanged : function(e){
-    var input = $(e.target),
-    name = input.attr('name'),
-    value = input.val();
-    localStorage.setItem(name, value);
-    this.model.set(name, value);
+  inputChanged : function(){
+    this.model.set(this.getFormValuesAsJSON());
   },
-  saveRequest : function(e){
+  saveRequest : function(){
     var self = this,
     request = this.getFormValuesAsJSON();
     this.model.save(request, {
       success : function(){
         self.trigger('notify', 'success', 'Notification saved successfully');
+        self.trigger('back');
       }, 
       error : function(model, xhr){
         log.error(xhr.responseText);
-        self.trigger('notify', 'error', 'Error saving mapping');
+        self.trigger('notify', 'error', 'Error saving request');
         self.saveError(xhr.responseJSON);
       }
     });
@@ -132,8 +163,24 @@ App.RequestView = App.BaseMapperView.extend({
       var a = line.split(':', 2);
       if (a[0] && a[1]) headers[a[0].trim()] = a[1].trim();
     });
-    log.debug('headers:');
-    log.debug(headers);
+    log.debug({ 'headers' : headers});
     return headers;
+  },
+  deleteRequest : function(){
+    var self = this;
+    this.model.destroy({
+      success : function(){
+        self.trigger('back');
+      },
+      error : function(){
+        self.trigger('notify', 'error', 'Error deleting request');
+      }
+    });
+  },
+  addHeaderField : function(){
+    var headers = this.model.get('headers');
+    headers.push({ key : '', value : '' });
+    this.model.set('headers', headers);
+    this.render();
   }
 });

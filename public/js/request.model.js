@@ -1,8 +1,8 @@
 var log = App.logger;
 
 App.RequestModel = Backbone.Model.extend({
-  url : '/requests',
-  id : '_id',
+  urlRoot : '/requests',
+  idAttribute : '_id',
   execute : function(){
     this.trigger('trying');
     var self = this,
