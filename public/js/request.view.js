@@ -2,7 +2,6 @@ var log = App.logger;
 
 App.RequestView = App.BaseMapperView.extend({
   className: "request",
-  el : '.container-fluid',
   events : {
     'click #saveRequest' : 'saveRequest',
     'click .btn-back' : 'back',
@@ -12,6 +11,7 @@ App.RequestView = App.BaseMapperView.extend({
     'change select' : 'inputChanged',
     'change textarea' : 'inputChanged',
     'click .btn-new-header' : 'addHeaderField',
+    'click .btn-remove-header' : 'removeHeaderField',
     'change  select[name=method]' : 'render'
   },
   initialize : function(options){
@@ -24,10 +24,14 @@ App.RequestView = App.BaseMapperView.extend({
   },
   render : function(){
     var model = this.model.toJSON();
-    if (!model.headers){
+    model.headers = _.filter(model.headers, function(header){
+      return _.isString(header.key) && header.key.toLowerCase() !== 'content-type';
+    });
+    if (!model.headers || model.headers.length === 0){
       // Always render an empty form field for headers
       model.headers = [{key : '', value : ''}];
     }
+    
     this.$el.html(this.tpl({
       model : model,
       isNew : this.model.isNew(),
@@ -66,22 +70,25 @@ App.RequestView = App.BaseMapperView.extend({
     };
     vals = _.object(_.map(vals, _.values));
     _.each(vals, function(value, key){
-      if (key.match(/^headerKey[0-9]+$/)){
+      if (key === 'content-type'){
+        return;
+      } else if (key.match(/^headerKey[0-9]+$/)){
         var headerName = vals[key],
         headerValue = vals[key.replace('Key', 'Value')];
         if (headerName === ""){
           return;
         }
         mappedValues.headers.push({ key : headerName, value : headerValue });
-      }else if (key.match(/^headerValue[0-9]+$/)){
+      } else if (key.match(/^headerValue[0-9]+$/)){
         // handled in above clause - continue
         return;
-      }else if (key === 'content-type'){
-        mappedValues.headers.push({ key : 'content-type', value : value });
       }else{
         mappedValues[key] = value;
       }
     });
+    // This particular header gets treated as a separate input field, but 
+    // our data schema serverside just treats it as any other header
+    mappedValues.headers.push({ key : 'content-type', val : this.$contentType.val() });
     return mappedValues;
   },
   inputChanged : function(){
@@ -182,5 +189,11 @@ App.RequestView = App.BaseMapperView.extend({
     headers.push({ key : '', value : '' });
     this.model.set('headers', headers);
     this.render();
+  },
+  removeHeaderField : function(e){
+    var el = $(e.target),
+    headerRow = el.parents('.headerRow');
+    headerRow.remove();
+    this.model.set(this.getFormValuesAsJSON());
   }
 });

@@ -1,3 +1,6 @@
+table.requestsList tbody tr {
+  cursor: hand;
+}
 form.request-failed textarea[name="response-raw"] {
   background-color: indianred;
   color: white;

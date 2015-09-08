@@ -2,7 +2,7 @@ App.RequestsListView = App.BaseMapperView.extend({
   className: "requests",
   el : '.container-fluid',
   events : {
-    'click tr' : 'showSavedRequest',
+    'click tbody tr' : 'showSavedRequest',
     'click #createRequest' : 'newRequest'
   },
   initialize : function(){
@@ -24,9 +24,11 @@ App.RequestsListView = App.BaseMapperView.extend({
     if (!model){
       return this.trigger('notify', 'error', 'Could not find request with id ' + id);
     }
+    window.history.pushState(id, "Edit Request", "/requests/" + id);
     this.showRequestView(model);
   },
   newRequest : function(){
+    window.history.pushState("new", "New Request", "/requests/new");
     this.showRequestView(new App.RequestModel());
   },
   showRequestView : function(model){
@@ -35,9 +37,12 @@ App.RequestsListView = App.BaseMapperView.extend({
       model : model
     });
     this.listenTo(this.requestView, 'back', function(){
+      self.requestView.remove()
       self.collection.fetch();
       self.render();
+      window.history.back();
     });
     this.requestView.render();
+    this.$el.html(this.requestView.$el);
   }
 });
