@@ -14,7 +14,7 @@
       <h1>Saved Requests</h1>
       <button id="createRequest" class="btn pull-right btn-primary"><i class="icon icon-white icon-plus"></i> Create new Request</button>
       {{#if requests}}
-      <table class="table table-hover">
+      <table class="table table-hover requestsList">
         <thead>
           <tr>
             <th>Id</th>
@@ -119,9 +119,17 @@ curl -X {{method}}{{#if headers}}{{#each headers}} -H "{{@key}}:{{@this}}" {{/ea
           
           {{#controlGroup "Additional Headers" ""}}
             {{#each model.headers}}
-              <input name="headerKey{{@key}}" placeholder="Header Key" value="{{key}}">:
-              <input name="headerValue{{@key}}" placeholder="Header Value" value="{{value}}">
-              {{#if @last}}<a class="btn fgbtn-new-header"><i class="icon-plus"></i></a>{{/if}}
+              <span class="headerRow">
+                <input name="headerKey{{@key}}" placeholder="Header Key" value="{{key}}">:
+                <input name="headerValue{{@key}}" placeholder="Header Value" value="{{value}}">
+                <div class="btn-group">
+                  <a class="btn btn-remove-header"><i class="icon-remove"></i></a>
+                  {{#if @last}}<a class="btn btn-new-header"><i class="icon-plus"></i></a>{{/if}}
+                </div>
+              </span>
+
+              
+              
               <br />
             {{/each}}
           {{/controlGroup}}
@@ -192,7 +200,7 @@ curl -X {{method}}{{#if headers}}{{#each headers}} -H "{{@key}}:{{@this}}" {{/ea
         
         {{#controlGroup}}
           <a class="btn btn-back">Cancel</a>
-          <a id="saveRequest" class="btn btn-primary">Save Request</a>
+          <a id="saveRequest" class="btn btn-primary">{{#if isNew}}Create{{else}}Update{{/if}} Request</a>
         {{/controlGroup}}
       </form>
     </script>
