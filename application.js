@@ -14,6 +14,8 @@ var app = express();
 
 // TODO: Cors is disabled as of now, since it prevents /try route to proxy simply (see #3)
 //app.use(cors());
+app.engine('html', require('ejs').renderFile);
+
 
 // Note: the order which we add middleware to Express here is important!
 app.use('/sys', mbaasExpress.sys(securableEndpoints));
@@ -26,6 +28,7 @@ app.use(express['static'](__dirname + '/public'));
 app.use(mbaasExpress.fhmiddleware());
 
 // fhlint-begin: custom-routes
+app.get('/', require('./lib/routes/frontend.js'));
 app.use('/try', require('./lib/routes/try.js')());
 app.use('/tester', require('./lib/routes/tester.js')());
 app.use('/requests', require('./lib/routes/requests.js')());

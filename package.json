@@ -4,6 +4,7 @@
   "dependencies": {
     "body-parser": "1.13.3",
     "cors": "2.7.1",
+    "ejs": "^2.3.4",
     "express": "4.13.3",
     "fh-mbaas-api": "5.2.0",
     "mongoose": "^4.1.4",
