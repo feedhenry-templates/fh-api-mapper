@@ -1,0 +1,27 @@
+<script id="tplRequestsList" type="text/x-handlebars-template">
+  <h1>Saved Requests</h1>
+  <button id="createRequest" class="btn pull-right btn-primary"><i class="icon icon-white icon-plus"></i> Create new Request</button>
+  {{#if requests}}
+  <table class="table table-hover requestsList">
+    <thead>
+      <tr>
+        <th>Id</th>
+        <th>Method</th>
+        <th>URL</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each requests}}
+        <tr data-id="{{_id}}">
+          <td>{{_id}}</td>
+          <td>{{method}}</td>
+          <td>{{url}}</td>
+        </tr>
+      {{/each}}
+    </tbody>
+  </table>
+  {{else}}
+    You have no requests! To get started, use the "Create New Request" button
+  {{/if}}
+  
+</script>

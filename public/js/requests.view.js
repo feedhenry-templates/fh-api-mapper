@@ -37,7 +37,7 @@ App.RequestsListView = App.BaseMapperView.extend({
       model : model
     });
     this.listenTo(this.requestView, 'back', function(){
-      self.requestView.remove()
+      self.requestView.remove();
       self.collection.fetch();
       self.render();
       window.history.back();
