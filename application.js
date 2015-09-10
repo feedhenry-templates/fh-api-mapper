@@ -31,7 +31,7 @@ app.use(mbaasExpress.fhmiddleware());
 app.get('/', require('./lib/routes/frontend.js'));
 app.use('/try', require('./lib/routes/try.js')());
 app.use('/tester', require('./lib/routes/tester.js')());
-app.use('/requests', require('./lib/routes/requests.js')());
+app.use('/api/requests', require('./lib/routes/requests.js')());
 // fhlint-end
 
 // Important that this is last!
