@@ -8,7 +8,7 @@ var app = proxyquire('../../application.js', {
 
 exports.it_should_list_requests = function(done){
   request(app)
-  .get('/requests')
+  .get('/api/requests')
   .expect(200)
   .end(function(err, res){
     assert.ok(!err, 'Error listing requests: ' + err);  
@@ -19,7 +19,7 @@ exports.it_should_list_requests = function(done){
 
 exports.it_should_create_a_request = function(done){
   request(app)
-  .post('/requests')
+  .post('/api/requests')
   .send({
     url : 'http://www.google.ie', method : 'get'
   })

@@ -1,4 +1,4 @@
 App.RequestsCollection = Backbone.Collection.extend({
-  url: '/requests',
+  url: '/api/requests',
   model : App.RequestModel
 });
