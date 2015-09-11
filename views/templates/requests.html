@@ -1,27 +1,48 @@
 <script id="tplRequestsList" type="text/x-handlebars-template">
-  <h1>Saved Requests</h1>
-  <button id="createRequest" class="btn pull-right btn-primary"><i class="icon icon-white icon-plus"></i> Create new Request</button>
-  {{#if requests}}
-  <table class="table table-hover requestsList">
-    <thead>
-      <tr>
-        <th>Id</th>
-        <th>Method</th>
-        <th>URL</th>
-      </tr>
-    </thead>
-    <tbody>
-      {{#each requests}}
-        <tr data-id="{{_id}}">
-          <td>{{_id}}</td>
-          <td>{{method}}</td>
-          <td>{{url}}</td>
-        </tr>
-      {{/each}}
-    </tbody>
-  </table>
-  {{else}}
-    You have no requests! To get started, use the "Create New Request" button
-  {{/if}}
-  
+    <section class="fh-request-list">
+    <div class="container">
+      <div class="row">
+        <div class="span12">
+
+          <ul class="breadcrumb fh-request-breadcrumb">
+            <li class="active">Home</li>
+          </ul>
+
+          {{#if requests}}
+          <table class="table">
+            <thead>
+            <tr>
+              <th>Type</th>
+              <th>URL</th>
+              <!--<th>Date</th>-->
+              <th class="fh-request-list-actions">
+                <button class="btn btn-primary createRequest" type="button"><i class="fa fa-plus"></i> New Request</button>
+              </th>
+            </tr>
+            </thead>
+            <tbody>
+            {{#each requests}}
+            <tr data-id="{{_id}}">
+              <td>{{method}}</td>
+              <td>{{url}}</td>
+              <!--<td>May 12th, 2015</td>-->
+              <td class="fh-request-list-actions">
+                <button class="btn btn-small" type="button"><i class="fa fa-pencil"></i> Edit</button>
+                <button class="btn btn-small" type="button"><i class="fa fa-trash-o fa-lg"></i> Delete</button>
+                <button class="btn btn-small" type="button"><i class="fa fa-download"></i> Export</button>
+              </td>
+            </tr>
+            {{/each}}
+            </tbody>
+
+          </table>
+          {{else}}
+          You have no requests! To get started, use the "Create New Request" button
+          <button class="btn btn-primary createRequest" type="button"><i class="fa fa-plus"></i> New Request</button>
+          {{/if}}
+
+        </div>
+      </div>
+    </div>
+  </section>
 </script>

@@ -1,9 +1,9 @@
 App.RequestsListView = App.BaseMapperView.extend({
   className: "requests",
-  el : '.container-fluid',
+  el : '.content',
   events : {
     'click tbody tr' : 'showSavedRequest',
-    'click #createRequest' : 'newRequest'
+    'click .createRequest' : 'newRequest'
   },
   initialize : function(){
     App.BaseMapperView.prototype.initialize.apply(this, arguments);

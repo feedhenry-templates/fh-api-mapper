@@ -1,0 +1,95 @@
+@import "../lib/bootstrap/less/bootstrap.less";
+
+#grid {
+  .core  {
+    .span(@gridColumns) {
+      width: (@gridColumnWidth * @gridColumns) + (@gridGutterWidth * (@gridColumns - 1));
+    }
+  }
+};
+
+.fh-request-breadcrumb{
+  //  background: red;
+  margin: 20px 0;
+}
+
+
+.fh-secondary-header{
+  text-transform: uppercase;
+  font-size: @fontSizeMini;
+  background: @grayLight;
+  color: @white;
+  line-height: 25px;
+  padding:  0 7px;
+}
+
+.fh-request{
+  background: @grayLighter;
+  padding: 0 0 20px 0;
+
+  // border-bottom: 1px solid @grayLight;
+}
+// Input
+
+.fh-request-input{
+  //  background: red;
+  width: 100%;
+}
+
+.fh-request-headers{
+  //  background: yellow;
+
+  li{
+    //    background: red!important;
+    margin-bottom: 5px;
+    &:last-child{
+      margin: 0;
+    }
+    input[type="text"]{
+      width: 50%;
+      margin: 0;
+    }
+    select{
+      margin: 0;
+      width: 30%
+    }
+  }
+
+  span{
+    //    background: aqua;
+    display: inline-block;
+    text-align: right;
+    float: right;
+    a{
+      display: inline-block;
+      line-height: 30px;
+      //      background: orange;
+      padding: 0 5px;
+      color: @grayLight;
+      &:hover{
+        color: @linkColor;
+        &:last-child{color: @red;}
+      }
+    }
+    .reorder{
+      cursor: move;
+    }
+  }
+}
+
+.fh-request-body{
+  textarea{
+    margin: 0;
+  }
+}
+
+
+.fh-result{
+  padding: 10px 0 40px 0;
+}
+
+
+
+.fh-request-list-actions{
+  text-align: right!important;
+}

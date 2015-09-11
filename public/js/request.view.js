@@ -10,8 +10,8 @@ App.RequestView = App.BaseMapperView.extend({
     'change input' : 'inputChanged',
     'change select' : 'inputChanged',
     'change textarea' : 'inputChanged',
-    'click .btn-new-header' : 'addHeaderField',
-    'click .btn-remove-header' : 'removeHeaderField',
+    'click .fa-plus' : 'addHeaderField',
+    'click .fa-trash-o' : 'removeHeaderField',
     'change  select[name=method]' : 'render'
   },
   initialize : function(options){
@@ -43,10 +43,10 @@ App.RequestView = App.BaseMapperView.extend({
     this.$method = this.$el.find('select[name=method]');
     this.$contentType = this.$el.find('select[name=content-type]');
     this.$data = this.$el.find('textarea[name=data]');
-    this.$requestHeaders = this.$el.find('textarea[name=request-headers]');
-    this.$requestRaw = this.$el.find('textarea[name=request-raw]');
-    this.$responseHeaders = this.$el.find('.responseHeaders');
-    this.$responseRaw = this.$el.find('textarea[name=response-raw]');
+    this.$requestHeaders = this.$el.find('.request-headers');
+    this.$requestRaw = this.$el.find('.request-raw');
+    this.$responseHeaders = this.$el.find('.response-headers');
+    this.$responseRaw = this.$el.find('.response-raw');
     this.$status = this.$el.find('.status');
     this.$sampleNodejs = this.$el.find('#sample-nodejs');
     this.$sampleCurl = this.$el.find('#sample-curl');
@@ -62,6 +62,7 @@ App.RequestView = App.BaseMapperView.extend({
   },
   back : function(){
     this.trigger('back');
+    return false;
   },
   getFormValuesAsJSON : function(){
     var vals = this.$el.find('form').serializeArray(),
@@ -136,9 +137,10 @@ App.RequestView = App.BaseMapperView.extend({
   },
   onRequestTrying : function(){
     // Empty all the fields
-    this.$requestHeaders.val('');
+    this.$requestHeaders.text('');
+    this.$requestRaw.text('');
     this.$responseHeaders.val('');
-    this.$responseRaw.val('');
+    this.$responseRaw.text('');
     this.$status.text('In progress...');
     this.$form.addClass('request-pending').removeClass('request-failed');
     this.$sampleNodejs.val('');
@@ -152,16 +154,16 @@ App.RequestView = App.BaseMapperView.extend({
   onRequestSuccess : function(status, requestHeaders, requestRaw, responseHeaders, responseBody){
     this.$form.removeClass('request-pending');
     this.$status.text(status);
-    this.$requestHeaders.val( requestHeaders );
-    this.$requestRaw.val( requestRaw );
+    this.$requestHeaders.html( requestHeaders.replace(/\n/g, '<br />') );
+    this.$requestRaw.text( requestRaw );
     
     var $responseHeadersTpl = Handlebars.compile($('#tplResponseHeaders').html());
     this.$responseHeaders.html($responseHeadersTpl({ headers : responseHeaders }));
-    this.$responseRaw.val( responseBody );
+    this.$responseRaw.text( responseBody );
   },
   onRequestFailed : function(status, responseRaw){
     this.$status.text(status);
-    this.$responseRaw.val(responseRaw);
+    this.$responseRaw.text(responseRaw);
     this.$form.addClass('request-failed').removeClass('request-pending');
   },
   parseHeaders : function( raw ) {
@@ -189,11 +191,13 @@ App.RequestView = App.BaseMapperView.extend({
     headers.push({ key : '', value : '' });
     this.model.set('headers', headers);
     this.render();
+    return false;
   },
   removeHeaderField : function(e){
     var el = $(e.target),
     headerRow = el.parents('.headerRow');
     headerRow.remove();
     this.model.set(this.getFormValuesAsJSON());
+    return false;
   }
 });

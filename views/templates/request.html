@@ -30,130 +30,149 @@ curl -X {{method}}{{#if headers}}{{#each headers}} -H "{{@key}}:{{@this}}" {{/ea
 
 <script id="tplResponseHeaders" type="text/x-handlebars-template">
   {{#each headers}}
-    <strong>{{name}}</strong> : {{value}}<br />
+    <dt>{{name}}</dt>
+    <dd>{{value}}</dd>
   {{/each}}
 </script>
 <script id="tplCreateEditRequestView" type="text/x-handlebars-template">
-  <a id="backButton" class="btn btn-back"><i class="icon icon-arrow-left pull-left"></i>Back</a>
-  <h1>{{#if isNew}}Create{{else}}Edit{{/if}} Request</h1>
-  <form class="try form-horizontal">
-    <fieldset>
-      <legend>Request</legend>
-      {{#controlGroup "Method" "The HTTP Verb to make your request with."}}
-        <select name="method" class="span2">
-          <option>GET</option>
-          <option>POST</option>
-          <option>PUT</option>
-          <option>PATCH</option>
-          <option>DELETE</option>
-          <option>HEAD</option>
-          <option>OPTIONS</option>
-        </select>
-      {{/controlGroup}}
-      
-      {{#controlGroup "URL" "The full URL of the service you wish to integrate with."}}
-        <input type="text" name="url" placeholder="Url" value="{{model.url}}" class="span6">
-      {{/controlGroup}}
-    </fieldset>  
-    <fieldset>
-      <legend>Headers</legend>
-      
-      {{#controlGroup "Content-type" "The type of content you will send in your request."}}
-        <select name="content-type" class="span2">
-          <option name="application/json">application/json</option>
-          <option name="application/atom+xml">application/atom+xml</option>
-          <option name="application/x-www-form-urlencoded">application/x-www-form-urlencoded</option>
-          <option name="application/xml">application/xml</option>
-          <option name="multipart/form-data">multipart/form-data</option>
-          <option name="text/html">text/html</option>
-          <option name="text/plain">text/plain</option>
-        </select>
-      {{/controlGroup}}
-      
-      {{#controlGroup "Additional Headers" ""}}
-        {{#each model.headers}}
-          <span class="headerRow">
-            <input name="headerKey{{@key}}" placeholder="Header Key" value="{{key}}">:
-            <input name="headerValue{{@key}}" placeholder="Header Value" value="{{value}}">
+
+  <section class="fh-request">
+    <form class="container try">
+
+      <div class="row">
+        <div class="span12">
+
+          <!--<a id="backButton" class="btn btn-back"><i class="icon icon-arrow-left pull-left"></i>Back</a>-->
+
+          <ul class="breadcrumb fh-request-breadcrumb">
+            <li><a href="#" class="btn-back">Home</a> <span class="divider">/</span></li>
+            <li class="active">{{#if isNew}}New{{else}}Edit{{/if}} Request</li>
+          </ul>
+
+          <div class="input-prepend input-append fh-request-input">
             <div class="btn-group">
-              <a class="btn btn-remove-header"><i class="icon-remove"></i></a>
-              {{#if @last}}<a class="btn btn-new-header"><i class="icon-plus"></i></a>{{/if}}
+              <select name="method" class="span2">
+                <option>GET</option>
+                <option>POST</option>
+                <option>PUT</option>
+                <option>PATCH</option>
+                <option>DELETE</option>
+                <option>HEAD</option>
+                <option>OPTIONS</option>
+              </select>
             </div>
-          </span>
+            <input name="url" value="{{model.url}}" class="span9" id="appendedPrependedDropdownButton" type="text" placeholder="Enter Request URL here">
+            <button class="btn btn-primary" type="submit">Send Request</button>
+          </div>
+        </div>
+      </div><!-- row -->
 
-          
-          
-          <br />
-        {{/each}}
-      {{/controlGroup}}
-    </fieldset>
-    
-    {{#if hasBody}}
-    <fieldset>
-      <legend>Request Body</legend>
-      
-      {{#controlGroup "Request body"}}
-        <textarea class="span12" name="data"></textarea>
-      {{/controlGroup}}
-    </fieldset>
-    {{/if}}
-      
-    <fieldset>
-      {{#controlGroup}}
-        <button class="btn btn-primary" type="submit">Send Request</button>
-      {{/controlGroup}}
-    </fieldset>
-    <fieldset>
-      <legend><a class="toggleable collapsed" data-toggle="collapse" href="#rawRequestCollapsible">Raw request </a></legend>
-      <div id="rawRequestCollapsible" class="collapse">
-        
-        {{#controlGroup "Request Headers"}}
-          <textarea class="span12" name="request-headers" disabled></textarea>
-        {{/controlGroup}}
-        
-        {{#controlGroup "Raw Request"}}
-          <textarea class="span12" name="request-raw" disabled></textarea>
-        {{/controlGroup}}
-      </div>
-    </fieldset>
+      <div class="row">
+        <div class="span6 fh-request-headers">
+          <h4 class="fh-secondary-header">Headers</h4>
 
-    <fieldset>
-      <legend>Response</legend>
-      {{#controlGroup "Status"}}
-        <div class="status"></div>
-      {{/controlGroup}}
-      
-      {{#controlGroup "Response Headers"}}
-        <div class="responseHeaders"></div>
-      {{/controlGroup}}
-      
-      {{#controlGroup "Response Body"}}
-        <textarea name="response-raw" rows="24" cols="100" disabled class="span12"></textarea>
-      {{/controlGroup}}
-    </fieldset>
-    
-    <fieldset>
-      <legend><a class="toggleable collapsed" data-toggle="collapse" href="#sampleCodeCollapsible">Sample Code </a></legend>
-      <div id="sampleCodeCollapsible" class="collapse">
-        {{#controlGroup "Node.js Request"}}
-          <div id="sample-nodejs"></div>
-        {{/controlGroup}}
-        {{#controlGroup "cURL Request"}}
-          <div id="sample-curl"></div>
-        {{/controlGroup}}
-      </div>
-    
-    </fieldset>
-    
-    {{#unless isNew}}
-      {{#controlGroup}}
-        <a class="btn btn-danger btn-delete">Delete This Request</a>
-      {{/controlGroup}}
-    {{/unless}}
-    
-    {{#controlGroup}}
-      <a class="btn btn-back">Cancel</a>
-      <a id="saveRequest" class="btn btn-primary">{{#if isNew}}Create{{else}}Update{{/if}} Request</a>
-    {{/controlGroup}}
-  </form>
+          <ul class="unstyled">
+            {{#each model.headers}}
+            <li class="headerRow">
+              <input name="headerKey{{@key}}" type="text" placeholder="Header Key" value="{{key}}">
+              <input name="headerValue{{@key}}" type="text" placeholder="Header Value" value="{{value}}">
+              <span>
+                <!--<a href="#" class="reorder"><i class="fa fa-bars fa-lg"></i></a>-->
+                <a href="#"><i class="fa fa-trash-o fa-lg"></i></a>
+                {{#if @last}}<a href="#"><i class="fa fa-plus"></i></a>{{/if}}
+              </span>
+            </li>
+            {{/each}}
+          </ul>
+        </div>
+        {{#if hasBody}}
+        <div class="span6 fh-request-body">
+          <h4 class="fh-secondary-header">Body</h4>
+          <textarea name="data" rows="3" class="span6"></textarea>
+        </div>
+        {{/if}}
+      </div><!-- row -->
+
+      <div class="row">
+        <div class="span12">
+          <!-- use `fa-chevron-right` when its close -->
+          <h4 class="fh-secondary-header"><a class="toggleable collapsed" data-toggle="collapse" href="#rawRequestCollapsible"><i class="fa fa-chevron-down"></i> Raw request</a></h4>
+
+          <div id="rawRequestCollapsible" class="dl-horizontal collapse">
+          <dl class="dl-horizontal">
+            <dt>Request Headers</dt>
+            <dd class="request-headers"></dd>
+
+            {{#if hasBody}}
+            <dt>Raw Request</dt>
+            <dd class="request-raw"></dd>
+            {{/if}}
+
+          </dl>
+          </div>
+
+        </div>
+      </div><!-- row -->
+    </form><!-- container -->
+  </section><!-- fh-request -->
+
+  <section class="fh-result">
+    <div class="container">
+      <div class="row">
+        <div class="span12">
+
+          <h4 class="fh-secondary-header">Response</h4>
+
+          <p class="status">Status 200 OK</p>
+
+          <h4 class="fh-secondary-header">Response Headers</h4>
+
+          <div class="row">
+            <div class="span6">
+
+              <dl class="dl-horizontal response-headers"></dl>
+            </div>
+          </div>
+
+          <h4  class="fh-secondary-header">Response Body</h4>
+
+          <!-- We want to add Syntax highlighting here -->
+<pre class="pre-scrollable response-raw">
+</pre>
+
+
+          <h4 class="fh-secondary-header"><a class="collapsed" data-toggle="collapse" href="#sampleCodeCollapsible"><i class="fa fa-chevron-down"></i> Sample code</a></h4>
+
+          <div id="sampleCodeCollapsible" class="collapse">
+          <h5>Node.js Request</h5>
+<pre id="sample-nodejs">
+var request = require('request');
+request({
+  url: "http://google.com/",
+  method: "GET",
+  headers: {
+      "content-type" : "application/xml"
+  }
+}, function (error, response, body) {
+  if (error) {
+    return console.error('An error occured:', error);
+  }
+  console.log('Server responded with:', body);
+});
+</pre>
+
+          <h5>cURL Request</h5>
+<pre id="sample-curl">
+curl -X GET -H "content-type:application/xml"    http://google.com/
+</pre>
+
+          </div>
+
+          <p>
+            <button id="saveRequest" class="btn btn-primary" type="button">{{#if isNew}}Create{{else}}Update{{/if}} Request</button>
+          </p>
+        </div>
+      </div><!-- row -->
+    </form><!-- container -->
+  </section><!-- fh-request -->
 </script>
