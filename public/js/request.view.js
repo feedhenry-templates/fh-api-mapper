@@ -10,8 +10,8 @@ App.RequestView = App.BaseMapperView.extend({
     'change input' : 'inputChanged',
     'change select' : 'inputChanged',
     'change textarea' : 'inputChanged',
-    'click .fa-plus' : 'addHeaderField',
-    'click .fa-trash-o' : 'removeHeaderField',
+    'click .add-header' : 'addHeaderField',
+    'click .remove-header' : 'removeHeaderField',
     'change  select[name=method]' : 'render'
   },
   initialize : function(options){

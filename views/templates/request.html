@@ -74,12 +74,12 @@ curl -X {{method}}{{#if headers}}{{#each headers}} -H "{{@key}}:{{@this}}" {{/ea
           <ul class="unstyled">
             {{#each model.headers}}
             <li class="headerRow">
-              <input name="headerKey{{@key}}" type="text" placeholder="Header Key" value="{{key}}">
-              <input name="headerValue{{@key}}" type="text" placeholder="Header Value" value="{{value}}">
+              <input class="input-medium" name="headerKey{{@key}}" type="text" placeholder="Header Key" value="{{key}}">
+              <input class="input-medium" name="headerValue{{@key}}" type="text" placeholder="Header Value" value="{{value}}">
               <span>
                 <!--<a href="#" class="reorder"><i class="fa fa-bars fa-lg"></i></a>-->
-                <a href="#"><i class="fa fa-trash-o fa-lg"></i></a>
-                {{#if @last}}<a href="#"><i class="fa fa-plus"></i></a>{{/if}}
+                {{#if @last}}<a href="#"><i class="fa fa-plus add-header"></i></a>{{/if}}
+                <a href="#"><i class="fa fa-trash-o fa-lg remove-header"></i></a>
               </span>
             </li>
             {{/each}}
@@ -137,35 +137,17 @@ curl -X {{method}}{{#if headers}}{{#each headers}} -H "{{@key}}:{{@this}}" {{/ea
           <h4  class="fh-secondary-header">Response Body</h4>
 
           <!-- We want to add Syntax highlighting here -->
-<pre class="pre-scrollable response-raw">
-</pre>
+          <pre class="pre-scrollable response-raw"></pre>
 
 
           <h4 class="fh-secondary-header"><a class="collapsed" data-toggle="collapse" href="#sampleCodeCollapsible"><i class="fa fa-chevron-down"></i> Sample code</a></h4>
 
           <div id="sampleCodeCollapsible" class="collapse">
-          <h5>Node.js Request</h5>
-<pre id="sample-nodejs">
-var request = require('request');
-request({
-  url: "http://google.com/",
-  method: "GET",
-  headers: {
-      "content-type" : "application/xml"
-  }
-}, function (error, response, body) {
-  if (error) {
-    return console.error('An error occured:', error);
-  }
-  console.log('Server responded with:', body);
-});
-</pre>
+            <h5>Node.js Request</h5>
+            <pre id="sample-nodejs"></pre>
 
-          <h5>cURL Request</h5>
-<pre id="sample-curl">
-curl -X GET -H "content-type:application/xml"    http://google.com/
-</pre>
-
+            <h5>cURL Request</h5>
+            <pre id="sample-curl"></pre>
           </div>
 
           <p>
