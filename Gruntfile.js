@@ -16,13 +16,35 @@ module.exports = function(grunt) {
           }
         }
       }
+    },
+    less: {
+      production: {
+        files: [{
+          expand: true,
+          cwd: "public/css",
+          src: ["*.less"],
+          dest: "public/css",
+          ext: ".css"
+        }]
+      }
+    },
+    bower: {
+      install: {
+        //just run 'grunt bower:install' and you'll see files from your Bower packages in lib directory
+        options: {
+          targetDir: './public/lib/',
+          layout: 'byComponent'
+        }
+      }
     }
   });
 
   grunt.loadNpmTasks('grunt-fh-build');
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-nodemon');
-  grunt.registerTask('serve', ['nodemon']);
+  grunt.loadNpmTasks('assemble-less');
+  grunt.loadNpmTasks('grunt-bower-task');
+  grunt.registerTask('serve', ['bower', 'less', 'nodemon']);
   grunt.registerTask('test', ['jshint', 'fh:unit']);
-  grunt.registerTask('default', 'test');
+  grunt.registerTask('default', ['bower', 'less', 'test']);
 };

@@ -1,0 +1,23 @@
+{
+  "name": "fh-api-mapper",
+  "version": "0.0.1",
+  "authors": [
+    "Lukas Fryc <lfryc@redhat.com>",
+    "Cian Clarke <ciclarke@redhat.com>"
+  ],
+  "description": "fh-api-mapper",
+  "private": true,
+  "dependencies": {
+    "bootstrap": "2.3.2",
+    "backbone": "1.2.3",
+    "handlebars": "3.0.3",
+    "underscore": "1.8.3"
+  },
+  "exportsOverride": {
+    "jquery": {},
+    "bootstrap": {
+      ".": "docs/assets/js/bootstrap.js",
+      "less": "less/*.less"
+    }
+  }
+}

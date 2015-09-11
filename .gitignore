@@ -27,3 +27,6 @@ fh-log
 *.iml
 *.swp
 integration-test.sh
+public/css/styles.css
+bower_components/
+public/lib/
