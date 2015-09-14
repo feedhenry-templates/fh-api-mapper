@@ -1,31 +1,35 @@
 <script id="tplNodejsRequest" type="text/x-handlebars-template">
-  <pre>
 var request = require('request');
 request({
-url: "{{url}}",
-method: "{{method}}",
-{{#if headers}}
-headers: {
-{{#each headers}}
-  "{{@key}}" : "{{@this}}"{{#unless @last}},{{/unless}}
-{{/each}}
-}{{#if data}},{{/if}}
-{{/if}}
-{{#if data}}
-data: '{{ escapeSingleQuotes data }}'
-{{/if}}
+  url: "{{url}}",
+  method: "{{method}}",
+  {{#if headers}}
+  headers: {
+  {{#each headers}}
+    "{{key}}" : "{{value}}"{{#unless @last}},{{/unless}}
+  {{/each}}
+  }{{#if data}},{{/if}}
+  {{/if}}
+  {{#if data}}
+  data: '{{ escapeSingleQuotes data }}'
+  {{/if}}
 }, function (error, response, body) {
-if (error) {
-return console.error('An error occured:', error);
-}
-console.log('Server responded with:', body);
+  if (error) {
+    return console.error('An error occured:', error);
+  }
+  console.log('Server responded with:', body);
 });
-</pre>
+</script>
 
 <script id="tplCurlRequest" type="text/x-handlebars-template">
-  <pre>
-curl -X {{method}}{{#if headers}}{{#each headers}} -H "{{@key}}:{{@this}}" {{/each}} {{/if}} {{#if data}}--data "{{escapeSingleQuotes data}}"{{/if}} {{url}} 
-  </pre>
+curl -X {{method}}{{#if headers}}{{#each headers}} -H "{{key}}:{{value}}" {{/each}} {{/if}} {{#if data}}--data "{{escapeSingleQuotes data}}"{{/if}} {{url}} 
+</script>
+
+<script id="tplRequestHeaders" type="text/x-handlebars-template">
+  {{#each headers}}
+    <dt>{{key}}</dt>
+    <dd>{{value}}</dd>
+  {{/each}}
 </script>
 
 <script id="tplResponseHeaders" type="text/x-handlebars-template">
@@ -72,6 +76,19 @@ curl -X {{method}}{{#if headers}}{{#each headers}} -H "{{@key}}:{{@this}}" {{/ea
           <h4 class="fh-secondary-header">Headers</h4>
 
           <ul class="unstyled">
+              <li>
+                <label class="input-medium">Content-Type</label>
+                <select class="input-medium" name="content-type">
+                  <option name="application/json">application/json</option>
+                  <option name="application/atom+xml">application/atom+xml</option>
+                  <option name="application/x-www-form-urlencoded">application/x-www-form-urlencoded</option>
+                  <option name="application/xml">application/xml</option>
+                  <option name="multipart/form-data">multipart/form-data</option>
+                  <option name="text/html">text/html</option>
+                  <option name="text/plain">text/plain</option>
+                </select>
+                
+              </li>
             {{#each model.headers}}
             <li class="headerRow">
               <input class="input-medium" name="headerKey{{@key}}" type="text" placeholder="Header Key" value="{{key}}">

@@ -9,7 +9,7 @@ App.BaseMapperView = Backbone.View.extend({
       className = 'info';
     }
     var notification = $(this.tplNotification({ message : message, className : className }));
-    this.$el.append(notification);
+    this.$el.prepend(notification);
     setTimeout(function(){
       notification.fadeOut({
         complete : function(){

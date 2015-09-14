@@ -27,9 +27,9 @@
               <td>{{url}}</td>
               <!--<td>May 12th, 2015</td>-->
               <td class="fh-request-list-actions">
-                <button class="btn btn-small" type="button"><i class="fa fa-pencil"></i> Edit</button>
-                <button class="btn btn-small" type="button"><i class="fa fa-trash-o fa-lg"></i> Delete</button>
-                <button class="btn btn-small" type="button"><i class="fa fa-download"></i> Export</button>
+                <a class="btn btn-small btn-edit" type="button"><i class="fa fa-pencil"></i> Edit</a>
+                <a class="btn btn-small btn-delete" type="button"><i class="fa fa-trash-o fa-lg"></i> Delete</a>
+                <a href="/api/requests/{{_id}}/export" class="btn btn-small btn-export" type="button"><i class="fa fa-download"></i> Export</a>
               </td>
             </tr>
             {{/each}}

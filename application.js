@@ -29,6 +29,8 @@ app.use(mbaasExpress.fhmiddleware());
 
 // fhlint-begin: custom-routes
 app.get('/', require('./lib/routes/frontend.js'));
+app.get('/requests', require('./lib/routes/frontend.js'));
+app.get('/requests/*', require('./lib/routes/frontend.js'));
 app.use('/try', require('./lib/routes/try.js')());
 app.use('/tester', require('./lib/routes/tester.js')());
 app.use('/api/requests', require('./lib/routes/requests.js')());

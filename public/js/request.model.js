@@ -19,6 +19,11 @@ App.RequestModel = Backbone.Model.extend({
       log.debug('done');
       var status = self.getStatusText( xhr );
       var requestHeaders = atob(xhr.getResponseHeader('x-try-headers'));
+      try{
+        requestHeaders = JSON.parse(requestHeaders);
+      }catch(err){
+        console.error("Error parsing request headers");
+      }
       var requestRaw = atob(xhr.getResponseHeader('x-try-payload') || btoa(''));
       var responseHeaders = self.getResponseHeaders(xhr);
       var responseBody;

@@ -14,13 +14,14 @@
 }
 
 
-.fh-secondary-header{
+.fh-secondary-header, .fh-secondary-header a, .fh-secondary-header a:hover {
   text-transform: uppercase;
   font-size: @fontSizeMini;
   background: @grayLight;
   color: @white;
   line-height: 25px;
   padding:  0 7px;
+  text-decoration: none;
 }
 
 .fh-request{
@@ -50,8 +51,12 @@
     }
     select{
       margin: 0;
-      width: 30%
+      width: 36%
     }
+  }
+  label { 
+    display: inline-block;
+    margin-right: 3%;
   }
 
   span{
@@ -91,4 +96,10 @@
 
 .fh-request-list-actions{
   text-align: right!important;
+}
+
+#rawRequestCollapsible > dl > {
+  dd.request-headers {
+    display: inline-block;
+  }
 }

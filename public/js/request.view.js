@@ -35,7 +35,7 @@ App.RequestView = App.BaseMapperView.extend({
     this.$el.html(this.tpl({
       model : model,
       isNew : this.model.isNew(),
-      hasBody : model.method !== 'GET'
+      hasBody : typeof model.method !== 'undefined' && model.method !== 'GET'
     }));
     
     this.$form = this.$el.find('form');
@@ -58,6 +58,12 @@ App.RequestView = App.BaseMapperView.extend({
     if (contentType){
       this.$contentType.find('option[name="' + contentType.value + '"]').attr('selected', true);
     }
+    
+    // Set up sample snippets
+    var $tplNodejsRequest = Handlebars.compile($('#tplNodejsRequest').html());
+    this.$sampleNodejs.html($tplNodejsRequest(this.model.toJSON()));
+    var $tplCurlRequest = Handlebars.compile($('#tplCurlRequest').html());
+    this.$sampleCurl.html($tplCurlRequest(this.model.toJSON()));
     
   },
   back : function(){
@@ -89,7 +95,7 @@ App.RequestView = App.BaseMapperView.extend({
     });
     // This particular header gets treated as a separate input field, but 
     // our data schema serverside just treats it as any other header
-    mappedValues.headers.push({ key : 'content-type', val : this.$contentType.val() });
+    mappedValues.headers.push({ key : 'content-type', value : this.$contentType.val() });
     return mappedValues;
   },
   inputChanged : function(){
@@ -145,16 +151,14 @@ App.RequestView = App.BaseMapperView.extend({
     this.$form.addClass('request-pending').removeClass('request-failed');
     this.$sampleNodejs.val('');
     
-    // Set up sample snippets
-    var $tplNodejsRequest = Handlebars.compile($('#tplNodejsRequest').html());
-    this.$sampleNodejs.html($tplNodejsRequest(this.model.toJSON()));
-    var $tplCurlRequest = Handlebars.compile($('#tplCurlRequest').html());
-    this.$sampleCurl.html($tplCurlRequest(this.model.toJSON()));
+    
   },
   onRequestSuccess : function(status, requestHeaders, requestRaw, responseHeaders, responseBody){
     this.$form.removeClass('request-pending');
     this.$status.text(status);
-    this.$requestHeaders.html( requestHeaders.replace(/\n/g, '<br />') );
+    
+    var $requestHeadersTpl = Handlebars.compile($('#tplRequestHeaders').html());
+    this.$requestHeaders.html( $requestHeadersTpl({ headers : requestHeaders}) );
     this.$requestRaw.text( requestRaw );
     
     var $responseHeadersTpl = Handlebars.compile($('#tplResponseHeaders').html());
