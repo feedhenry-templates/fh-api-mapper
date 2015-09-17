@@ -47,6 +47,7 @@ App.RequestView = App.BaseMapperView.extend({
     this.$requestRaw = this.$el.find('.request-raw');
     this.$responseHeaders = this.$el.find('.response-headers');
     this.$responseRaw = this.$el.find('.response-raw');
+    this.$responseBody = this.$el.find('.response-body');
     this.$status = this.$el.find('.status');
     this.$sampleNodejs = this.$el.find('#sample-nodejs');
     this.$sampleCurl = this.$el.find('#sample-curl');
@@ -153,17 +154,17 @@ App.RequestView = App.BaseMapperView.extend({
     
     
   },
-  onRequestSuccess : function(status, requestHeaders, requestRaw, responseHeaders, responseBody){
+  onRequestSuccess : function(data){
     this.$form.removeClass('request-pending');
-    this.$status.text(status);
-    
-    var $requestHeadersTpl = Handlebars.compile($('#tplRequestHeaders').html());
-    this.$requestHeaders.html( $requestHeadersTpl({ headers : requestHeaders}) );
-    this.$requestRaw.text( requestRaw );
-    
-    var $responseHeadersTpl = Handlebars.compile($('#tplResponseHeaders').html());
-    this.$responseHeaders.html($responseHeadersTpl({ headers : responseHeaders }));
-    this.$responseRaw.text( responseBody );
+    var request = data.request,
+    response = data.response,
+    $tplHeaders = Handlebars.compile($('#tplHeaders').html());
+    this.$status.text(response.statusCode);
+    this.$requestHeaders.html( $tplHeaders({ headers : request.headers}) );
+    this.$responseHeaders.html($tplHeaders({ headers : response.headers }));
+    this.$requestRaw.text( request.raw );
+    this.$responseRaw.text( response.raw );
+    this.$responseBody.text(response.body);
   },
   onRequestFailed : function(status, responseRaw){
     this.$status.text(status);

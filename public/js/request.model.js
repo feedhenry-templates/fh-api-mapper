@@ -5,34 +5,16 @@ App.RequestModel = Backbone.Model.extend({
   idAttribute : '_id',
   execute : function(){
     this.trigger('trying');
-    var self = this,
-    method = this.get('method'),
-    headers = this.get('headers'),
-    data = this.get('data'),
-    url = this.get('url');
+    var self = this;
+    
     $.ajax({
-      method: method,
       url: '/try',
-      headers: $.extend( {}, headers, this.getOverrideHeaders( url ) ),
-      data: method === 'GET' ? undefined : data
-    }).done(function( data, textStatus, xhr ) {
+      method: 'post',
+      data: JSON.stringify(this.toJSON()),
+      contentType: "application/json"
+    }).done(function( data ) {
       log.debug('done');
-      var status = self.getStatusText( xhr );
-      var requestHeaders = atob(xhr.getResponseHeader('x-try-headers'));
-      try{
-        requestHeaders = JSON.parse(requestHeaders);
-      }catch(err){
-        console.error("Error parsing request headers");
-      }
-      var requestRaw = atob(xhr.getResponseHeader('x-try-payload') || btoa(''));
-      var responseHeaders = self.getResponseHeaders(xhr);
-      var responseBody;
-      if ( xhr.responseJSON ) {
-        responseBody = JSON.stringify( xhr.responseJSON, null, '  ');
-      } else {
-        responseBody = xhr.responseText;
-      }
-      self.trigger('success', status, requestHeaders, requestRaw, responseHeaders, responseBody);
+      self.trigger('success', data);
     }).fail(function( xhr, textStatus ) {
       log.error('fail');
       log.error( textStatus );
