@@ -49,7 +49,7 @@ App.RequestsListView = App.BaseMapperView.extend({
       self.requestView.remove();
       self.collection.fetch();
       self.render();
-      window.history.back();
+      window.history.pushState('', "Request List", "/");
     });
     this.requestView.render();
     this.$el.html(this.requestView.$el);

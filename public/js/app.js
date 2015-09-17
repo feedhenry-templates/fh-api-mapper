@@ -10,8 +10,16 @@ $(function(){
   // Always have requestsListView as the bottom view in the stack
   var listView = new App.RequestsListView().render();
   
-  if (!path || !id || id.length !== 24){
+  if (!path || !id){
     return;
+  }
+  
+  if (id === 'new'){
+    // Show create new page
+    return listView.listenToOnce(listView.collection, 'sync', function(){
+      // Only show create new page once the list collection has loaded - prevent double render
+      return listView.showRequestView(new App.RequestModel());
+    });
   }
   
   model = new App.RequestModel({ _id : id });
@@ -19,7 +27,7 @@ $(function(){
     success : function(){ 
       listView.showRequestView(model);
     },
-    failure : function(){
+    error : function(){
       listView.notify('failure', 'Failed to load request with id ' + id);
     } 
   });

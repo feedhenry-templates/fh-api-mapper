@@ -8,7 +8,7 @@ module.exports = function(grunt) {
       dev: {
         script: 'application.js',
         options: {
-          ignore: ['public/**'],
+          ignore: ['public/**', 'public/lib/**', 'node_modules'],
           ext: 'js,html',
           env: {
             FH_PORT: 8001,
