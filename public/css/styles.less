@@ -1,4 +1,6 @@
 @import "../lib/bootstrap/less/bootstrap.less";
+@import "../lib/font-awesome/less/font-awesome.less";
+@fa-font-path: "/lib/font-awesome/fonts";
 
 #grid {
   .core  {
@@ -102,4 +104,12 @@
   dd.request-headers {
     display: inline-block;
   }
+}
+
+a.toggleable.collapsed i.fa:before {
+  content: @fa-var-chevron-right;
+}
+
+a.toggleable i.fa:before {
+  content : @fa-var-chevron-down;
 }
