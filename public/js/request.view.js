@@ -97,6 +97,9 @@ App.RequestView = App.BaseMapperView.extend({
     // This particular header gets treated as a separate input field, but 
     // our data schema serverside just treats it as any other header
     mappedValues.headers.push({ key : 'content-type', value : this.$contentType.val() });
+    if (mappedValues.method === 'GET'){
+      mappedValues.body = null;
+    }
     return mappedValues;
   },
   inputChanged : function(){
