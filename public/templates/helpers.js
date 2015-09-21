@@ -4,3 +4,5 @@ Handlebars.registerHelper('escapeSingleQuotes', function(data, options) {
 Handlebars.registerHelper('escapeDoubleQuotes', function(data, options) {
   return data.replace(/"/g, '\\"');
 });
+
+Handlebars.registerPartial('headerRow', $('#tplHeaderRow').html().toString());

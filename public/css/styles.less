@@ -55,6 +55,19 @@
       margin: 0;
       width: 36%
     }
+    .add-header {
+      display: none;
+    }
+  }
+  li.headerRow:last-of-type {
+    .add-header {
+      display: inline-block;
+    }
+  }
+  li.headerRow:only-of-type {
+    .remove-header {
+      display: none;
+    }
   }
   label { 
     display: inline-block;

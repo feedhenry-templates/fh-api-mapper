@@ -24,14 +24,6 @@ App.RequestView = App.BaseMapperView.extend({
   },
   render : function(){
     var model = this.model.toJSON();
-    model.headers = _.filter(model.headers, function(header){
-      return _.isString(header.key) && header.key.toLowerCase() !== 'content-type';
-    });
-    if (!model.headers || model.headers.length === 0){
-      // Always render an empty form field for headers
-      model.headers = [{key : '', value : ''}];
-    }
-    
     this.$el.html(this.tpl({
       model : model,
       isNew : this.model.isNew(),
@@ -41,7 +33,8 @@ App.RequestView = App.BaseMapperView.extend({
     this.$form = this.$el.find('form');
     this.$url = this.$el.find('input[name=url]');
     this.$method = this.$el.find('select[name=method]');
-    this.$contentType = this.$el.find('select[name=content-type]');
+    
+    this.$editableHeaders = this.$el.find('#editableHeaders');
     this.$data = this.$el.find('textarea[name=data]');
     this.$requestHeaders = this.$el.find('.request-headers');
     this.$requestRaw = this.$el.find('.request-raw');
@@ -51,21 +44,36 @@ App.RequestView = App.BaseMapperView.extend({
     this.$status = this.$el.find('.status');
     this.$sampleNodejs = this.$el.find('#sample-nodejs');
     this.$sampleCurl = this.$el.find('#sample-curl');
+    this.$tplNodejsRequest = Handlebars.compile($('#tplNodejsRequest').html());
+    this.$tplCurlRequest = Handlebars.compile($('#tplCurlRequest').html());
+    this.$tplEditableHeaders = Handlebars.compile($("#tplEditableHeaders").html());
+    this.$tplHeaderRow = Handlebars.compile($("#tplHeaderRow").html());
+    this.renderSnippets();
+    this.renderHeaders();
+  },
+  renderSnippets : function(){
+    // Set up sample snippets
+    this.$sampleNodejs.html(this.$tplNodejsRequest(this.model.toJSON()));
+    this.$sampleCurl.html(this.$tplCurlRequest(this.model.toJSON()));
+  },
+  renderHeaders : function(){
+    var model = this.model.toJSON();
+    model.headers = _.filter(model.headers, function(header){
+      return _.isString(header.key) && header.key.toLowerCase() !== 'content-type';
+    });
+    this.$editableHeaders.html(this.$tplEditableHeaders({ model : model, hasBody : typeof model.method !== 'undefined' && model.method !== 'GET' }));
+    this.$contentType = this.$el.find('select[name=content-type]');
+    if (!model.headers || model.headers.length === 0){
+      this.addHeaderField();
+    }
     
     // Set the values for selects which we can't do in handlebars
     this.$method.val(this.model.get('method'));
-    // TODO: Fix this
+    
     var contentType = _.findWhere(this.model.get('headers'), { key : 'content-type' });
-    if (contentType){
+    if (model.type !== 'GET' && contentType){
       this.$contentType.find('option[name="' + contentType.value + '"]').attr('selected', true);
     }
-    
-    // Set up sample snippets
-    var $tplNodejsRequest = Handlebars.compile($('#tplNodejsRequest').html());
-    this.$sampleNodejs.html($tplNodejsRequest(this.model.toJSON()));
-    var $tplCurlRequest = Handlebars.compile($('#tplCurlRequest').html());
-    this.$sampleCurl.html($tplCurlRequest(this.model.toJSON()));
-    
   },
   back : function(){
     this.trigger('back');
@@ -76,31 +84,35 @@ App.RequestView = App.BaseMapperView.extend({
     mappedValues = {
       headers : []
     };
+    // Map headers
+    this.$el.find('.headerRow').each(function(){
+      var key = $(this).find('input:first-of-type').val(),
+      value = $(this).find('input:last-of-type').val();
+      if (_.isEmpty(key)){
+        return;
+      }
+      mappedValues.headers.push({key : key, value : value});
+    });
+    
     vals = _.object(_.map(vals, _.values));
     _.each(vals, function(value, key){
-      if (key === 'content-type'){
+      if (key.match(/^headers/) || key === 'content-type'){
         return;
-      } else if (key.match(/^headerKey[0-9]+$/)){
-        var headerName = vals[key],
-        headerValue = vals[key.replace('Key', 'Value')];
-        if (headerName === ""){
-          return;
-        }
-        mappedValues.headers.push({ key : headerName, value : headerValue });
-      } else if (key.match(/^headerValue[0-9]+$/)){
-        // handled in above clause - continue
-        return;
-      }else{
-        mappedValues[key] = value;
       }
+      mappedValues[key] = value;
     });
-    // This particular header gets treated as a separate input field, but 
-    // our data schema serverside just treats it as any other header
-    mappedValues.headers.push({ key : 'content-type', value : this.$contentType.val() });
-    return mappedValues;
+    if (mappedValues.method !== "GET"){
+      // This particular header gets treated as a separate input field, but 
+      // our data schema serverside just treats it as any other header
+      mappedValues.headers.push({ key : 'content-type', value : this.$contentType.val() });
+    }else{
+      mappedValues.body = null;
+    }
+    return mappedValues;  
   },
   inputChanged : function(){
     this.model.set(this.getFormValuesAsJSON());
+    this.renderSnippets();
   },
   saveRequest : function(){
     var self = this,
@@ -192,17 +204,17 @@ App.RequestView = App.BaseMapperView.extend({
     });
   },
   addHeaderField : function(){
-    var headers = this.model.get('headers');
-    headers.push({ key : '', value : '' });
-    this.model.set('headers', headers);
-    this.render();
+    var header = this.$tplHeaderRow({ key : "", value : "" });
+    this.$el.find('#editableHeaders ul').append(header);
     return false;
   },
   removeHeaderField : function(e){
     var el = $(e.target),
     headerRow = el.parents('.headerRow');
     headerRow.remove();
-    this.model.set(this.getFormValuesAsJSON());
+    if (!this.model.get('headers') || this.model.get('headers').length === 0){
+      this.addHeaderField();
+    }
     return false;
   }
 });

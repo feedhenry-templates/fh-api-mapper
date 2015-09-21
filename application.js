@@ -1,8 +1,9 @@
 var mbaasApi = require('fh-mbaas-api');
 var express = require('express');
 var mbaasExpress = mbaasApi.mbaasExpress();
+var cors = require('cors');
 require('./lib/db.js')();
-//var cors = require('cors');
+
 
 // list the endpoints which you want to make securable here
 var securableEndpoints;
@@ -12,8 +13,7 @@ securableEndpoints = [];
 
 var app = express();
 
-// TODO: Cors is disabled as of now, since it prevents /try route to proxy simply (see #3)
-//app.use(cors());
+app.use(cors());
 app.engine('html', require('ejs').renderFile);
 
 

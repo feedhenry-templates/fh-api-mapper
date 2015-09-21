@@ -32,6 +32,41 @@ curl -X {{method}}{{#if headers}}{{#each headers}} -H "{{key}}:{{value}}" {{/eac
   {{/each}}
 </script>
 
+<script id="tplHeaderRow" type="text/x-handlebars-template">
+  <li class="headerRow">
+    <input class="input-medium" name="headers.key" type="text" placeholder="Header Key" value="{{key}}">
+    <input class="input-medium" name="headers.value" type="text" placeholder="Header Value" value="{{value}}">
+    <span>
+      <!--<a href="#" class="reorder"><i class="fa fa-bars fa-lg"></i></a>-->
+      <a class="add-header" href="#"><i class="fa fa-plus"></i></a>
+      <a class="remove-header" href="#"><i class="fa fa-trash-o fa-lg"></i></a>
+    </span>
+  </li>
+</script>
+
+<script id="tplEditableHeaders" type="text/x-handlebars-template">
+  <ul class="unstyled">
+      {{#if hasBody}}
+      <li>
+        <label class="input-medium">Content-Type</label>
+        <select class="input-medium" name="content-type">
+          <option name="application/json">application/json</option>
+          <option name="application/atom+xml">application/atom+xml</option>
+          <option name="application/x-www-form-urlencoded">application/x-www-form-urlencoded</option>
+          <option name="application/xml">application/xml</option>
+          <option name="multipart/form-data">multipart/form-data</option>
+          <option name="text/html">text/html</option>
+          <option name="text/plain">text/plain</option>
+        </select>
+        
+      </li>
+      {{/if}}
+    {{#each model.headers}}
+      {{> headerRow }}
+    {{/each}}
+  </ul>
+</script>
+
 <script id="tplCreateEditRequestView" type="text/x-handlebars-template">
 
   <section class="fh-request">
@@ -68,33 +103,8 @@ curl -X {{method}}{{#if headers}}{{#each headers}} -H "{{key}}:{{value}}" {{/eac
       <div class="row">
         <div class="span6 fh-request-headers">
           <h4 class="fh-secondary-header">Headers</h4>
-
-          <ul class="unstyled">
-              <li>
-                <label class="input-medium">Content-Type</label>
-                <select class="input-medium" name="content-type">
-                  <option name="application/json">application/json</option>
-                  <option name="application/atom+xml">application/atom+xml</option>
-                  <option name="application/x-www-form-urlencoded">application/x-www-form-urlencoded</option>
-                  <option name="application/xml">application/xml</option>
-                  <option name="multipart/form-data">multipart/form-data</option>
-                  <option name="text/html">text/html</option>
-                  <option name="text/plain">text/plain</option>
-                </select>
-                
-              </li>
-            {{#each model.headers}}
-            <li class="headerRow">
-              <input class="input-medium" name="headerKey{{@key}}" type="text" placeholder="Header Key" value="{{key}}">
-              <input class="input-medium" name="headerValue{{@key}}" type="text" placeholder="Header Value" value="{{value}}">
-              <span>
-                <!--<a href="#" class="reorder"><i class="fa fa-bars fa-lg"></i></a>-->
-                {{#if @last}}<a href="#"><i class="fa fa-plus add-header"></i></a>{{/if}}
-                <a href="#"><i class="fa fa-trash-o fa-lg remove-header"></i></a>
-              </span>
-            </li>
-            {{/each}}
-          </ul>
+          <div id="editableHeaders"></div>
+          
         </div>
         {{#if hasBody}}
         <div class="span6 fh-request-body">
