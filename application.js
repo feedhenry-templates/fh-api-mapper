@@ -1,6 +1,7 @@
 var mbaasApi = require('fh-mbaas-api');
 var express = require('express');
 var mbaasExpress = mbaasApi.mbaasExpress();
+var lessMiddleware = require('less-middleware');
 var cors = require('cors');
 require('./lib/db.js')();
 
@@ -21,8 +22,9 @@ app.engine('html', require('ejs').renderFile);
 app.use('/sys', mbaasExpress.sys(securableEndpoints));
 app.use('/mbaas', mbaasExpress.mbaas);
 
-// allow serving of static files from the public directory
+app.use(lessMiddleware(__dirname + '/public'));
 app.use(express['static'](__dirname + '/public'));
+
 
 // Note: important that this is added just before your own Routes
 app.use(mbaasExpress.fhmiddleware());
