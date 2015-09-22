@@ -31,9 +31,8 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-fh-build');
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-nodemon');
-  grunt.loadNpmTasks('assemble-less');
   grunt.loadNpmTasks('grunt-bower-task');
   grunt.registerTask('serve', ['bower', 'nodemon']);
   grunt.registerTask('test', ['jshint', 'fh:unit']);
-  grunt.registerTask('default', ['bower', 'less', 'test']);
+  grunt.registerTask('default', ['bower', 'test']);
 };

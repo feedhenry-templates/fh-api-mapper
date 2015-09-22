@@ -45,7 +45,7 @@ curl -X {{method}}{{#if headers}}{{#each headers}} -H "{{key}}:{{value}}" {{/eac
 </script>
 
 <script id="tplEditableHeaders" type="text/x-handlebars-template">
-  <ul class="unstyled">
+  <ul class="unstyled {{#if hasBody}}hasContentType{{/if}}">
       {{#if hasBody}}
       <li>
         <label class="input-medium">Content-Type</label>

@@ -64,6 +64,13 @@
       display: inline-block;
     }
   }
+  /* In rows with a content type, the headerRow is the 2nd of type,
+  where content-type li is 1st of type. */
+  ul.hasContentType li.headerRow:nth-of-type(2){
+    .remove-header {
+      display: none;
+    }
+  }
   li.headerRow:only-of-type {
     .remove-header {
       display: none;
