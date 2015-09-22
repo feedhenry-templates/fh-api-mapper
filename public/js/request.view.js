@@ -212,7 +212,7 @@ App.RequestView = App.BaseMapperView.extend({
     var el = $(e.target),
     headerRow = el.parents('.headerRow');
     headerRow.remove();
-    if (!this.model.get('headers') || this.model.get('headers').length === 0){
+    if (this.$el.find('#editableHeaders ul li.headerRow').size() === 0){
       this.addHeaderField();
     }
     return false;

@@ -23,11 +23,6 @@ App.RequestModel = Backbone.Model.extend({
       self.trigger('fail', status, rawResponse);
     });
   },
-  getOverrideHeaders : function( url ) {
-    return {
-      'x-request-url': url
-    };
-  },
   getStatusText : function( xhr ) {
     return xhr.status + ' ' + xhr.statusText;
   },
@@ -39,23 +34,5 @@ App.RequestModel = Backbone.Model.extend({
       return xhr.responseText;
     }
     return textStatus;
-  },
-  getResponseHeaders : function(xhr){
-    var responseHeaders = xhr.getAllResponseHeaders();
-    responseHeaders = responseHeaders.split('\n');
-    responseHeaders = _.map(responseHeaders, function(header){
-      // Filter out our internal headers
-      if (/^x-try-/.test(header)){
-        return;
-      }
-      // use a regex over string because omitting global flag only matches first :
-      header = header.split(/:/);
-      if (header.length !== 2){
-        return;
-      }
-      return {name : header[0], value : header[1]};
-    });
-    responseHeaders = _.reject(responseHeaders, _.isEmpty);
-    return responseHeaders;
   }
 });
