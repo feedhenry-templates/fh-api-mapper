@@ -2,6 +2,11 @@
 @import "../lib/font-awesome/less/font-awesome.less";
 @fa-font-path: "/lib/font-awesome/fonts";
 
+
+// body{
+//   background: red;
+// }
+
 #grid {
   .core  {
     .span(@gridColumns) {
@@ -10,13 +15,17 @@
   }
 };
 
+.input-medium{
+  width: 40%;
+}
+
 .fh-request-breadcrumb{
   //  background: red;
-  margin: 20px 0;
+  margin: 20px 0 10px 0;
 }
 
 
-.fh-secondary-header, .fh-secondary-header a, .fh-secondary-header a:hover {
+.fh-secondary-header {
   text-transform: uppercase;
   font-size: @fontSizeMini;
   background: @grayLight;
@@ -24,6 +33,16 @@
   line-height: 25px;
   padding:  0 7px;
   text-decoration: none;
+  margin: 0 0 10px 0;
+  a{
+    color: @white;
+    text-decoration: none!important;
+  }
+  i{
+//    background: red;
+    width: 12px;
+    margin: 0;
+  }
 }
 
 .fh-request{

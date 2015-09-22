@@ -82,19 +82,17 @@ curl -X {{method}}{{#if headers}}{{#each headers}} -H "{{key}}:{{value}}" {{/eac
             <li class="active">{{#if isNew}}New{{else}}Edit{{/if}} Request</li>
           </ul>
 
-          <div class="input-prepend input-append fh-request-input">
-            <div class="btn-group">
-              <select name="method" class="span2">
-                <option>GET</option>
-                <option>POST</option>
-                <option>PUT</option>
-                <option>PATCH</option>
-                <option>DELETE</option>
-                <option>HEAD</option>
-                <option>OPTIONS</option>
-              </select>
-            </div>
-            <input name="url" value="{{model.url}}" class="span9" id="appendedPrependedDropdownButton" type="text" placeholder="Enter Request URL here">
+          <div class="input-append fh-request-input">
+            <select name="method" class="span2">
+              <option>GET</option>
+              <option>POST</option>
+              <option>PUT</option>
+              <option>PATCH</option>
+              <option>DELETE</option>
+              <option>HEAD</option>
+              <option>OPTIONS</option>
+            </select>
+            <input name="url" value="{{model.url}}" class="span8" id="appendedPrependedDropdownButton" type="text" placeholder="Enter Request URL here">
             <button class="btn btn-primary" type="submit">Send Request</button>
           </div>
         </div>
@@ -145,13 +143,11 @@ curl -X {{method}}{{#if headers}}{{#each headers}} -H "{{key}}:{{value}}" {{/eac
 
           <div class="row">
             <div class="span6">
-
               <dl class="dl-horizontal response-headers"></dl>
             </div>
           </div>
 
           <h4  class="fh-secondary-header">Response Body</h4>
-
           <!-- We want to add Syntax highlighting here -->
           <pre class="pre-scrollable response-body"></pre>
 
