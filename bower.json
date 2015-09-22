@@ -12,10 +12,13 @@
     "backbone": "1.2.3",
     "handlebars": "3.0.3",
     "underscore": "1.8.3",
-    "font-awesome" : "4.4.0"
+    "font-awesome" : "4.4.0",
+    "jquery" : "2.1.4"
   },
   "exportsOverride": {
-    "jquery": {},
+    "jquery": {
+      "js" : "jquery.min.js"
+    },
     "bootstrap": {
       ".": "docs/assets/js/bootstrap.js",
       "less": "less/*.less"
