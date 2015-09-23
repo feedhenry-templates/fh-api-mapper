@@ -114,7 +114,6 @@ curl -X {{method}}{{#if headers}}{{#each headers}} -H "{{key}}:{{value}}" {{/eac
 
       <div class="row">
         <div class="span12">
-          <!-- //TODO: use `fa-chevron-right` when its close -->
           <h4 class="fh-secondary-header"><a class="toggleable collapsed" data-toggle="collapse" href="#reqHeadersCollapsible"><i class="fa fa-chevron-down"></i> Request Headers</a></h4>
           <div id="reqHeadersCollapsible" class="dl-horizontal collapse">
             <div class="request-headers">Try a request to see the headers</div>
@@ -151,13 +150,13 @@ curl -X {{method}}{{#if headers}}{{#each headers}} -H "{{key}}:{{value}}" {{/eac
           <!-- We want to add Syntax highlighting here -->
           <pre class="pre-scrollable response-body"></pre>
 
-          <h4 class="fh-secondary-header"><a class="collapsed" data-toggle="collapse" href="#rawResponse"><i class="fa fa-chevron-down"></i> Raw Response</a></h4>
+          <h4 class="fh-secondary-header"><a class="toggleable collapsed" data-toggle="collapse" href="#rawResponse"><i class="fa fa-chevron-down"></i> Raw Response</a></h4>
 
           <div id="rawResponse" class="collapse">
             <pre class="response-raw">Send a request to see the raw response</pre>
           </div>
 
-          <h4 class="fh-secondary-header"><a class="collapsed" data-toggle="collapse" href="#sampleCodeCollapsible"><i class="fa fa-chevron-down"></i> Sample code</a></h4>
+          <h4 class="fh-secondary-header"><a class="toggleable collapsed" data-toggle="collapse" href="#sampleCodeCollapsible"><i class="fa fa-chevron-down"></i> Sample code</a></h4>
 
           <div id="sampleCodeCollapsible" class="collapse">
             <h5>Node.js Request</h5>
