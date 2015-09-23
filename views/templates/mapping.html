@@ -1,0 +1,28 @@
+<script id="tplMappingView" type="text/x-handlebars-template">
+  <div id="fieldMappings">
+  </div>
+</script>
+
+<script id="tplFieldMappings" type="text/x-handlebars-template">
+  <table class="table table-hover span12">
+    <thead>
+      <tr>
+        <th>Use?</th>
+        <th>Original Name</th>
+        <th>New Name</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each fields}}
+        <tr>
+          <td><input class="input-medium" type="checkbox" name="included" checked></td>
+          <td>{{ this }}
+          <td><input class="input-medium" name="to" type="text" placeholder="Rename field to"></td>
+          <td><span>
+          </span></td>
+        </tr>    
+      {{/each}}
+    </tbody>
+  </ul>
+</script>

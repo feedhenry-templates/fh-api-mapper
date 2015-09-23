@@ -37,9 +37,8 @@ curl -X {{method}}{{#if headers}}{{#each headers}} -H "{{key}}:{{value}}" {{/eac
     <input class="input-medium" name="headers.key" type="text" placeholder="Header Key" value="{{key}}">
     <input class="input-medium" name="headers.value" type="text" placeholder="Header Value" value="{{value}}">
     <span>
-      <!--<a href="#" class="reorder"><i class="fa fa-bars fa-lg"></i></a>-->
-      <a class="add-header" href="#"><i class="fa fa-plus"></i></a>
-      <a class="remove-header" href="#"><i class="fa fa-trash-o fa-lg"></i></a>
+      <a class="add-header" href="#">{{fa "fa-plus"}}</a>
+      <a class="remove-header" href="#">{{fa "fa-trash-o fa-lg"}}</a>
     </span>
   </li>
 </script>
@@ -67,6 +66,24 @@ curl -X {{method}}{{#if headers}}{{#each headers}} -H "{{key}}:{{value}}" {{/eac
   </ul>
 </script>
 
+<script id="tplRequestMappingContainer" type="text/x-handebars-template">
+  <div class="container {{#unless model.mapping}}unmapped{{/unless}}">
+    <div class="row">
+      <div class="span12">
+        {{fa "fa-map-signs pull-left"}}
+        {{fa "fa-map-signs pull-right"}}
+        {{#unless model.mapping}}
+          <a href="#" class="btn-add-mapping"> Add Mapping {{fa "fa-plus"}}</a>
+        {{else}}
+          <h4 class="fh-secondary-header">Response Mapping</h4>
+        {{/unless}}
+
+        <div id="mappingView"></div>
+      </div>
+    </div>
+  </div>
+</script>
+
 <script id="tplCreateEditRequestView" type="text/x-handlebars-template">
 
   <section class="fh-request">
@@ -74,8 +91,6 @@ curl -X {{method}}{{#if headers}}{{#each headers}} -H "{{key}}:{{value}}" {{/eac
 
       <div class="row">
         <div class="span12">
-
-          <!--<a id="backButton" class="btn btn-back"><i class="icon icon-arrow-left pull-left"></i>Back</a>-->
 
           <ul class="breadcrumb fh-request-breadcrumb">
             <li><a href="#" class="btn-back">Home</a> <span class="divider">/</span></li>
@@ -110,12 +125,12 @@ curl -X {{method}}{{#if headers}}{{#each headers}} -H "{{key}}:{{value}}" {{/eac
 
       <div class="row">
         <div class="span12">
-          <h4 class="fh-secondary-header"><a class="toggleable collapsed" data-toggle="collapse" href="#reqHeadersCollapsible"><i class="fa fa-chevron-down"></i> Request Headers</a></h4>
+          <h4 class="fh-secondary-header"><a class="toggleable collapsed" data-toggle="collapse" href="#reqHeadersCollapsible">{{fa "fa-chevron-down"}} Request Headers</a></h4>
           <div id="reqHeadersCollapsible" class="dl-horizontal collapse">
             <div class="request-headers">Try a request to see the headers</div>
           </div>
           
-          <h4 class="fh-secondary-header"><a class="toggleable collapsed" data-toggle="collapse" href="#rawRequestCollapsible"><i class="fa fa-chevron-down"></i> Raw Request</a></h4>
+          <h4 class="fh-secondary-header"><a class="toggleable collapsed" data-toggle="collapse" href="#rawRequestCollapsible">{{fa "fa-chevron-down"}} Raw Request</a></h4>
           <div id="rawRequestCollapsible" class="dl-horizontal collapse">
             <pre class="request-raw">Try a request to see it's raw body</pre>
           </div>
@@ -124,6 +139,10 @@ curl -X {{method}}{{#if headers}}{{#each headers}} -H "{{key}}:{{value}}" {{/eac
       </div><!-- row -->
     </form><!-- container -->
   </section><!-- fh-request -->
+  
+  <section class="fh-mapping">
+    
+  </section>
 
 
   <section class="loader">
@@ -156,13 +175,13 @@ curl -X {{method}}{{#if headers}}{{#each headers}} -H "{{key}}:{{value}}" {{/eac
           <!-- We want to add Syntax highlighting here -->
           <pre class="pre-scrollable response-body"></pre>
 
-          <h4 class="fh-secondary-header"><a class="toggleable collapsed" data-toggle="collapse" href="#rawResponse"><i class="fa fa-chevron-down"></i> Raw Response</a></h4>
+          <h4 class="fh-secondary-header"><a class="toggleable collapsed" data-toggle="collapse" href="#rawResponse">{{fa "fa-chevron-down"}} Raw Response</a></h4>
 
           <div id="rawResponse" class="collapse">
             <pre class="response-raw">Send a request to see the raw response</pre>
           </div>
 
-          <h4 class="fh-secondary-header"><a class="toggleable collapsed" data-toggle="collapse" href="#sampleCodeCollapsible"><i class="fa fa-chevron-down"></i> Sample code</a></h4>
+          <h4 class="fh-secondary-header"><a class="toggleable collapsed" data-toggle="collapse" href="#sampleCodeCollapsible">{{fa "fa-chevron-down"}} Sample code</a></h4>
 
           <div id="sampleCodeCollapsible" class="collapse">
             <h5>Node.js Request</h5>
