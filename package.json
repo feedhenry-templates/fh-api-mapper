@@ -1,6 +1,6 @@
 {
   "name": "fh-api-mapper",
-  "version": "1.0.0-rc.1",
+  "version": "1.0.0",
   "dependencies": {
     "body-parser": "1.13.3",
     "cors": "2.7.1",
