@@ -10,18 +10,20 @@
         <th>Use?</th>
         <th>Original Name</th>
         <th>New Name</th>
-        <th></th>
+        <th>Field Type</th>
+        <th>Field Value</th>
       </tr>
     </thead>
     <tbody>
       {{#each fields}}
         <tr>
           <td><input class="input-medium" type="checkbox" name="included" checked></td>
-          <td>{{ this }}
+          <td>{{ from }}
           <td><input class="input-medium" name="to" type="text" placeholder="Rename field to"></td>
-          <td><span>
-          </span></td>
-        </tr>    
+          <td>{{ type }}</td>
+          <td>{{ value }}</td>
+        </tr>
+        {{renderSubMapping type value from }}
       {{/each}}
     </tbody>
   </ul>

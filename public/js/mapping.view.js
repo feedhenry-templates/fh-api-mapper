@@ -32,7 +32,15 @@ App.MappingView = App.BaseMapperView.extend({
       if (!body || !_.isObject(body)){
         return self.$fieldMappings.html('Request must return JSON to perform a mapping');
       }
-      self.$fieldMappings.html(self.$tplFieldMappings({ fields : _.keys(body) }));
+      var fields = [];
+      _.each(body, function(value, key){
+        fields.push({
+          value : value,
+          type : _.isArray(value) ? 'array' : typeof value,
+          from : key
+        });
+      });
+      self.$fieldMappings.html(self.$tplFieldMappings({ fields : fields }));
     });
   }
 });
