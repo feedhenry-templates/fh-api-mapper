@@ -161,13 +161,13 @@ App.RequestView = App.BaseMapperView.extend({
     this.$responseHeaders.val('');
     this.$responseRaw.text('');
     this.$status.text('In progress...');
-    this.$form.addClass('request-pending').removeClass('request-failed');
+    this.$el.addClass('request-pending').removeClass('request-done');
     this.$sampleNodejs.val('');
     
     
   },
   onRequestSuccess : function(data){
-    this.$form.removeClass('request-pending');
+    this.$el.removeClass('request-pending').addClass('request-done');
     var request = data.request,
     response = data.response,
     $tplHeaders = Handlebars.compile($('#tplHeaders').html());
@@ -181,7 +181,7 @@ App.RequestView = App.BaseMapperView.extend({
   onRequestFailed : function(status, responseRaw){
     this.$status.text(status);
     this.$responseRaw.text(responseRaw);
-    this.$form.addClass('request-failed').removeClass('request-pending');
+    this.$el.addClass('request-done').removeClass('request-pending');
   },
   parseHeaders : function( raw ) {
     var headers = {};

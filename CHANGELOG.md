@@ -1,5 +1,8 @@
 #Component: fh-api-mapper
 
+## 1.0.1 - 2015-09-25 - Cian Clarke
+* Hide response section until request completes.
+
 ## 1.0.0 - 2015-09-23 - Cian Clarke
 * Rest Client service. Bower deps checked in, bugs fixed. 
 
