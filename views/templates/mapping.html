@@ -11,20 +11,31 @@
         <th>Original Name</th>
         <th>New Name</th>
         <th>Field Type</th>
-        <th>Field Value</th>
+        <th>Transformation</th>
       </tr>
     </thead>
     <tbody>
-      {{#each fields}}
-        <tr>
-          <td><input class="input-medium" type="checkbox" name="included" checked></td>
-          <td>{{ from }}
-          <td><input class="input-medium" name="to" type="text" placeholder="Rename field to"></td>
-          <td>{{ type }}</td>
-          <td>{{ value }}</td>
-        </tr>
-        {{renderSubMapping type value from }}
+      {{#each model.fields}}
+        {{>mappingRow }}
       {{/each}}
     </tbody>
   </ul>
+</script>
+
+<script id="tplMappingRow" type="text/x-handlebars-template">
+  <tr>
+    <td><input class="input-medium" type="checkbox" name="included" checked></td>
+    <td>{{ from }}
+    <td><input class="input-medium" name="to" type="text" placeholder="Rename field to"></td>
+    <td>{{ type }}</td>
+    <td>
+      {{transformationsForField this ../../transformations}}
+    </td>
+  </tr>
+  {{#if fields.length}}
+    {{#each fields}}
+      {{>mappingRow this}}
+    {{/each}}
+  {{/if}}
+  
 </script>

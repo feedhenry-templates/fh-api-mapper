@@ -6,12 +6,11 @@ App.MappingView = App.BaseMapperView.extend({
   initialize : function(options){
     App.BaseMapperView.prototype.initialize.apply(this, arguments);
     this.tpl = Handlebars.compile($('#tplMappingView').html());
-    //TODO: Support existing
     this.model = options.model;
     this.request = options.request;
-    
-    // TODO: successfully tried events need to update this view
-    //this.listenTo(this.request, 'success', this.onRequestTried);
+    this.transformations = new App.TransformationsCollection();
+    this.transformations.fetch();
+    this.listenTo(this.transformations, 'sync', this.render);
   },
   render : function(){
     this.$el.html(this.tpl({
@@ -24,23 +23,10 @@ App.MappingView = App.BaseMapperView.extend({
   },
   renderFieldMappings : function(){
     var self = this;
-    this.request.getLastSuccess(function(err, data){
-      if (err){
-        return self.$fieldMappings.html('Request must complete successfully to perform a mapping');
-      }
-      var body = data.response.body;
-      if (!body || !_.isObject(body)){
-        return self.$fieldMappings.html('Request must return JSON to perform a mapping');
-      }
-      var fields = [];
-      _.each(body, function(value, key){
-        fields.push({
-          value : value,
-          type : _.isArray(value) ? 'array' : typeof value,
-          from : key
-        });
-      });
-      self.$fieldMappings.html(self.$tplFieldMappings({ fields : fields }));
-    });
+    if (this.transformations.length === 0){
+      return self.$fieldMappings.html('Loading...');
+    }
+    self.$fieldMappings.html(self.$tplFieldMappings({model : this.model.toJSON(), transformations : this.transformations.toJSON()}));
+    return;
   }
 });

@@ -14,12 +14,16 @@ App.RequestsListView = App.BaseMapperView.extend({
     this.listenTo(this.collection, 'destroy', this.render);
   },
   render : function(){
+    if (this.requestView){
+      return;
+    }
     var tpl = Handlebars.compile($('#tplRequestsList').html());
     this.$el.html(tpl({ requests : this.collection.toJSON() }));
     return this;
   },
   showSavedRequest : function(e){
-    var el = $(e.target),
+    var self = this,
+    el = $(e.target),
     id, model;
     if (e.target.tagName.toLowerCase() !== 'tr'){
       if (!el.hasClass('btn-edit')){
@@ -33,8 +37,15 @@ App.RequestsListView = App.BaseMapperView.extend({
     if (!model){
       return this.trigger('notify', 'error', 'Could not find request with id ' + id);
     }
-    window.history.pushState(id, "Edit Request", "/requests/" + id);
-    this.showRequestView(model);
+    model.fetch({
+      success : function(){
+        window.history.pushState(id, "Edit Request", "/requests/" + id);
+        self.showRequestView(model);    
+      },
+      error : function(){
+        self.trigger('notify', 'error', 'Could not load request details');
+      }
+    });
   },
   newRequest : function(){
     window.history.pushState("new", "New Request", "/requests/new");
@@ -47,6 +58,7 @@ App.RequestsListView = App.BaseMapperView.extend({
     });
     this.listenTo(this.requestView, 'back', function(){
       self.requestView.remove();
+      delete self.requestView;
       self.collection.fetch();
       self.render();
       window.history.pushState('', "Request List", "/");

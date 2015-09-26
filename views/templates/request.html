@@ -72,11 +72,11 @@ curl -X {{method}}{{#if headers}}{{#each headers}} -H "{{key}}:{{value}}" {{/eac
       <div class="span12">
         {{fa "fa-map-signs pull-left"}}
         {{fa "fa-map-signs pull-right"}}
-        {{#unless model.mapping}}
+        {{!#unless model.mapping}}
           <a href="#" class="btn-add-mapping"> Add Mapping {{fa "fa-plus"}}</a>
-        {{else}}
+        {{!else}}
           <h4 class="fh-secondary-header">Response Mapping</h4>
-        {{/unless}}
+        {{!/unless}}
 
         <div id="mappingView"></div>
       </div>

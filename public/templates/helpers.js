@@ -1,7 +1,7 @@
-Handlebars.registerHelper('escapeSingleQuotes', function(data, options) {
+Handlebars.registerHelper('escapeSingleQuotes', function(data) {
   return data.replace(/'/g, "\\'");
 });
-Handlebars.registerHelper('escapeDoubleQuotes', function(data, options) {
+Handlebars.registerHelper('escapeDoubleQuotes', function(data) {
   return data.replace(/"/g, '\\"');
 });
 
@@ -9,23 +9,23 @@ Handlebars.registerHelper('fa', function(icon){
   return new Handlebars.SafeString('<i class="fa ' + icon + '"></i>');
 });
 
-Handlebars.registerHelper('renderSubMapping', function(type, value, parent){
-  var html = '';
-  if (type === 'array'){
-    
+Handlebars.registerHelper('transformationsForField', function(field, transformations){
+  if (!transformations ){
+    // TODO: Figure this context passing bug
+    transformations = App.listView.requestView.mappingView.transformations.toJSON();
   }
-  if (type === 'object'){
-    _.each(value, function(value, key){
-      html += '<tr>';
-      html += '<td></td>';
-      html += '<td>'+ parent + '.' + key + '</td>';
-      html += '<td></td>';
-      html += '<td></td>';
-      html += '<td></td>';
-      html += '</tr>';
-    });
+  var relevantTransformations = _.where(transformations, {type : field.type});
+  if (!relevantTransformations.length){
+    return new Handlebars.SafeString('');
   }
-  return new Handlebars.SafeString(html);
+  var html = ['<select name="transformation">'];
+  _.each(relevantTransformations, function(t){
+    html.push('<option name="' + t.name + '">' + t.name + '</option>');
+  });
+  html.push('</select>');
+  return new Handlebars.SafeString(html.join('\n'));
 });
 
 Handlebars.registerPartial('headerRow', $('#tplHeaderRow').html().toString());
+
+Handlebars.registerPartial('mappingRow', $('#tplMappingRow').html());

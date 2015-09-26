@@ -87,7 +87,7 @@ App.RequestView = App.BaseMapperView.extend({
     if (!this.model.has('mapping')){
       return;
     }
-    this.renderMappingView();
+    this.renderMappingView(new App.MappingModel(this.model.get('mapping')));
   },
   back : function(){
     this.trigger('back');
@@ -238,11 +238,20 @@ App.RequestView = App.BaseMapperView.extend({
     return false;
   },
   addMapping : function(){
-    this.model.set('mapping', {});
-    this.renderMapping();
+    var self = this,
+    model = new App.MappingModel();
+    model.request = self.model;
+    model.save({
+      success : function(){
+        self.renderMappingView(model);    
+      },
+      error : function(){
+        self.trigger('notify', 'error', 'Error creating new mapping');
+      }
+    });
   },
-  renderMappingView : function(){
-    var model = new App.MappingModel(this.model.get('mapping'));
+  renderMappingView : function(model){
+    model.request = this.model;
     this.mappingView = new App.MappingView({
       request : this.model,
       // Will behave appropriate for both new and existing mapping models

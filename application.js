@@ -35,6 +35,7 @@ app.get('/requests', require('./lib/routes/frontend.js'));
 app.get('/requests/*', require('./lib/routes/frontend.js'));
 app.use('/try', require('./lib/routes/try.js')());
 app.use('/api/requests', require('./lib/routes/requests.js')());
+app.get('/api/transformations', require('./lib/routes/transformations.js'));
 // fhlint-end
 
 // Important that this is last!
