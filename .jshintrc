@@ -35,6 +35,10 @@
     "log" : true,
     "Backbone" : true,
     "Handlebars" : true,
-    "JSON" : true
+    "JSON" : true,
+    "describe" : true,
+    "it" : true,
+    "beforeEach" : true,
+    "assert" : true
   }   
 }

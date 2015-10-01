@@ -24,16 +24,19 @@ App.RequestView = App.BaseMapperView.extend({
   },
   render : function(){
     var model = this.model.toJSON();
+
+    this.methods = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS'];
+
     this.$el.html(this.tpl({
       model : model,
       isNew : this.model.isNew(),
-      hasBody : typeof model.method !== 'undefined' && model.method !== 'GET'
+      hasBody : typeof model.method !== 'undefined' && model.method !== 'GET',
+      methods : this.methods
     }));
     
     this.$form = this.$el.find('form');
     this.$url = this.$el.find('input[name=url]');
     this.$method = this.$el.find('select[name=method]');
-    
     this.$editableHeaders = this.$el.find('#editableHeaders');
     this.$data = this.$el.find('textarea[name=data]');
     this.$requestHeaders = this.$el.find('.request-headers');

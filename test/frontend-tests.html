@@ -1,0 +1,57 @@
+<html>
+<meta charset="utf-8">
+<head>
+  <title>Backbone.js Tests</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <link rel="stylesheet" href="../node_modules/mocha/mocha.css" />
+</head>
+<body>
+<% include ../views/templates/common.html %>
+<% include ../views/templates/common.html %>
+<% include ../views/templates/requests.html %>
+<% include ../views/templates/request.html %>
+
+<div id="mocha"></div>
+
+<!-- Test Fixtures. -->
+<div id="fixtures" style="display: none; visibility: hidden;"></div>
+
+<!-- JavaScript Test Libraries. -->
+<script src="../node_modules/mocha/mocha.js"></script>
+<script src="../node_modules/chai/chai.js"></script>
+
+<!-- JavaScript Core Libraries -->
+<script src="../public/lib/underscore/underscore.js"></script>
+<script src="../public/lib/jquery/js/jquery.min.js"></script>
+<script src="../public//lib/handlebars/handlebars.js"></script>
+<script src="../public/lib/backbone/backbone.js"></script>
+<script src="../public/lib/bootstrap/bootstrap.js"></script>
+
+<script src="../public/templates/helpers.js"></script>
+<script src="../public/js/app.js"></script>
+<script src="../public/js/logger.js"></script>
+<script src="../public/js/base.view.js"></script>
+<script src="../public/js/requests.view.js"></script>
+<script src="../public/js/request.view.js"></script>
+<script src="../public/js/request.model.js"></script>
+<script src="../public/js/requests.collection.js"></script>
+
+<!-- Set up Mocha and Chai -->
+<script>
+  var assert = chai.assert;
+  mocha.setup({
+    ui: "bdd",
+    bail: false
+  });
+
+  window.onload = function () {
+    (window.mochaPhantomJS || mocha).run();
+  };
+</script>
+
+<!-- Include our specs. -->
+<script src="frontend-tests/test-request.view.js"></script>
+
+</body>
+</html>

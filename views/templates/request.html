@@ -50,13 +50,13 @@ curl -X {{method}}{{#if headers}}{{#each headers}} -H "{{key}}:{{value}}" {{/eac
       <li>
         <label class="input-medium">Content-Type</label>
         <select class="input-medium" name="content-type">
-          <option name="application/json">application/json</option>
-          <option name="application/atom+xml">application/atom+xml</option>
-          <option name="application/x-www-form-urlencoded">application/x-www-form-urlencoded</option>
-          <option name="application/xml">application/xml</option>
-          <option name="multipart/form-data">multipart/form-data</option>
-          <option name="text/html">text/html</option>
-          <option name="text/plain">text/plain</option>
+          <option value="application/json">application/json</option>
+          <option value="application/atom+xml">application/atom+xml</option>
+          <option value="application/x-www-form-urlencoded">application/x-www-form-urlencoded</option>
+          <option value="application/xml">application/xml</option>
+          <option value="multipart/form-data">multipart/form-data</option>
+          <option value="text/html">text/html</option>
+          <option value="text/plain">text/plain</option>
         </select>
         
       </li>
@@ -84,13 +84,9 @@ curl -X {{method}}{{#if headers}}{{#each headers}} -H "{{key}}:{{value}}" {{/eac
 
           <div class="input-append fh-request-input">
             <select name="method" class="span2">
-              <option>GET</option>
-              <option>POST</option>
-              <option>PUT</option>
-              <option>PATCH</option>
-              <option>DELETE</option>
-              <option>HEAD</option>
-              <option>OPTIONS</option>
+              {{#each methods}}
+              <option>{{this}}</option>
+              {{/each}}
             </select>
             <input name="url" value="{{model.url}}" class="span8" id="appendedPrependedDropdownButton" type="text" placeholder="Enter Request URL here">
             <button class="btn btn-primary" type="submit">Send Request</button>
