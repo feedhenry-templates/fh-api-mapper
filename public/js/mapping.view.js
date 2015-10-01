@@ -1,7 +1,7 @@
 App.MappingView = App.BaseMapperView.extend({
   className: "mapping",
   events : {
-    
+    'click #removeMapping' : 'removeMapping'
   },
   initialize : function(options){
     App.BaseMapperView.prototype.initialize.apply(this, arguments);
@@ -28,5 +28,17 @@ App.MappingView = App.BaseMapperView.extend({
     }
     self.$fieldMappings.html(self.$tplFieldMappings({model : this.model.toJSON(), transformations : this.transformations.toJSON()}));
     return;
+  },
+  removeMapping : function(){
+    var self = this;
+    this.model.destroy({
+      success : function(){
+        self.trigger('removed');
+        self.remove();
+      },
+      error : function(){
+        self.trigger('notify', 'error', 'Error removing mapping from request');
+      }
+    });
   }
 });

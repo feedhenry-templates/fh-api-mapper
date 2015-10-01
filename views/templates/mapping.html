@@ -1,6 +1,7 @@
 <script id="tplMappingView" type="text/x-handlebars-template">
   <div id="fieldMappings">
   </div>
+  <a href="#" id="removeMapping" class="btn btn-danger">Remove Mapping from Request</a>
 </script>
 
 <script id="tplFieldMappings" type="text/x-handlebars-template">
@@ -19,7 +20,7 @@
         {{>mappingRow }}
       {{/each}}
     </tbody>
-  </ul>
+  </table>
 </script>
 
 <script id="tplMappingRow" type="text/x-handlebars-template">

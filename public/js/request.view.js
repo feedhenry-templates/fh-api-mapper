@@ -22,6 +22,8 @@ App.RequestView = App.BaseMapperView.extend({
     this.listenTo(this.model, 'success', this.onRequestSuccess);
     this.listenTo(this.model, 'fail', this.onRequestFailed);
     this.listenTo(this.model, 'trying', this.onRequestTrying);
+    this.listenTo(this.model, 'sync', this.render);
+    this.listenTo(this.model, 'change:mapping', this.renderMapping);
   },
   render : function(){
     var model = this.model.toJSON();
@@ -241,9 +243,9 @@ App.RequestView = App.BaseMapperView.extend({
     var self = this,
     model = new App.MappingModel();
     model.request = self.model;
-    model.save({
+    model.save({}, {
       success : function(){
-        self.renderMappingView(model);    
+        self.model.set('mapping', model.toJSON());
       },
       error : function(){
         self.trigger('notify', 'error', 'Error creating new mapping');
@@ -260,5 +262,8 @@ App.RequestView = App.BaseMapperView.extend({
     });
     this.mappingView.render();
     this.$mapping.find('#mappingView').html(this.mappingView.$el);
+    this.listenToOnce(this.mappingView, 'removed', function(){
+      this.model.fetch();
+    }, this);
   }
 });
