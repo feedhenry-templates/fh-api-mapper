@@ -8,7 +8,7 @@
   "description": "fh-api-mapper",
   "private": true,
   "dependencies": {
-    "bootstrap": "2.3.2",
+    "bootstrap": "3.3.4",
     "backbone": "1.2.3",
     "handlebars": "3.0.3",
     "underscore": "1.8.3",
@@ -20,8 +20,9 @@
       "js" : "jquery.min.js"
     },
     "bootstrap": {
-      ".": "docs/assets/js/bootstrap.js",
-      "less": "less/*.less"
+      ".": "dist/js/bootstrap.js",
+      "less": "less/*.less",
+      "less/mixins": "less/mixins/*.less"
     },
     "font-awesome": {
       "fonts": "fonts/*",
