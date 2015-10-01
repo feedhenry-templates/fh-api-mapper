@@ -2,7 +2,7 @@
     <section class="fh-request-list">
     <div class="container">
       <div class="row">
-        <div class="span12">
+        <div class="col-md-12">
 
           <ul class="breadcrumb fh-request-breadcrumb">
             <li class="active">Home</li>
@@ -27,9 +27,9 @@
               <td>{{url}}</td>
               <!--<td>May 12th, 2015</td>-->
               <td class="fh-request-list-actions">
-                <a class="btn btn-small btn-edit" type="button"><i class="fa fa-pencil"></i> Edit</a>
-                <a class="btn btn-small btn-delete" type="button"><i class="fa fa-trash-o fa-lg"></i> Delete</a>
-                <a href="/api/requests/{{_id}}/export" class="btn btn-small btn-export" type="button"><i class="fa fa-download"></i> Export</a>
+                <a class="btn btn-default btn-small btn-edit" type="button"><i class="fa fa-pencil"></i> Edit</a>
+                <a class="btn btn-default btn-small btn-delete" type="button"><i class="fa fa-trash-o fa-lg"></i> Delete</a>
+                <a href="/api/requests/{{_id}}/export" class="btn btn-default btn-small btn-export" type="button"><i class="fa fa-download"></i> Export</a>
               </td>
             </tr>
             {{/each}}

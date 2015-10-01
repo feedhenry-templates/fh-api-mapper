@@ -44,7 +44,7 @@ curl -X {{method}}{{#if headers}}{{#each headers}} -H "{{key}}:{{value}}" {{/eac
 </script>
 
 <script id="tplEditableHeaders" type="text/x-handlebars-template">
-  <ul class="unstyled {{#if hasBody}}hasContentType{{/if}}">
+  <ul class="list-unstyled {{#if hasBody}}hasContentType{{/if}}">
       {{#if hasBody}}
       <li>
         <label class="input-medium">Content-Type</label>
@@ -69,7 +69,7 @@ curl -X {{method}}{{#if headers}}{{#each headers}} -H "{{key}}:{{value}}" {{/eac
 <script id="tplRequestMappingContainer" type="text/x-handebars-template">
   <div class="container {{#unless model.mapping}}unmapped{{/unless}}">
     <div class="row">
-      <div class="span12">
+      <div class="col-md-12">
         {{fa "fa-map-signs pull-left"}}
         {{fa "fa-map-signs pull-right"}}
         {{#unless model.mapping}}
@@ -90,41 +90,45 @@ curl -X {{method}}{{#if headers}}{{#each headers}} -H "{{key}}:{{value}}" {{/eac
     <form class="container try">
 
       <div class="row">
-        <div class="span12">
+        <div class="col-md-12">
 
           <ul class="breadcrumb fh-request-breadcrumb">
             <li><a href="#" class="btn-back">Home</a> <span class="divider">/</span></li>
             <li class="active">{{#if isNew}}New{{else}}Edit{{/if}} Request</li>
           </ul>
 
-          <div class="input-append fh-request-input">
-            <select name="method" class="span2">
-              {{#each methods}}
-              <option>{{this}}</option>
-              {{/each}}
-            </select>
-            <input name="url" value="{{model.url}}" class="span8" id="appendedPrependedDropdownButton" type="text" placeholder="Enter Request URL here">
-            <button class="btn btn-primary" type="submit">Send Request</button>
+          <div class="input-group fh-request-input">
+            <span class="input-group-btn">
+              <select name="method">
+                {{#each methods}}
+                <option>{{this}}</option>
+                {{/each}}
+              </select>
+            </span>
+            <input name="url" value="{{model.url}}" class="col-md-8 form-control" id="appendedPrependedDropdownButton" type="text" placeholder="Enter Request URL here">
+            <span class="input-group-btn">
+              <button class="btn btn-primary" type="submit">Send Request</button>
+            </span>
           </div>
         </div>
       </div><!-- row -->
 
       <div class="row">
-        <div class="span6 fh-request-headers">
+        <div class="col-md-6 fh-request-headers">
           <h4 class="fh-secondary-header">Headers</h4>
           <div id="editableHeaders"></div>
           
         </div>
         {{#if hasBody}}
-        <div class="span6 fh-request-body">
+        <div class="col-md-6 fh-request-body">
           <h4 class="fh-secondary-header">Body</h4>
-          <textarea name="body" rows="3" class="span6">{{ model.body }}</textarea>
+          <textarea name="body" rows="3" class="col-md-6">{{ model.body }}</textarea>
         </div>
         {{/if}}
       </div><!-- row -->
 
       <div class="row">
-        <div class="span12">
+        <div class="col-md-12">
           <h4 class="fh-secondary-header"><a class="toggleable collapsed" data-toggle="collapse" href="#reqHeadersCollapsible">{{fa "fa-chevron-down"}} Request Headers</a></h4>
           <div id="reqHeadersCollapsible" class="dl-horizontal collapse">
             <div class="request-headers">Try a request to see the headers</div>
@@ -148,7 +152,7 @@ curl -X {{method}}{{#if headers}}{{#each headers}} -H "{{key}}:{{value}}" {{/eac
   <section class="loader">
     <div class="container">
       <div class="row">
-        <div class="span12">
+        <div class="col-md-12">
           <p class="text-center">LOADING...</p>
         </div>
       </div>
@@ -157,7 +161,7 @@ curl -X {{method}}{{#if headers}}{{#each headers}} -H "{{key}}:{{value}}" {{/eac
   <section class="fh-result">
     <div class="container">
       <div class="row">
-        <div class="span12">
+        <div class="col-md-12">
 
           <h4 class="fh-secondary-header">Response</h4>
 
@@ -166,7 +170,7 @@ curl -X {{method}}{{#if headers}}{{#each headers}} -H "{{key}}:{{value}}" {{/eac
           <h4 class="fh-secondary-header">Response Headers</h4>
 
           <div class="row">
-            <div class="span6">
+            <div class="col-md-6">
               <dl class="dl-horizontal response-headers"></dl>
             </div>
           </div>
