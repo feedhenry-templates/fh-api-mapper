@@ -12,22 +12,27 @@
     "backbone": "1.2.3",
     "handlebars": "3.0.3",
     "underscore": "1.8.3",
-    "font-awesome" : "4.4.0",
-    "jquery" : "2.1.4"
+    "font-awesome": "4.4.0",
+    "jquery": "2.1.4",
+    "bootstrap-treeview": "~1.2.0"
   },
   "exportsOverride": {
     "jquery": {
-      "js" : "jquery.min.js"
+      "js": "jquery.min.js"
     },
     "bootstrap": {
       ".": "dist/js/bootstrap.js",
       "less": "less/*.less",
+      "fonts": "fonts/*",
       "less/mixins": "less/mixins/*.less"
     },
     "font-awesome": {
       "fonts": "fonts/*",
       "css": "css/font-awesome.css",
-      "less" : "less/*"
+      "less": "less/*"
+    },
+    "bootstrap-treeview": {
+      ".": "dist/*"
     }
   }
 }
