@@ -15,10 +15,8 @@ Handlebars.registerHelper('transformationsForField', function(field, transformat
     transformations = App.listView.requestView.mappingView.transformations.toJSON();
   }
   var relevantTransformations = _.where(transformations, {type : field.type});
-  if (!relevantTransformations.length){
-    return new Handlebars.SafeString('');
-  }
-  var html = ['<select name="transformation">'];
+  var html = ['<select class="form-control" name="transformation">'];
+  html.push('<option name="none">No transformation</option>');
   _.each(relevantTransformations, function(t){
     html.push('<option name="' + t.name + '">' + t.name + '</option>');
   });
@@ -27,5 +25,3 @@ Handlebars.registerHelper('transformationsForField', function(field, transformat
 });
 
 Handlebars.registerPartial('headerRow', $('#tplHeaderRow').html().toString());
-
-Handlebars.registerPartial('mappingRow', $('#tplMappingRow').html());

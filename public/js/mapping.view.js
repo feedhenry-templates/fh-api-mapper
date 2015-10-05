@@ -1,7 +1,9 @@
 App.MappingView = App.BaseMapperView.extend({
   className: "mapping",
   events : {
-    'click #removeMapping' : 'removeMapping'
+    'click #removeMapping' : 'removeMapping',
+    'change .detailView form input' : 'updateMapping',
+    'change .detailView form select' : 'updateMapping'
   },
   initialize : function(options){
     App.BaseMapperView.prototype.initialize.apply(this, arguments);
@@ -17,17 +19,31 @@ App.MappingView = App.BaseMapperView.extend({
       model : this.model.toJSON(),
       request : this.request.toJSON()
     }));
-    this.$fieldMappings = this.$el.find('#fieldMappings');
-    this.$tplFieldMappings = Handlebars.compile($('#tplFieldMappings').html());
-    this.renderFieldMappings();
+    this.$tplFieldMapping = Handlebars.compile($('#tplFieldMapping').html());
+    this.renderTree();
   },
-  renderFieldMappings : function(){
-    var self = this;
-    if (this.transformations.length === 0){
-      return self.$fieldMappings.html('Loading...');
+  renderTree : function(){
+    var treeData = this.buildTree(this.model.toJSON()),
+    treeEl = $(this.$el.find('.treeView')),
+    tree = treeEl.treeview({
+      data: treeData.nodes,
+      levels : 1,
+      expandIcon : 'fa fa-chevron-right',
+      collapseIcon: 'fa fa-chevron-down',
+      selectedBackColor : '#d6ecf9',
+      selectedColor : '#6c696a'
+    });
+    this.tree = tree;
+    tree.on('nodeSelected', $.proxy(this.nodeSelected, this));
+    tree.treeview('selectNode', 0);
+  },
+  nodeSelected : function(e, field){
+    var el = $(e.target);
+    this.$el.find('.detailView').html(this.$tplFieldMapping({ field : field }));
+    if (field.nodes && field.nodes.length > 0){
+      
+      this.tree.treeview('expandNode', field.nodeId);
     }
-    self.$fieldMappings.html(self.$tplFieldMappings({model : this.model.toJSON(), transformations : this.transformations.toJSON()}));
-    return;
   },
   removeMapping : function(){
     var self = this;
@@ -40,5 +56,52 @@ App.MappingView = App.BaseMapperView.extend({
         self.trigger('notify', 'error', 'Error removing mapping from request');
       }
     });
-  }
+  },
+  buildTree : function(model){
+    var nodes = _.map(model.fields, this.buildTree, this),
+    tree = {
+      href : model._id,
+      text : model.from || 'Root'
+    };
+    // don't set nodes to [], or it'll show as expandible
+    if (nodes.length && nodes.length > 0){
+      tree.nodes = nodes;
+    }
+    // Mix in all the additional metadata from the mapping
+    tree = _.extend(tree, model);
+    return tree;
+  },
+  updateMapping : function(e){
+    var self = this,
+    el = $(e.target),
+    name = el.attr('name'),
+    value = el.val(),
+    mappingItemId = el.parents('form').data('id'),
+    updateObject = {};
+    updateObject[name] = value;
+    if (name === 'use'){
+      updateObject = { use : el.prop('checked') };
+    }
+    
+    var updatedMapping = this.updateMappingEntryById(this.model.toJSON(), mappingItemId, updateObject);
+    
+    this.model.save(updatedMapping, {
+      success : function(){
+        self.notify('success', 'Mapping updated');
+      },
+      error : function(){
+        self.notify('error', 'Error saving update to mapping');
+      }
+    });
+  },
+  updateMappingEntryById : function(mapping, itemId, updateObject){
+    if (mapping._id === itemId){
+      return _.extend(mapping, updateObject);
+    }
+    var fields = mapping.fields;
+    for (var i=0; i < fields.length; i++){
+      fields[i] = this.updateMappingEntryById(fields[i], itemId, updateObject);
+    }
+    return mapping;
+  },
 });

@@ -85,7 +85,10 @@ App.RequestView = App.BaseMapperView.extend({
     }
   },
   renderMapping : function(){
-    this.$mapping.html(this.$tplRequestMappingContainer({ model : this.model.toJSON() }));
+    if (this.model.isNew()){
+      return;
+    }
+    this.$mapping.html(this.$tplRequestMappingContainer({ model : this.model.toJSON(), isNew : this.model.isNew() }));
     if (!this.model.has('mapping')){
       return;
     }
