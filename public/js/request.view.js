@@ -250,8 +250,12 @@ App.RequestView = App.BaseMapperView.extend({
       success : function(){
         self.model.set('mapping', model.toJSON());
       },
-      error : function(){
-        self.trigger('notify', 'error', 'Error creating new mapping');
+      error : function(model, response){
+        var msg = 'Error creating new mapping';
+        if (response.responseText && _.isString(response.responseText)){
+          msg += ': ' + response.responseText;
+        }
+        self.trigger('notify', 'error', msg);
       }
     });
   },

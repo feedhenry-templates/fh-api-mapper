@@ -64,6 +64,9 @@ App.RequestsListView = App.BaseMapperView.extend({
       window.history.pushState('', "Request List", "/");
     });
     this.$el.html(this.requestView.$el);
+    if (model.isNew()){
+      this.requestView.render();
+    }
   },
   deleteRequest : function(e){
     var self = this,

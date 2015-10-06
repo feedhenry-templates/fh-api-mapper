@@ -174,4 +174,14 @@ a.toggleable i.fa:before {
   content : @fa-var-chevron-down;
 }
 
+.alert {
+  position: fixed;
+  width: 100%;
+  top: 0;
+  z-index: 1000;
+}
+.alert-error {
+  .alert-danger;
+}
+
 @import "mapping.less";

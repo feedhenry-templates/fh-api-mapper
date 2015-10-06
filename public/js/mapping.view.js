@@ -13,6 +13,7 @@ App.MappingView = App.BaseMapperView.extend({
     this.transformations = new App.TransformationsCollection();
     this.transformations.fetch();
     this.listenTo(this.transformations, 'sync', this.render);
+    this.listenTo(this.model, 'sync', this.renderTree);
   },
   render : function(){
     this.$el.html(this.tpl({
@@ -25,6 +26,10 @@ App.MappingView = App.BaseMapperView.extend({
   renderTree : function(){
     var treeData = this.buildTree(this.model.toJSON()),
     treeEl = $(this.$el.find('.treeView')),
+    tree; 
+    if (!treeData.fields.length){
+      return;
+    }
     tree = treeEl.treeview({
       data: treeData.nodes,
       levels : 1,
@@ -35,15 +40,17 @@ App.MappingView = App.BaseMapperView.extend({
     });
     this.tree = tree;
     tree.on('nodeSelected', $.proxy(this.nodeSelected, this));
-    tree.treeview('selectNode', 0);
+    tree.treeview('selectNode', this.selectedNode || 0);
   },
   nodeSelected : function(e, field){
-    var el = $(e.target);
     this.$el.find('.detailView').html(this.$tplFieldMapping({ field : field }));
     if (field.nodes && field.nodes.length > 0){
-      
-      this.tree.treeview('expandNode', field.nodeId);
+      this.toggleExpanded(e, field);
     }
+    this.selectedNode = field.nodeId;
+  },
+  toggleExpanded : function(e, field){
+    this.tree.treeview('toggleNodeExpanded', field.nodeId);
   },
   removeMapping : function(){
     var self = this;
@@ -103,5 +110,5 @@ App.MappingView = App.BaseMapperView.extend({
       fields[i] = this.updateMappingEntryById(fields[i], itemId, updateObject);
     }
     return mapping;
-  },
+  }
 });
