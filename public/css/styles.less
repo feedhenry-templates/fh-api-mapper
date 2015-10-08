@@ -4,7 +4,7 @@
 
 #grid {
   .core  {
-    .span(@gridColumns) {
+    .col-md-(@gridColumns) {
       width: (@gridColumnWidth * @gridColumns) + (@gridGutterWidth * (@gridColumns - 1));
     }
   }
@@ -22,15 +22,15 @@
 
 .fh-secondary-header {
   text-transform: uppercase;
-  font-size: @fontSizeMini;
-  background: @grayLight;
-  color: @white;
+  font-size: @font-size-small;
+  background: @gray-light;
+  color: @body-bg;
   line-height: 25px;
   padding:  0 7px;
   text-decoration: none;
   margin: 0 0 10px 0;
   a{
-    color: @white;
+    color: @body-bg;
     text-decoration: none!important;
   }
   i{
@@ -41,9 +41,17 @@
 }
 
 .fh-request{
-  background: @grayLighter;
+  background: @gray-lighter;
   padding: 0;
-  // border-bottom: 1px solid @grayLight;
+  select {
+    background: #fff;
+    -webkit-appearance: menulist-button;
+    box-sizing: border-box;
+    font-size: 14px;
+    font-stretch: normal;
+    font-style: normal;
+    height: 30px;
+  }
 }
 // Input
 
@@ -54,7 +62,6 @@
 
 .fh-request-headers{
   //  background: yellow;
-
   li{
     //    background: red!important;
     margin-bottom: 5px;
@@ -93,7 +100,6 @@
     display: inline-block;
     margin-right: 3%;
   }
-
   span{
     //    background: aqua;
     display: inline-block;
@@ -104,10 +110,10 @@
       line-height: 30px;
       //      background: orange;
       padding: 0 5px;
-      color: @grayLight;
+      color: @gray-light;
       &:hover{
-        color: @linkColor;
-        &:last-child{color: @red;}
+        color: @link-color;
+        &:last-child{color: red;}
       }
     }
     .reorder{
