@@ -55,8 +55,8 @@ exports.it_should_map_arrays_with_existing_transformation = function(done){
         type : "object",
         fields : [
           {
-            from : "foo",
-            to : "bar",
+            from : "fooarray",
+            to : "bararray",
             type : "array",
             transformation : "capitalize"
           }
@@ -103,13 +103,13 @@ exports.it_should_require_element_types = function(done){
     var newMapping = new Mapping({
       from : 'foo',
       to: 'bar',
+      type : "array",
       element : {
-        type : "string",
         transformation : "capitalize"
       }
     });
     return newMapping.save(function(err){
-      assert.ok(err, 'It should ensure fields have a type');
+      assert.ok(err, 'It should ensure field elements have a type');
       return done();
     });
   });
