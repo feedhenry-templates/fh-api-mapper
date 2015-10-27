@@ -9,8 +9,8 @@ App.init = function() {
   id = _.last(path);
 
   // Always have requestsListView as the bottom view in the stack
-  var listView = new App.RequestsListView().render();
-
+  var listView = App.listView = new App.RequestsListView().render();
+  
   if (!path || !id){
     return;
   }

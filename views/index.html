@@ -8,6 +8,7 @@
     <% include templates/common.html %>
     <% include templates/requests.html %>
     <% include templates/request.html %>
+    <% include templates/mapping.html %>
     <div class="content">
 
       
@@ -17,6 +18,7 @@
     <script src="/lib/handlebars/handlebars.js"></script>
     <script src="/lib/backbone/backbone.js"></script>
     <script src="/lib/bootstrap/bootstrap.js"></script>
+    <script src="/lib/bootstrap-treeview/bootstrap-treeview.min.js"></script>
     <script src="/templates/helpers.js"></script>
     <script src="/js/app.js"></script>
     <script src="/js/logger.js"></script>
@@ -24,9 +26,12 @@
     <script src="/js/requests.view.js"></script>
     <script src="/js/request.view.js"></script>
     <script src="/js/request.model.js"></script>
+    <script src="/js/mapping.view.js"></script>
+    <script src="/js/mapping.model.js"></script>
     <script src="/js/requests.collection.js"></script>
     <script>
       $(App.init);
     </script>
+    <script src="/js/transformations.collection.js"></script>
   </body>
 </html>

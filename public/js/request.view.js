@@ -12,7 +12,8 @@ App.RequestView = App.BaseMapperView.extend({
     'change textarea' : 'inputChanged',
     'click .add-header' : 'addHeaderField',
     'click .remove-header' : 'removeHeaderField',
-    'change  select[name=method]' : 'render'
+    'change  select[name=method]' : 'render',
+    'click .btn-add-mapping' : 'addMapping'
   },
   initialize : function(options){
     App.BaseMapperView.prototype.initialize.apply(this, arguments);
@@ -21,6 +22,8 @@ App.RequestView = App.BaseMapperView.extend({
     this.listenTo(this.model, 'success', this.onRequestSuccess);
     this.listenTo(this.model, 'fail', this.onRequestFailed);
     this.listenTo(this.model, 'trying', this.onRequestTrying);
+    this.listenTo(this.model, 'sync', this.render);
+    this.listenTo(this.model, 'change:mapping', this.renderMapping);
   },
   render : function(){
     var model = this.model.toJSON();
@@ -47,12 +50,15 @@ App.RequestView = App.BaseMapperView.extend({
     this.$status = this.$el.find('.status');
     this.$sampleNodejs = this.$el.find('#sample-nodejs');
     this.$sampleCurl = this.$el.find('#sample-curl');
+    this.$mapping = this.$el.find('.fh-mapping');
     this.$tplNodejsRequest = Handlebars.compile($('#tplNodejsRequest').html());
     this.$tplCurlRequest = Handlebars.compile($('#tplCurlRequest').html());
     this.$tplEditableHeaders = Handlebars.compile($("#tplEditableHeaders").html());
     this.$tplHeaderRow = Handlebars.compile($("#tplHeaderRow").html());
+    this.$tplRequestMappingContainer = Handlebars.compile($("#tplRequestMappingContainer").html());
     this.renderSnippets();
     this.renderHeaders();
+    this.renderMapping();
   },
   renderSnippets : function(){
     // Set up sample snippets
@@ -77,6 +83,16 @@ App.RequestView = App.BaseMapperView.extend({
     if (model.type !== 'GET' && contentType){
       this.$contentType.find('option[name="' + contentType.value + '"]').attr('selected', true);
     }
+  },
+  renderMapping : function(){
+    if (this.model.isNew()){
+      return;
+    }
+    this.$mapping.html(this.$tplRequestMappingContainer({ model : this.model.toJSON(), isNew : this.model.isNew() }));
+    if (!this.model.has('mapping')){
+      return;
+    }
+    this.renderMappingView(new App.MappingModel(this.model.get('mapping')));
   },
   back : function(){
     this.trigger('back');
@@ -173,13 +189,19 @@ App.RequestView = App.BaseMapperView.extend({
     this.$el.removeClass('request-pending').addClass('request-done');
     var request = data.request,
     response = data.response,
+    prettyResponseBody = response.body,
     $tplHeaders = Handlebars.compile($('#tplHeaders').html());
+    
+    if (_.isObject(prettyResponseBody)){
+      prettyResponseBody = JSON.stringify(prettyResponseBody, null, 2);
+    }
+    
     this.$status.text(response.statusCode);
     this.$requestHeaders.html( $tplHeaders({ headers : request.headers}) );
     this.$responseHeaders.html($tplHeaders({ headers : response.headers }));
     this.$requestRaw.text( request.raw );
     this.$responseRaw.text( response.raw );
-    this.$responseBody.text(response.body);
+    this.$responseBody.text(prettyResponseBody);
   },
   onRequestFailed : function(status, responseRaw){
     this.$status.text(status);
@@ -219,5 +241,36 @@ App.RequestView = App.BaseMapperView.extend({
       this.addHeaderField();
     }
     return false;
+  },
+  addMapping : function(){
+    var self = this,
+    model = new App.MappingModel();
+    model.request = self.model;
+    model.save({}, {
+      success : function(){
+        self.model.set('mapping', model.toJSON());
+      },
+      error : function(model, response){
+        var msg = 'Error creating new mapping';
+        if (response.responseText && _.isString(response.responseText)){
+          msg += ': ' + response.responseText;
+        }
+        self.trigger('notify', 'error', msg);
+      }
+    });
+  },
+  renderMappingView : function(model){
+    model.request = this.model;
+    this.mappingView = new App.MappingView({
+      request : this.model,
+      // Will behave appropriate for both new and existing mapping models
+      // new mappings will just call new App.MappingModel with undefined
+      model : model
+    });
+    this.mappingView.render();
+    this.$mapping.find('#mappingView').html(this.mappingView.$el);
+    this.listenToOnce(this.mappingView, 'removed', function(){
+      this.model.fetch();
+    }, this);
   }
 });
