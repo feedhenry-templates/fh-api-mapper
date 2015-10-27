@@ -85,7 +85,10 @@ App.RequestView = App.BaseMapperView.extend({
     }
   },
   renderMapping : function(){
-    this.$mapping.html(this.$tplRequestMappingContainer({ model : this.model.toJSON() }));
+    if (this.model.isNew()){
+      return;
+    }
+    this.$mapping.html(this.$tplRequestMappingContainer({ model : this.model.toJSON(), isNew : this.model.isNew() }));
     if (!this.model.has('mapping')){
       return;
     }
@@ -247,8 +250,12 @@ App.RequestView = App.BaseMapperView.extend({
       success : function(){
         self.model.set('mapping', model.toJSON());
       },
-      error : function(){
-        self.trigger('notify', 'error', 'Error creating new mapping');
+      error : function(model, response){
+        var msg = 'Error creating new mapping';
+        if (response.responseText && _.isString(response.responseText)){
+          msg += ': ' + response.responseText;
+        }
+        self.trigger('notify', 'error', msg);
       }
     });
   },

@@ -1,42 +1,73 @@
 <script id="tplMappingView" type="text/x-handlebars-template">
-  <div id="fieldMappings">
+  <div class="row">
+    <div class="col-md-4 left">
+      <h4>Fields</h4>
+      <p class="help-block">Select a field from the response to map it</p>
+      <div class="treeView">
+      </div>
+    </div>
+    <div class="col-md-8 right">
+      <h4>Field Mapping</h4>
+      <p class="help-block">Define how the field is output</p>
+      <div class="detailView"></div>
+        
+    </div>
   </div>
+  
   <a href="#" id="removeMapping" class="btn btn-danger">Remove Mapping from Request</a>
 </script>
 
-<script id="tplFieldMappings" type="text/x-handlebars-template">
-  <table class="table table-hover span12">
-    <thead>
-      <tr>
-        <th>Use?</th>
-        <th>Original Name</th>
-        <th>New Name</th>
-        <th>Field Type</th>
-        <th>Transformation</th>
-      </tr>
-    </thead>
-    <tbody>
-      {{#each model.fields}}
-        {{>mappingRow }}
-      {{/each}}
-    </tbody>
-  </table>
-</script>
-
-<script id="tplMappingRow" type="text/x-handlebars-template">
-  <tr>
-    <td><input class="input-medium" type="checkbox" name="included" checked></td>
-    <td>{{ from }}
-    <td><input class="input-medium" name="to" type="text" placeholder="Rename field to"></td>
-    <td>{{ type }}</td>
-    <td>
-      {{transformationsForField this ../../transformations}}
-    </td>
-  </tr>
-  {{#if fields.length}}
-    {{#each fields}}
-      {{>mappingRow this}}
-    {{/each}}
-  {{/if}}
-  
+<script id="tplFieldMapping" type="text/x-handlebars-template">
+  <form class="form-horizontal" data-id={{field._id}}>
+    
+    <div class="form-group">
+        <label for="inputUse" class="col-sm-2 control-label">Use Field?</label>
+        <div class="col-sm-10">
+          <input class="form-control" type="checkbox" id="inputUse" name="use" {{#if field.use}}checked{{/if}}>
+          <span id="helpBlock" class="help-block">Use this field? Untick to discard it</span>
+        </div>
+    </div>
+    
+    <div class="form-group">
+        <label for="inputType" class="col-sm-2 control-label">Field Type</label>
+        <div class="col-sm-10">
+          <div class="inputPad">{{ field.type }}</div>
+          <span id="helpBlock" class="help-block">The JSON type of the field being mapped</span>
+        </div>
+    </div>
+    
+    <div class="form-group">
+        <label class="col-sm-2 control-label">Rename Field</label>
+        
+        <div class="col-sm-4">
+          <div class="inputPad">{{ field.from }}</div>
+          <span id="helpBlock" class="help-block">This is what the field is called in the response</span>
+        </div>
+        
+        <div class="col-sm-1 inputPad inputIcon">
+          <span class="fa fa-angle-double-right"></span>
+        </div>
+        
+        <div class="col-sm-4">
+          <input class="form-control" value="{{#if field.to}}{{ field.to }}{{else}}{{field.from}}{{/if}}" name="to" type="text" id="inputMapTo" placeholder="Rename field to">
+          <span id="helpBlock" class="help-block">This is what the field will be renamed to</span>
+        </div>
+        
+    </div>
+    
+    
+    
+    <div class="form-group">
+        <label for="inputUse" class="col-sm-2 control-label">Transform</label>
+        <div class="col-sm-10">
+          {{transformationsForField this.field ../../transformations}}
+          <span id="helpBlock" class="help-block">Select a transformation function for this field</span>
+        </div>
+    </div>
+    
+    
+    
+    
+    
+  </form>
 </script>
