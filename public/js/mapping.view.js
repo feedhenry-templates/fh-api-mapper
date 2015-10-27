@@ -27,7 +27,7 @@ App.MappingView = App.BaseMapperView.extend({
     var treeData = this.buildTree(this.model.toJSON()),
     treeEl = $(this.$el.find('.treeView')),
     tree; 
-    if (!treeData.fields.length && !treeData.nodes.length){
+    if (!treeData.fields.length && (!treeData.nodes || !treeData.nodes.length)){
       return;
     }
     tree = treeEl.treeview({
