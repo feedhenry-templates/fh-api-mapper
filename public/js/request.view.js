@@ -50,6 +50,7 @@ App.RequestView = App.BaseMapperView.extend({
     this.$status = this.$el.find('.status');
     this.$sampleNodejs = this.$el.find('#sample-nodejs');
     this.$sampleCurl = this.$el.find('#sample-curl');
+    this.$mountPath = this.$el.find('#mountPath');
     this.$mapping = this.$el.find('.fh-mapping');
     this.$tplNodejsRequest = Handlebars.compile($('#tplNodejsRequest').html());
     this.$tplCurlRequest = Handlebars.compile($('#tplCurlRequest').html());
@@ -127,6 +128,22 @@ App.RequestView = App.BaseMapperView.extend({
     }else{
       mappedValues.body = null;
     }
+    
+    if (!mappedValues.mountPath && mappedValues.url){
+      // Remove the protocol prefix
+      var mountPath = mappedValues.url.replace(/^http(s)?:\/\//, ''),
+      idx = mountPath.indexOf('/');
+      if (idx === -1){
+        // Likely to cause uniqueness constraint issues when the user goes to save..
+        mountPath = '/';
+      }else{
+        mountPath = mountPath.substring(mountPath.indexOf('/'), mountPath.length);  
+      }
+      
+      mappedValues.mountPath = mountPath;
+      this.$mountPath.val(mountPath);
+    }
+    
     return mappedValues;  
   },
   inputChanged : function(){

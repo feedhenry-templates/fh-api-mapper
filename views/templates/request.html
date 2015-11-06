@@ -70,8 +70,8 @@ curl -X {{method}}{{#if headers}}{{#each headers}} -H "{{key}}:{{value}}" {{/eac
   <div class="container {{#unless model.mapping}}unmapped{{/unless}}">
     <div class="row">
       <div class="col-md-12">
-        {{fa "fa-map-signs pull-left"}}
-        {{fa "fa-map-signs pull-right"}}
+        {{fa "fa-map-signs pull-left icon-white"}}
+        {{fa "fa-map-signs pull-right icon-white"}}
         {{#unless model.mapping}}
           <a href="#" class="btn-add-mapping"> Add Mapping {{fa "fa-plus"}}</a>
         {{else}}
@@ -140,6 +140,14 @@ curl -X {{method}}{{#if headers}}{{#each headers}} -H "{{key}}:{{value}}" {{/eac
           </div>
 
         </div>
+        
+        <div class="col-md-12">
+          <h4 class="fh-secondary-header">{{fa "fa-thumb-tack"}} Mount Path</h4>
+          <input type="text" id="mountPath" name="mountPath" class="form-control" aria-describedby="mountPathHelp" value="{{ model.mountPath }}">
+          <span id="mountPathHelp" class="help-block">Where should we expose your new request? Defaults to the same path as on the remote server</span>
+
+          
+        </div>
       </div><!-- row -->
     </form><!-- container -->
   </section><!-- fh-request -->
@@ -194,12 +202,11 @@ curl -X {{method}}{{#if headers}}{{#each headers}} -H "{{key}}:{{value}}" {{/eac
             <h5>cURL Request</h5>
             <pre id="sample-curl"></pre>
           </div>
-
-          <p>
-            <button id="saveRequest" class="btn btn-primary" type="button">{{#if isNew}}Create{{else}}Update{{/if}} Request</button>
-          </p>
         </div>
       </div><!-- row -->
     </form><!-- container -->
-  </section><!-- fh-request -->
+  </section><!-- fh-result -->
+  <p class="container">
+    <button id="saveRequest" class="btn btn-primary" type="button">{{#if isNew}}Create{{else}}Update{{/if}} Request</button>
+  </p>
 </script>
