@@ -207,10 +207,12 @@ App.RequestView = App.BaseMapperView.extend({
     var request = data.request,
     response = data.response,
     prettyResponseBody = response.body,
+    prettyMappedBody = response.mapped,
     $tplHeaders = Handlebars.compile($('#tplHeaders').html());
     
     if (_.isObject(prettyResponseBody)){
       prettyResponseBody = JSON.stringify(prettyResponseBody, null, 2);
+      prettyMappedBody = JSON.stringify(prettyMappedBody, null, 2);
     }
     
     this.$status.text(response.statusCode);
@@ -219,6 +221,7 @@ App.RequestView = App.BaseMapperView.extend({
     this.$requestRaw.text( request.raw );
     this.$responseRaw.text( response.raw );
     this.$responseBody.text(prettyResponseBody);
+    this.$el.find('.mapped-body').text(prettyMappedBody);
   },
   onRequestFailed : function(status, responseRaw){
     this.$status.text(status);

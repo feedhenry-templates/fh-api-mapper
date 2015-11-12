@@ -99,7 +99,7 @@ App.MappingView = App.BaseMapperView.extend({
   buildTree : function(model){
     var nodes = _.map(model.fields, this.buildTree, this),
     iconForType = this.iconForType(model.type),
-    use = (model.use) ? this.fa('check-circle') : this.fa('times-circle'),
+    use = (model.use) ? this.fa('check') : this.fa('times'),
     tree = {
       href : model._id,
       text : model.from || 'Root',
@@ -124,6 +124,10 @@ App.MappingView = App.BaseMapperView.extend({
     return tree;
   },
   updateMapping : function(e){
+    if (e){
+      e.preventDefault();
+      e.stopPropagation();
+    }
     var self = this,
     el = $(e.target),
     name = el.attr('name'),
@@ -150,9 +154,15 @@ App.MappingView = App.BaseMapperView.extend({
     if (mapping._id === itemId){
       return _.extend(mapping, updateObject);
     }
-    var fields = mapping.fields;
+    var fields = mapping.fields,
+    arrayFields = mapping.element && mapping.element.fields;
     for (var i=0; i < fields.length; i++){
       fields[i] = this.updateMappingEntryById(fields[i], itemId, updateObject);
+    }
+    if (arrayFields){
+      for (var j=0; j<arrayFields.length; j++){
+        arrayFields[j] = this.updateMappingEntryById(arrayFields[j], itemId, updateObject);
+      }
     }
     return mapping;
   }
