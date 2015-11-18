@@ -1,6 +1,7 @@
 var mbaasApi = require('fh-mbaas-api');
 var express = require('express');
 var mbaasExpress = mbaasApi.mbaasExpress();
+var lessMiddleware = require('less-middleware');
 
 var cors = require('cors');
 
@@ -13,14 +14,29 @@ app.engine('html', require('ejs').renderFile);
 // Note: the order which we add middleware to Express here is important!
 app.use('/sys', mbaasExpress.sys([]));
 app.use('/mbaas', mbaasExpress.mbaas);
-
+app.use(express['static'](__dirname + '/public'));
+app.use(lessMiddleware(__dirname + '/public'));
 
 // Note: important that this is added just before your own Routes
 app.use(mbaasExpress.fhmiddleware());
 
 
 // fhlint-begin: custom-routes
-app.use('/', require('./lib/api'));
+app.use('/', require('./lib/api')({
+  transformations : {
+    customMixedArrayTransform : {
+      type : "array",
+      transform : function(values){
+        var newObj = {};
+        values.forEach(function(val, idx){
+          newObj[idx] = val;
+        });
+        return newObj;
+      }
+    }
+  }
+  
+}));
 // fhlint-end
 app.use(express['static'](__dirname + '/public'));
 

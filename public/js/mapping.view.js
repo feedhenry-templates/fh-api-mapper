@@ -55,6 +55,9 @@ App.MappingView = App.BaseMapperView.extend({
     if (field.nodes && field.nodes.length > 0){
       this.toggleExpanded(e, field);
     }
+    if (field.transformation){
+      this.$el.find('select[name=transformation]').val(field.transformation);
+    }
     this.selectedNode = field.nodeId;
   },
   toggleExpanded : function(e, field){
@@ -100,9 +103,14 @@ App.MappingView = App.BaseMapperView.extend({
     var nodes = _.map(model.fields, this.buildTree, this),
     iconForType = this.iconForType(model.type),
     use = (model.use) ? this.fa('check') : this.fa('times'),
+    name = model.from || 'Root',
+    tree;
+    if (model.from && model.to && model.from !== model.to){
+      name += '<small> &rarr;' + model.to + '</small>';
+    }
     tree = {
       href : model._id,
-      text : model.from || 'Root',
+      text : name,
       tags : [iconForType, use]
     };
     
@@ -113,6 +121,15 @@ App.MappingView = App.BaseMapperView.extend({
         text : '(Array Items)',
         nodes : this.buildTree(model.element).nodes
       }];
+    }
+    
+    // Arrays which have a transformation per-element applied do not get sub-fields
+    if (model.type === 'array' && model.transformation){
+      nodes.forEach(function(node){
+        node.state = {};
+        node.state.disabled = true;
+        node.text = "<small>Disable transformations to edit sub fields</small>";
+      });
     }
     
     // don't set nodes to [], or it'll show as expandible
@@ -137,6 +154,10 @@ App.MappingView = App.BaseMapperView.extend({
     updateObject[name] = value;
     if (name === 'use'){
       updateObject = { use : el.prop('checked') };
+    }
+    
+    if (updateObject.transformation === 'none'){
+      updateObject.transformation = null;
     }
     
     var updatedMapping = this.updateMappingEntryById(this.model.toJSON(), mappingItemId, updateObject);

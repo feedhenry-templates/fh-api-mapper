@@ -16,7 +16,7 @@ Handlebars.registerHelper('transformationsForField', function(field, transformat
   }
   var relevantTransformations = _.where(transformations, {type : field.type});
   var html = ['<select class="form-control" name="transformation">'];
-  html.push('<option name="none">No transformation</option>');
+  html.push('<option name="none" value="none">No transformation</option>');
   _.each(relevantTransformations, function(t){
     html.push('<option name="' + t.name + '">' + t.name + '</option>');
   });
