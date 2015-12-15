@@ -13,7 +13,6 @@ app.engine('html', require('ejs').renderFile);
 // Note: the order which we add middleware to Express here is important!
 app.use('/sys', mbaasExpress.sys([]));
 app.use('/mbaas', mbaasExpress.mbaas);
-app.use(express['static'](__dirname + '/public'));
 
 
 // Note: important that this is added just before your own Routes
@@ -23,6 +22,7 @@ app.use(mbaasExpress.fhmiddleware());
 // fhlint-begin: custom-routes
 app.use('/', require('./lib/api'));
 // fhlint-end
+app.use(express['static'](__dirname + '/public'));
 
 // Important that this is last!
 app.use(mbaasExpress.errorHandler());
