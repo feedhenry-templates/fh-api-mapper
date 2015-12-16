@@ -1,6 +1,11 @@
-var log = App.logger;
-
-App.RequestView = App.BaseMapperView.extend({
+var log = require('./logger.js'),
+BaseMapperView = require('./base.view.js'),
+MappingModel = require('./mapping.model.js'),
+MappingView = require('./mapping.view.js'),
+Handlebars = require('./handlebars.js'),
+_ = require('underscore'),
+$ =require('jquery');
+module.exports = BaseMapperView.extend({
   className: "request",
   events : {
     'click #saveRequest' : 'saveRequest',
@@ -16,7 +21,7 @@ App.RequestView = App.BaseMapperView.extend({
     'click .btn-add-mapping' : 'addMapping'
   },
   initialize : function(options){
-    App.BaseMapperView.prototype.initialize.apply(this, arguments);
+    BaseMapperView.prototype.initialize.apply(this, arguments);
     this.tpl = Handlebars.compile($('#tplCreateEditRequestView').html());
     this.model = options.model;
     this.listenTo(this.model, 'success', this.onRequestSuccess);
@@ -93,7 +98,7 @@ App.RequestView = App.BaseMapperView.extend({
     if (!this.model.has('mapping')){
       return;
     }
-    this.renderMappingView(new App.MappingModel(this.model.get('mapping')));
+    this.renderMappingView(new MappingModel(this.model.get('mapping')));
   },
   back : function(){
     this.trigger('back');
@@ -264,7 +269,7 @@ App.RequestView = App.BaseMapperView.extend({
   },
   addMapping : function(){
     var self = this,
-    model = new App.MappingModel();
+    model = new MappingModel();
     model.request = self.model;
     model.save({}, {
       success : function(){
@@ -281,10 +286,10 @@ App.RequestView = App.BaseMapperView.extend({
   },
   renderMappingView : function(model){
     model.request = this.model;
-    this.mappingView = new App.MappingView({
+    this.mappingView = new MappingView({
       request : this.model,
       // Will behave appropriate for both new and existing mapping models
-      // new mappings will just call new App.MappingModel with undefined
+      // new mappings will just call new MappingModel with undefined
       model : model
     });
     this.mappingView.render();

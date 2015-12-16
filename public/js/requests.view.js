@@ -1,4 +1,11 @@
-App.RequestsListView = App.BaseMapperView.extend({
+var BaseMapperView = require('./base.view.js'),
+RequestsCollection = require('./requests.collection.js'),
+RequestModel = require('./request.model.js'),
+RequestView = require('./request.view.js'),
+Handlebars = require('./handlebars.js'),
+$ =require('jquery');
+
+module.exports = BaseMapperView.extend({
   className: "requests",
   el : '.content',
   events : {
@@ -7,8 +14,8 @@ App.RequestsListView = App.BaseMapperView.extend({
     'click .btn-delete' : 'deleteRequest'
   },
   initialize : function(){
-    App.BaseMapperView.prototype.initialize.apply(this, arguments);
-    this.collection = new App.RequestsCollection();
+    BaseMapperView.prototype.initialize.apply(this, arguments);
+    this.collection = new RequestsCollection();
     this.collection.fetch();
     this.listenTo(this.collection, 'sync', this.render);
     this.listenTo(this.collection, 'destroy', this.render);
@@ -49,11 +56,11 @@ App.RequestsListView = App.BaseMapperView.extend({
   },
   newRequest : function(){
     window.history.pushState("new", "New Request", "/requests/new");
-    this.showRequestView(new App.RequestModel());
+    this.showRequestView(new RequestModel());
   },
   showRequestView : function(model){
     var self = this;
-    this.requestView = new App.RequestView({
+    this.requestView = new RequestView({
       model : model
     });
     this.listenTo(this.requestView, 'back', function(){

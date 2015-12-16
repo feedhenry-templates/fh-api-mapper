@@ -1,4 +1,4 @@
-App.logger = {
+module.exports = {
   debug: function() { console.log.apply(console, arguments); },
   info: function() { console.info.apply(console, arguments); },
   warn: function() { console.warn.apply(console, arguments); },

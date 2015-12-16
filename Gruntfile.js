@@ -18,15 +18,6 @@ module.exports = function(grunt) {
         }
       }
     },
-    bower: {
-      install: {
-        //just run 'grunt bower:install' and you'll see files from your Bower packages in lib directory
-        options: {
-          targetDir: './public/lib/',
-          layout: 'byComponent'
-        }
-      }
-    },
     mocha_phantomjs: {
       all: {
         options: {
@@ -34,6 +25,33 @@ module.exports = function(grunt) {
             'http://localhost:9001/test/frontend-tests.html'
           ]
         }
+      }
+    },
+    copy: {
+      main: {
+        files:[
+          {
+            cwd : 'node_modules/font-awesome',
+            expand: true,
+            flatten: false,
+            src: '**/**/*.{js,css,less}',
+            dest: 'public/lib/font-awesome/'
+          },
+          {
+            cwd : 'node_modules/bootstrap',
+            expand: true,
+            flatten: false,
+            src: '{js,less,fonts}/**',
+            dest: 'public/lib/bootstrap/'
+          },
+          {
+            cwd : 'node_modules/bootstrap-treeview/dist',
+            expand: true,
+            flatten: false,
+            src: '**/*.{js,css,less}',
+            dest: 'public/lib/bootstrap-treeview/'
+          },
+        ]
       }
     }
   });
@@ -57,11 +75,12 @@ module.exports = function(grunt) {
 
   grunt.loadNpmTasks('grunt-fh-build');
   grunt.loadNpmTasks('grunt-contrib-jshint');
+  grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-nodemon');
-  grunt.loadNpmTasks('grunt-bower-task');
   grunt.loadNpmTasks('grunt-mocha-phantomjs');
-  grunt.registerTask('serve', ['bower', 'nodemon']);
+  
+  grunt.registerTask('serve', ['copy', 'nodemon']);
   grunt.registerTask('test', ['jshint', 'fh:unit', 'test-frontend']);
-  grunt.registerTask('default', ['bower', 'test']);
+  grunt.registerTask('default', ['copy', 'test']);
   grunt.registerTask('test-frontend', ['serve-frontend-tests', 'mocha_phantomjs']);
 };

@@ -1,4 +1,11 @@
-App.MappingView = App.BaseMapperView.extend({
+var BaseMapperView = require('./base.view.js'),
+TransformationsCollection = require('./transformations.collection.js'),
+Handlebars = require('./handlebars.js'),
+_ = require('underscore'),
+$ = jQuery = require('jquery');
+require('../lib/bootstrap-treeview/bootstrap-treeview.min.js');
+
+module.exports = BaseMapperView.extend({
   className: "mapping",
   events : {
     'click #removeMapping' : 'removeMapping',
@@ -6,11 +13,11 @@ App.MappingView = App.BaseMapperView.extend({
     'change .detailView form select' : 'updateMapping'
   },
   initialize : function(options){
-    App.BaseMapperView.prototype.initialize.apply(this, arguments);
+    BaseMapperView.prototype.initialize.apply(this, arguments);
     this.tpl = Handlebars.compile($('#tplMappingView').html());
     this.model = options.model;
     this.request = options.request;
-    this.transformations = new App.TransformationsCollection();
+    this.transformations = new TransformationsCollection();
     this.transformations.fetch();
     this.listenTo(this.transformations, 'sync', this.render);
     this.listenTo(this.model, 'sync', this.renderTree);

@@ -1,4 +1,7 @@
-App.BaseMapperView = Backbone.View.extend({
+var Backbone = require('backbone'),
+Handlebars = require('./handlebars.js'),
+$ = require('jquery');
+module.exports = Backbone.View.extend({
   initialize : function(){
     this.listenTo(this, 'notify', this.notify);
     this.tplNotification = Handlebars.compile($('#tplNotification').html());

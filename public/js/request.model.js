@@ -1,6 +1,7 @@
-var log = App.logger;
+var log = require('./logger.js');
+var Backbone = require('backbone');
 
-App.RequestModel = Backbone.Model.extend({
+module.exports = Backbone.Model.extend({
   urlRoot : '/api/requests',
   idAttribute : '_id',
   execute : function(){

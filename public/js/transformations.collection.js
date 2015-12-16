@@ -1,3 +1,5 @@
-App.TransformationsCollection = Backbone.Collection.extend({
+var Backbone = require('backbone');
+
+module.exports = Backbone.Collection.extend({
   url: '/api/transformations'
 });

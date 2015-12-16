@@ -1,6 +1,10 @@
-var App = {};
+var _ = require('underscore'),
+RequestModel = require('./request.model.js'),
+RequestsListView = require('./requests.view.js'),
+App = {};
 
-App.init = function() {
+
+App.init = (function() {
   var path = window.location.pathname || "",
   id, model;
   // replace last trailing /
@@ -9,7 +13,7 @@ App.init = function() {
   id = _.last(path);
 
   // Always have requestsListView as the bottom view in the stack
-  var listView = App.listView = new App.RequestsListView().render();
+  var listView = App.listView = new RequestsListView().render();
   
   if (!path || !id){
     return;
@@ -19,11 +23,11 @@ App.init = function() {
     // Show create new page
     return listView.listenToOnce(listView.collection, 'sync', function(){
       // Only show create new page once the list collection has loaded - prevent double render
-      return listView.showRequestView(new App.RequestModel());
+      return listView.showRequestView(new RequestModel());
     });
   }
 
-  model = new App.RequestModel({ _id : id });
+  model = new RequestModel({ _id : id });
   model.fetch({
     success : function(){
       listView.showRequestView(model);
@@ -32,4 +36,6 @@ App.init = function() {
       listView.notify('failure', 'Failed to load request with id ' + id);
     }
   });
-};
+})();
+
+module.exports = App;
