@@ -1,79 +1,62 @@
-@import "../lib/bootstrap/less/bootstrap.less";
+@import "../bower_components/patternfly/less/patternfly.less";
+
+// @import "../lib/bootstrap/less/bootstrap.less";
 @import "../lib/font-awesome/less/font-awesome.less";
-@import "../lib/bootstrap-treeview/bootstrap-treeview.min.css";
+// @import "../lib/bootstrap-treeview/bootstrap-treeview.min.css";
 @icon-font-path: "/lib/bootstrap/fonts/";
 @fa-font-path: "/lib/font-awesome/fonts";
 
-#grid {
-  .core  {
-    .col-md-(@gridColumns) {
-      width: (@gridColumnWidth * @gridColumns) + (@gridGutterWidth * (@gridColumns - 1));
-    }
-  }
-};
-
-.input-medium{
-  width: 40%;
-}
-
-.fh-request-breadcrumb{
-  margin: 20px 0 10px 0;
-}
 
 
-.fh-secondary-header {
-  text-transform: uppercase;
-  font-size: @font-size-small;
-  background: @gray-light;
-  color: @body-bg;
-  line-height: 25px;
-  padding:  0 7px;
-  text-decoration: none;
-  margin: 0 0 10px 0;
-  a{
-    color: @body-bg;
-    text-decoration: none!important;
-  }
-  i{
-//    background: red;
-    width: 12px;
-    margin: 0;
-  }
-}
-i.icon-white {
-  color : @body-bg;
-}
-
-.fh-request{
-  background: @gray-lighter;
-  padding: 0;
-  select {
-    background: #fff;
-    -webkit-appearance: menulist-button;
-    box-sizing: border-box;
-    font-size: 14px;
-    font-stretch: normal;
-    font-style: normal;
-    height: 30px;
-  }
-}
-// Input
+// Request Input =================================
 
 .fh-request-input{
-  //  background: red;
-  width: 100%;
+  background: white; // rgba(0,0,0,0.1);
+  border: 1px solid rgba(0,0,0,0.2);
+  display: inline-block;
+  margin: 20px 0;
+  padding: 5px;
+  width: 75%;
+  select{
+    border:none;
+    background:none;
+    box-shadow: none;
+  }
+  input[type="text"]{
+    background: none;
+    border: none;
+    border-left: 1px solid rgba(0,0,0,0.3);
+    box-shadow: none;
+    width: 85%;
+  }
 }
 
+.fh-request-actions{
+  display: inline-block;
+  width: 24%;
+  button{
+    padding: 13px 0px 12px 0px;
+    width: 48%;
+  }
+}
+
+
+.fh-request-nav{
+  margin-bottom: 20px;
+}
+
+// Request headers =================================
+
 .fh-request-headers{
-  //  background: yellow;
   li{
-    //    background: red!important;
     margin-bottom: 5px;
     &:last-child{
       margin: 0;
+      border: none;
     }
     input[type="text"]{
-      margin: 0;
+     margin: 0;
+     width: 44%
     }
     select{
       margin: 0;
@@ -88,6 +71,7 @@ i.icon-white {
       display: inline-block;
     }
   }
+  
   /* In rows with a content type, the headerRow is the 2nd of type,
   where content-type li is 1st of type. */
   ul.hasContentType li.headerRow:nth-of-type(2){
@@ -104,15 +88,11 @@ i.icon-white {
     display: inline-block;
     margin-right: 3%;
   }
+  
   span{
-    //    background: aqua;
-    display: inline-block;
-    text-align: right;
-    float: right;
     a{
       display: inline-block;
-      line-height: 30px;
-      //      background: orange;
+      line-height: 26px;
       padding: 0 5px;
       color: @gray-light;
       &:hover{
@@ -128,62 +108,24 @@ i.icon-white {
 
 .fh-request-body{
   textarea{
-    margin: 0;
+    width: 98%!important;
   }
 }
 
-.request-pending{
-  .loader{
-   display: block; 
+.mountPath{
+  input{
+    width: 95%!important;
   }
 }
 
 
-.request-done{
-  .fh-result{
-    display: block;
-  }  
-}
+// Treeview =================================
 
-.loader{
-  display: none; 
-}
-
-.fh-result{
-  padding: 10px 0 40px 0;
-  display: none;
-}
-
-
-
-
-
-.fh-request-list-actions{
-  text-align: right!important;
-}
-
-#rawRequestCollapsible > dl > {
-  dd.request-headers {
-    display: inline-block;
+.treeview{
+  border: 1px solid rgba(0,0,0,.1);
+  padding-bottom: 0;
+  .list-group{margin-bottom: 0;}
+  .list-group-item{
+    padding: 3px 10px!important;
   }
 }
-
-a.toggleable.collapsed i.fa:before {
-  content: @fa-var-chevron-right;
-}
-
-a.toggleable i.fa:before {
-  content : @fa-var-chevron-down;
-}
-
-.alert {
-  position: fixed;
-  width: 100%;
-  top: 0;
-  z-index: 1000;
-}
-.alert-error {
-  .alert-danger;
-}
-
-@import "mapping.less";
