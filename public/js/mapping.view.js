@@ -27,12 +27,13 @@ App.MappingView = App.BaseMapperView.extend({
     var treeData = this.buildTree(this.model.toJSON()),
     treeEl = $(this.$el.find('.treeView')),
     tree; 
-    if (!treeData.fields.length){
+    if (!treeData.fields.length && (!treeData.nodes || !treeData.nodes.length)){
       return;
     }
     tree = treeEl.treeview({
       data: treeData.nodes,
-      levels : 1,
+      levels : (treeData.nodes.length === 1) ? 2 : 1,
+      showTags : true,
       expandIcon : 'fa fa-chevron-right',
       collapseIcon: 'fa fa-chevron-down',
       selectedBackColor : '#d6ecf9',
@@ -43,6 +44,13 @@ App.MappingView = App.BaseMapperView.extend({
     tree.treeview('selectNode', this.selectedNode || 0);
   },
   nodeSelected : function(e, field){
+    if (field.href === false){
+      // Don't allow the sellecting of the placeholder for array item maps
+      // instead always select it's first child
+      var id = _.first(field.nodes).nodeId;
+      this.toggleExpanded(e, field);
+      return this.tree.treeview('selectNode', id);
+    }
     this.$el.find('.detailView').html(this.$tplFieldMapping({ field : field }));
     if (field.nodes && field.nodes.length > 0){
       this.toggleExpanded(e, field);
@@ -64,12 +72,49 @@ App.MappingView = App.BaseMapperView.extend({
       }
     });
   },
+  iconForType : function(type){
+    var icon = '';
+    switch(type){
+      case 'string':
+        icon = '\"\"';
+        break;
+      case 'number':
+        icon = '123';
+        break;
+      case 'boolean':
+        icon = this.fa('checkmark');
+        break;
+      case 'object':
+        icon = '{}';
+        break;
+      case 'array':
+        icon = '[]';
+        break;
+      default:
+        icon = '?';
+        break;  
+    }
+    return icon;
+  },
   buildTree : function(model){
     var nodes = _.map(model.fields, this.buildTree, this),
+    iconForType = this.iconForType(model.type),
+    use = (model.use) ? this.fa('check-circle') : this.fa('times-circle'),
     tree = {
       href : model._id,
-      text : model.from || 'Root'
+      text : model.from || 'Root',
+      tags : [iconForType, use]
     };
+    
+    if (model.element && model.element.fields && model.element.fields.length){
+      nodes = [{
+        href : false,
+        backColor : '#ccc',
+        text : '(Array Items)',
+        nodes : this.buildTree(model.element).nodes
+      }];
+    }
+    
     // don't set nodes to [], or it'll show as expandible
     if (nodes.length && nodes.length > 0){
       tree.nodes = nodes;

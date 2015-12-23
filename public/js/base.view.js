@@ -18,5 +18,8 @@ App.BaseMapperView = Backbone.View.extend({
         }
       });
     }, 2500);    
+  },
+  fa : function(classname){
+    return '<span class="fa fa-' + classname + '"></span>';
   }
 });

@@ -32,23 +32,28 @@ curl -X {{method}}{{#if headers}}{{#each headers}} -H "{{key}}:{{value}}" {{/eac
   {{/each}}
 </script>
 
+
+
 <script id="tplHeaderRow" type="text/x-handlebars-template">
+ 
   <li class="headerRow">
-    <input class="input-medium" name="headers.key" type="text" placeholder="Header Key" value="{{key}}">
-    <input class="input-medium" name="headers.value" type="text" placeholder="Header Value" value="{{value}}">
+    <input name="headers.key" type="text" placeholder="Header Key" value="{{key}}">
+    <input name="headers.value" type="text" placeholder="Header Value" value="{{value}}">
     <span>
       <a class="add-header" href="#">{{fa "fa-plus"}}</a>
       <a class="remove-header" href="#">{{fa "fa-trash-o fa-lg"}}</a>
     </span>
   </li>
+
+
 </script>
 
 <script id="tplEditableHeaders" type="text/x-handlebars-template">
   <ul class="list-unstyled {{#if hasBody}}hasContentType{{/if}}">
       {{#if hasBody}}
       <li>
-        <label class="input-medium">Content-Type</label>
-        <select class="input-medium" name="content-type">
+        <label>Content-Type</label>
+        <select class="form-control" name="content-type">
           <option value="application/json">application/json</option>
           <option value="application/atom+xml">application/atom+xml</option>
           <option value="application/x-www-form-urlencoded">application/x-www-form-urlencoded</option>
@@ -66,12 +71,41 @@ curl -X {{method}}{{#if headers}}{{#each headers}} -H "{{key}}:{{value}}" {{/eac
   </ul>
 </script>
 
+
+
 <script id="tplRequestMappingContainer" type="text/x-handebars-template">
-  <div class="container {{#unless model.mapping}}unmapped{{/unless}}">
+
+      <div class="row row-cards-pf">
+        <div class="col-md-12">
+          <div class="card-pf {{#unless model.mapping}}unmapped{{/unless}}">
+            
+            <div class="card-pf-heading">
+              <a href="#" id="removeMapping" class="btn btn-sm btn-danger pull-right">Remove Mapping from Request</a>
+              <h2 class="card-pf-title">
+                Response Mapping
+              </h2>
+            </div> <!-- card header -->
+            
+            {{#unless model.mapping}}
+            <a href="#" class="btn-add-mapping"> Add Mapping {{fa "fa-plus"}}</a>
+            {{else}}
+            <!-- <h4 class="fh-secondary-header">Response Mapping</h4> -->
+            {{/unless}}
+
+            
+            <div class="card-pf-body">
+              <div id="mappingView"></div>
+            </div><!-- card-body -->
+          </div><!-- card -->
+        </div><!-- col -->
+      </div><!-- row -->
+
+<!--
+  <div class="{{#unless model.mapping}}unmapped{{/unless}}">
     <div class="row">
       <div class="col-md-12">
-        {{fa "fa-map-signs pull-left"}}
-        {{fa "fa-map-signs pull-right"}}
+        {{fa "fa-map-signs pull-left icon-white"}}
+        {{fa "fa-map-signs pull-right icon-white"}}
         {{#unless model.mapping}}
           <a href="#" class="btn-add-mapping"> Add Mapping {{fa "fa-plus"}}</a>
         {{else}}
@@ -82,37 +116,89 @@ curl -X {{method}}{{#if headers}}{{#each headers}} -H "{{key}}:{{value}}" {{/eac
       </div>
     </div>
   </div>
+ --> 
+  
 </script>
 
 <script id="tplCreateEditRequestView" type="text/x-handlebars-template">
 
+<!--
+  <ul class="breadcrumb fh-request-breadcrumb">
+    <li><a href="#" class="btn-back">Home</a></li>
+    <li class="active">{{#if isNew}}New{{else}}Edit{{/if}} Request</li>
+  </ul>
+-->
+
   <section class="fh-request">
-    <form class="container try">
 
-      <div class="row">
+    
+    <form class="try form-inline">
+
+      <div class="row row-cards-pf">
         <div class="col-md-12">
-
-          <ul class="breadcrumb fh-request-breadcrumb">
-            <li><a href="#" class="btn-back">Home</a></li>
-            <li class="active">{{#if isNew}}New{{else}}Edit{{/if}} Request</li>
-          </ul>
-
-          <div class="input-group fh-request-input">
-            <span class="input-group-btn">
-              <select name="method">
+          <div class="card-pf card-pf-accented">
+            <div class="fh-request-input">
+              <select name="method" class="form-control input-lg">
                 {{#each methods}}
                 <option>{{this}}</option>
                 {{/each}}
               </select>
-            </span>
-            <input name="url" value="{{model.url}}" class="col-md-8 form-control" id="appendedPrependedDropdownButton" type="text" placeholder="Enter Request URL here">
-            <span class="input-group-btn">
-              <button class="btn btn-primary" type="submit">Send Request</button>
-            </span>
-          </div>
-        </div>
+              <input name="url" value="{{model.url}}" class="form-control input-lg" id="appendedPrependedDropdownButton" type="text" placeholder="Enter Request URL here">
+            </div><!-- fh-request-input -->
+
+            <div class="fh-request-actions">
+              <button class="btn btn-primary btn-lg" type="submit">Send Request</button>
+              <button id="saveRequest" class="btn btn-default btn-lg" type="button">{{#if isNew}}Create{{else}}Update{{/if}} Request</button>
+              
+
+            </div><!-- fh-request-actions -->
+            
+            
+            <ul class="nav nav-tabs nav-tabs-pf fh-request-nav" role="tablist">
+              <li role="presentation" class="active"><a href="#headers" aria-controls="headers" role="tab" data-toggle="tab">Headers</a></li>
+              <li role="presentation"><a href="#mount-path" aria-controls="mount-path" role="tab" data-toggle="tab">Mount Path</a></li>
+              <li role="presentation"><a href="#reqHeadersCollapsible" aria-controls="reqHeadersCollapsible" role="tab" data-toggle="tab">Request Headers</a></li>
+              <li role="presentation"><a href="#rawRequestCollapsible" aria-controls="rawRequestCollapsible" role="tab" data-toggle="tab">Request Headers</a></li>
+            </ul>
+
+
+            <!-- Tab panes -->
+            <div class="tab-content card-pf-body">
+
+              <div class="row fh-headers tab-pane fade in active" role="tabpanel" id="headers">
+                <div class="col-md-6 fh-request-headers">
+                  <div id="editableHeaders"></div>
+                </div>
+                {{#if hasBody}}
+                <div class="col-md-6 fh-request-body">
+                  <textarea name="body" class="form-control" rows="4" placeholder="Body">{{ model.body }}</textarea>
+                </div>
+                {{/if}}
+              </div><!-- row -->
+              
+              <div id="mount-path" role="tabpanel" class="mountPath tab-pane fade">
+                <input type="text" id="mountPath" name="mountPath" class="form-control" aria-describedby="mountPathHelp" value="{{ model.mountPath }}">
+                <span id="mountPathHelp" class="help-block">Where should we expose your new request? Defaults to the same path as on the remote server</span>
+              </div>
+              
+              <div id="reqHeadersCollapsible" role="tabpanel" class="tab-pane fade">
+                <div class="request-headers">
+                  <p>Try a request to see the headers</p>
+                </div>
+              </div>
+              
+              <div id="rawRequestCollapsible" role="tabpanel" class="tab-pane fade">
+                <pre class="request-raw">Try a request to see it's raw body</pre>
+              </div>
+              
+
+            </div><!-- tab pane -->
+            
+          </div><!-- card -->
+        </div><!-- col -->
       </div><!-- row -->
 
+<!--
       <div class="row">
         <div class="col-md-6 fh-request-headers">
           <h4 class="fh-secondary-header">Headers</h4>
@@ -125,8 +211,10 @@ curl -X {{method}}{{#if headers}}{{#each headers}} -H "{{key}}:{{value}}" {{/eac
           <textarea name="body" rows="3" class="col-md-6">{{ model.body }}</textarea>
         </div>
         {{/if}}
-      </div><!-- row -->
+      </div>
+       row -->
 
+<!--
       <div class="row">
         <div class="col-md-12">
           <h4 class="fh-secondary-header"><a class="toggleable collapsed" data-toggle="collapse" href="#reqHeadersCollapsible">{{fa "fa-chevron-down"}} Request Headers</a></h4>
@@ -140,66 +228,83 @@ curl -X {{method}}{{#if headers}}{{#each headers}} -H "{{key}}:{{value}}" {{/eac
           </div>
 
         </div>
-      </div><!-- row -->
+        
+        <div class="col-md-12">
+          <h4 class="fh-secondary-header">{{fa "fa-thumb-tack"}} Mount Path</h4>
+          <input type="text" id="mountPath" name="mountPath" class="form-control" aria-describedby="mountPathHelp" value="{{ model.mountPath }}">
+          <span id="mountPathHelp" class="help-block">Where should we expose your new request? Defaults to the same path as on the remote server</span>
+
+          
+        </div>
+        
+      </div>
+       row -->
     </form><!-- container -->
   </section><!-- fh-request -->
   
   <section class="fh-mapping">
-    
   </section>
 
 
   <section class="loader">
-    <div class="container">
       <div class="row">
         <div class="col-md-12">
           <p class="text-center">LOADING...</p>
         </div>
       </div>
-    </div>
   </section>
+  
+    
+  
   <section class="fh-result">
-    <div class="container">
-      <div class="row">
+      <div class="row row-cards-pf">
         <div class="col-md-12">
+          <div class="card-pf">
+            
+            <div class="card-pf-heading">
+              <h2 class="card-pf-title">
+                Response
+              </h2>
+            </div> <!-- card header -->
 
-          <h4 class="fh-secondary-header">Response</h4>
+            <div class="card-pf-body tab-content">
 
-          <p class="status"></p>
+              <ul class="nav nav-tabs nav-tabs-pf fh-request-nav" role="tablist">
+                <li role="presentation" class="active"><a href="#responseHeader" aria-controls="responseHeader" role="tab" data-toggle="tab">Headers</a></li>
+                <li role="presentation"><a href="#responseBody" aria-controls="responseBody" role="tab" data-toggle="tab">Response Body</a></li>
+                <li role="presentation"><a href="#rawResponse" aria-controls="rawResponse" role="tab" data-toggle="tab">Raw Response</a></li>
+                <li role="presentation"><a href="#sampleCode" aria-controls="sampleCode" role="tab" data-toggle="tab">Sample Code</a></li>
+              </ul>
+              
+              <div role="tabpanel" class="tab-pane active" id="responseHeader">
+                <p class="status"></p>
+                <dl class="dl-horizontal response-headers"></dl>
+              </div>
+              
+              <div role="tabpanel" class="tab-pane" id="responseBody">
+                <ul class="nav nav-tabs">
+                  <li class="active"><a href="#">Body</a></li>
+                  <li><a href="#">Mapped Body</a></li>
+                </ul>
 
-          <h4 class="fh-secondary-header">Response Headers</h4>
-
-          <div class="row">
-            <div class="col-md-6">
-              <dl class="dl-horizontal response-headers"></dl>
-            </div>
-          </div>
-
-          <h4  class="fh-secondary-header">Response Body</h4>
-          <!-- We want to add Syntax highlighting here -->
-          <pre class="pre-scrollable response-body"></pre>
-
-          <h4 class="fh-secondary-header"><a class="toggleable collapsed" data-toggle="collapse" href="#rawResponse">{{fa "fa-chevron-down"}} Raw Response</a></h4>
-
-          <div id="rawResponse" class="collapse">
-            <pre class="response-raw">Send a request to see the raw response</pre>
-          </div>
-
-          <h4 class="fh-secondary-header"><a class="toggleable collapsed" data-toggle="collapse" href="#sampleCodeCollapsible">{{fa "fa-chevron-down"}} Sample code</a></h4>
-
-          <div id="sampleCodeCollapsible" class="collapse">
-            <h5>Node.js Request</h5>
-            <pre id="sample-nodejs"></pre>
-
-            <h5>cURL Request</h5>
-            <pre id="sample-curl"></pre>
-          </div>
-
-          <p>
-            <button id="saveRequest" class="btn btn-primary" type="button">{{#if isNew}}Create{{else}}Update{{/if}} Request</button>
-          </p>
-        </div>
-      </div><!-- row -->
-    </form><!-- container -->
-  </section><!-- fh-request -->
+                <pre class="pre-scrollable response-body"></pre>
+              </div>
+              
+              <div role="tabpanel" class="tab-pane" id="rawResponse">
+                <pre class="response-raw prettyprint">Send a request to see the raw response</pre>
+              </div>
+              
+              <div role="tabpanel" class="tab-pane" id="sampleCode">
+                <h5>Node.js Request</h5>
+                <pre id="sample-nodejs"></pre>
+                <h5>cURL Request</h5>
+                <pre id="sample-curl"></pre>
+              </div>
+          
+          </div><!-- body -->
+        </div><!-- card -->
+      </div><!-- col -->
+    </div><!-- row -->
+  </section><!-- fh-result -->
+  
 </script>
