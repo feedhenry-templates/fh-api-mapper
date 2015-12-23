@@ -2,7 +2,8 @@ var BaseMapperView = require('./base.view.js'),
 TransformationsCollection = require('./transformations.collection.js'),
 Handlebars = require('./handlebars.js'),
 _ = require('underscore'),
-$ = jQuery = require('jquery');
+$ = require('jquery');
+jQuery = $;
 require('../lib/bootstrap-treeview/bootstrap-treeview.min.js');
 
 module.exports = BaseMapperView.extend({
@@ -47,7 +48,7 @@ module.exports = BaseMapperView.extend({
       selectedColor : '#6c696a'
     });
     this.tree = tree;
-    tree.on('nodeSelected', $.proxy(this.nodeSelected, this));
+    tree.on('nodeSelected', jQuery.proxy(this.nodeSelected, this));
     tree.treeview('selectNode', this.selectedNode || 0);
   },
   nodeSelected : function(e, field){

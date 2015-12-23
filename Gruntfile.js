@@ -50,7 +50,7 @@ module.exports = function(grunt) {
             flatten: false,
             src: '**/*.{js,css,less}',
             dest: 'public/lib/bootstrap-treeview/'
-          },
+          }
         ]
       }
     }
