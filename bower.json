@@ -14,7 +14,8 @@
     "underscore": "1.8.3",
     "font-awesome": "4.4.0",
     "jquery": "2.1.4",
-    "bootstrap-treeview": "~1.2.0"
+    "bootstrap-treeview": "~1.2.0",
+    "patternfly": "~2.8.0"
   },
   "exportsOverride": {
     "jquery": {
@@ -33,6 +34,12 @@
     },
     "bootstrap-treeview": {
       ".": "dist/*"
+    },
+    "patternfly" : {
+      "less" : "less/*",
+      "components" : "components",
+      "fonts" : "dist/fonts",
+      "." : "dist/css/patternfly-additions.min.css"
     }
   }
 }
