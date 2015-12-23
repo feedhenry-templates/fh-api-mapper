@@ -2,6 +2,12 @@ var _ = require('underscore'),
 RequestModel = require('./request.model.js'),
 RequestsListView = require('./requests.view.js'),
 App = {};
+$ = require('jquery');
+jQuery = $;
+window.jQuery = jQuery;
+global.jQuery = jQuery;
+var bootstrap = require('bootstrap');
+
 
 
 App.init = (function() {

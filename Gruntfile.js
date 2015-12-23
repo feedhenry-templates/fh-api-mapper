@@ -34,7 +34,7 @@ module.exports = function(grunt) {
             cwd : 'node_modules/font-awesome',
             expand: true,
             flatten: false,
-            src: '**/**/*.{js,css,less}',
+            src: '{less,fonts}/**',
             dest: 'public/lib/font-awesome/'
           },
           {
@@ -50,7 +50,14 @@ module.exports = function(grunt) {
             flatten: false,
             src: '**/*.{js,css,less}',
             dest: 'public/lib/bootstrap-treeview/'
-          }
+          },
+          {
+            cwd : 'node_modules/patternfly',
+            expand: true,
+            flatten: false,
+            src: '{less,components,fonts,dist}/**',
+            dest: 'public/lib/patternfly/'
+          },
         ]
       }
     }

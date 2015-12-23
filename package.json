@@ -18,6 +18,7 @@
     "less-middleware": "^2.0.1",
     "mongoose": "^4.1.4",
     "mongoose-validators": "^0.1.0",
+    "patternfly": "^2.8.0",
     "proxyquire": "^1.7.1",
     "request": "2.61.0",
     "stream-buffers": "2.2.0",

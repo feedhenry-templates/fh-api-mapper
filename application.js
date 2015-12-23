@@ -15,7 +15,7 @@ app.engine('html', require('ejs').renderFile);
 app.use('/sys', mbaasExpress.sys([]));
 app.use('/mbaas', mbaasExpress.mbaas);
 app.use(express['static'](__dirname + '/public'));
-app.use(lessMiddleware(__dirname + '/public/css'));
+app.use(lessMiddleware(__dirname + '/public'));
 
 // Note: important that this is added just before your own Routes
 app.use(mbaasExpress.fhmiddleware());
