@@ -21,14 +21,44 @@ request({
 });
 </script>
 
+<script id="tplFhServiceRequest" type="text/x-handlebars-template">
+var fh = require('fh-mbaas-api');
+fh.service({
+  guid: "{{guid}}",
+  path: "{{mountPath}}",
+  method: "{{method}}"{{#if headers}},{{/if}}
+  {{#if headers}}
+  headers: {
+  {{#each headers}}
+    "{{key}}" : "{{value}}"{{#unless @last}},{{/unless}}
+  {{/each}}
+  }{{#if data}},{{/if}}
+  {{/if}}
+  {{#if params}}
+  data: '{{ escapeSingleQuotes data }}'
+  {{/if}}
+}, function (error, response, body) {
+  if (error) {
+    return console.error('An error occured:', error);
+  }
+  console.log('Server responded with:', body);
+});
+</script>
+
+
+
 <script id="tplCurlRequest" type="text/x-handlebars-template">
 curl -X {{method}}{{#if headers}}{{#each headers}} -H "{{key}}:{{value}}" {{/each}} {{/if}} {{#if data}}--data "{{escapeSingleQuotes data}}"{{/if}} {{url}} 
 </script>
 
 <script id="tplHeaders" type="text/x-handlebars-template">
-  {{#each headers}}
-    <dt>{{@key}}</dt>
-    <dd>{{@this}}</dd>
+  <dl class="dl-horizontal">
+    {{#each headers}}
+      <dt>{{@key}}</dt>
+      <dd>{{@this}}</dd>
+    {{else}}
+  </dl>
+  No headers sent on this request
   {{/each}}
 </script>
 
@@ -80,16 +110,19 @@ curl -X {{method}}{{#if headers}}{{#each headers}} -H "{{key}}:{{value}}" {{/eac
           <div class="card-pf {{#unless model.mapping}}unmapped{{/unless}}">
             
             <div class="card-pf-heading">
-              <a href="#" id="removeMapping" class="btn btn-sm btn-danger pull-right">Remove Mapping from Request</a>
+              {{#if model.mapping}}
+                <a href="#" id="removeMapping" class="btn btn-sm btn-danger pull-right">Remove Mapping from Request</a>
+              {{/if}}
               <h2 class="card-pf-title">
                 Response Mapping
               </h2>
             </div> <!-- card header -->
             
             {{#unless model.mapping}}
-            <a href="#" class="btn-add-mapping"> Add Mapping {{fa "fa-plus"}}</a>
-            {{else}}
-            <!-- <h4 class="fh-secondary-header">Response Mapping</h4> -->
+            <div class="noMapping">
+              <h3>This request doesn&apos;t use a mapping right now.</h3>
+              <a class="btn btn-primary btn-lg btn-add-mapping" href="#"> Add Mapping {{fa "fa-plus"}}</a>
+            </div>
             {{/unless}}
 
             
@@ -98,36 +131,10 @@ curl -X {{method}}{{#if headers}}{{#each headers}} -H "{{key}}:{{value}}" {{/eac
             </div><!-- card-body -->
           </div><!-- card -->
         </div><!-- col -->
-      </div><!-- row -->
-
-<!--
-  <div class="{{#unless model.mapping}}unmapped{{/unless}}">
-    <div class="row">
-      <div class="col-md-12">
-        {{fa "fa-map-signs pull-left icon-white"}}
-        {{fa "fa-map-signs pull-right icon-white"}}
-        {{#unless model.mapping}}
-          <a href="#" class="btn-add-mapping"> Add Mapping {{fa "fa-plus"}}</a>
-        {{else}}
-          <h4 class="fh-secondary-header">Response Mapping</h4>
-        {{/unless}}
-
-        <div id="mappingView"></div>
-      </div>
-    </div>
-  </div>
- --> 
-  
+      </div><!-- row -->  
 </script>
 
 <script id="tplCreateEditRequestView" type="text/x-handlebars-template">
-
-<!--
-  <ul class="breadcrumb fh-request-breadcrumb">
-    <li><a href="#" class="btn-back">Home</a></li>
-    <li class="active">{{#if isNew}}New{{else}}Edit{{/if}} Request</li>
-  </ul>
--->
 
   <section class="fh-request">
 
@@ -158,7 +165,7 @@ curl -X {{method}}{{#if headers}}{{#each headers}} -H "{{key}}:{{value}}" {{/eac
               <li role="presentation" class="active"><a href="#headers" aria-controls="headers" role="tab" data-toggle="tab">Headers</a></li>
               <li role="presentation"><a href="#mount-path" aria-controls="mount-path" role="tab" data-toggle="tab">Mount Path</a></li>
               <li role="presentation"><a href="#reqHeadersCollapsible" aria-controls="reqHeadersCollapsible" role="tab" data-toggle="tab">Request Headers</a></li>
-              <li role="presentation"><a href="#rawRequestCollapsible" aria-controls="rawRequestCollapsible" role="tab" data-toggle="tab">Request Headers</a></li>
+              <li role="presentation"><a href="#rawRequestCollapsible" aria-controls="rawRequestCollapsible" role="tab" data-toggle="tab">Raw Request</a></li>
             </ul>
 
 
@@ -183,12 +190,12 @@ curl -X {{method}}{{#if headers}}{{#each headers}} -H "{{key}}:{{value}}" {{/eac
               
               <div id="reqHeadersCollapsible" role="tabpanel" class="tab-pane fade">
                 <div class="request-headers">
-                  <p>Try a request to see the headers</p>
+                  <p><a href="#" class="try">Try this request</a> to see the request headers which get sent</p>
                 </div>
               </div>
               
               <div id="rawRequestCollapsible" role="tabpanel" class="tab-pane fade">
-                <pre class="request-raw">Try a request to see it's raw body</pre>
+                <pre class="request-raw"><a href="#" class="try">Try this request</a> to see it's raw body</pre>
               </div>
               
 
@@ -244,19 +251,12 @@ curl -X {{method}}{{#if headers}}{{#each headers}} -H "{{key}}:{{value}}" {{/eac
   
   <section class="fh-mapping">
   </section>
-
-
-  <section class="loader">
-      <div class="row">
-        <div class="col-md-12">
-          <p class="text-center">LOADING...</p>
-        </div>
-      </div>
-  </section>
   
     
   
   <section class="fh-result">
+      
+    
       <div class="row row-cards-pf">
         <div class="col-md-12">
           <div class="card-pf">
@@ -266,8 +266,21 @@ curl -X {{method}}{{#if headers}}{{#each headers}} -H "{{key}}:{{value}}" {{/eac
                 Response
               </h2>
             </div> <!-- card header -->
-
-            <div class="card-pf-body tab-content">
+            
+            <section class="loader">
+                <div class="row">
+                  <div class="col-md-12">
+                    <p class="text-center">LOADING...</p>
+                  </div>
+                </div>
+            </section>
+            
+            <p class="fh-response-pre">
+              <a href="#" class="try">Try this request</a> to see it's response
+              <br /><br />
+            </p>
+            
+            <div class="card-pf-body tab-content fh-response">
 
               <ul class="nav nav-tabs nav-tabs-pf fh-request-nav" role="tablist">
                 <li role="presentation" class="active"><a href="#responseHeader" aria-controls="responseHeader" role="tab" data-toggle="tab">Headers</a></li>
@@ -278,16 +291,24 @@ curl -X {{method}}{{#if headers}}{{#each headers}} -H "{{key}}:{{value}}" {{/eac
               
               <div role="tabpanel" class="tab-pane active" id="responseHeader">
                 <p class="status"></p>
-                <dl class="dl-horizontal response-headers"></dl>
+                <div class="response-headers"></div>
               </div>
               
               <div role="tabpanel" class="tab-pane" id="responseBody">
-                <ul class="nav nav-tabs">
-                  <li class="active"><a href="#">Body</a></li>
-                  <li><a href="#">Mapped Body</a></li>
-                </ul>
-
-                <pre class="pre-scrollable response-body"></pre>
+                <div class="card-pf-body tab-content">
+                  <ul class="nav nav-tabs">
+                    <li role="presentation" class="active"><a href="#unmappedBody" aria-controls="unmappedBody" role="tab" data-toggle="tab">Body</a></li>
+                    <li><a href="#mappedBody" aria-controls="mappedBody" role="tab" data-toggle="tab">Mapped Body</a></li>
+                  </ul>
+                  
+                  <div role="tabpanel" class="tab-pane active" id="unmappedBody">
+                    <pre class="pre-scrollable response-body"></pre>
+                  </div>
+                  
+                  <div role="tabpanel" class="tab-pane" id="mappedBody">
+                    <pre class="pre-scrollable mapped-response-body"></pre>
+                  </div>
+                </div>
               </div>
               
               <div role="tabpanel" class="tab-pane" id="rawResponse">
@@ -295,9 +316,14 @@ curl -X {{method}}{{#if headers}}{{#each headers}} -H "{{key}}:{{value}}" {{/eac
               </div>
               
               <div role="tabpanel" class="tab-pane" id="sampleCode">
-                <h5>Node.js Request</h5>
+                <h5>fh.service snippet</h5>
+                <p>Call the mapped service from your Cloud App or another mBaaS Service within the platform</p>
+                <pre id="sample-fhservice"></pre>
+                <h5>Node.js Request Module</h5>
+                <p>Call the endpoint directly using the Node.js request module</p>
                 <pre id="sample-nodejs"></pre>
                 <h5>cURL Request</h5>
+                <p>Call the endpoint directly from the command line using cURL</p>
                 <pre id="sample-curl"></pre>
               </div>
           

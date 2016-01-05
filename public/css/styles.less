@@ -130,3 +130,45 @@
     padding: 3px 10px!important;
   }
 }
+
+.loader {
+  display: none;
+}
+
+.request-pending .loader {
+  display: block;
+}
+
+.fh-result .fh-response {
+  display: none;
+}
+
+.request-done .fh-result .fh-response {
+  display: block;
+}
+
+.request-done .fh-response-pre, .request-pending .fh-response-pre {
+  display: none;
+}
+
+.response-headers .dl-horizontal {
+   dt {
+     width: 260px;
+   }
+   dd {
+     margin-left: 280px;
+   }
+}
+
+.noMapping {
+  text-align: center;
+  padding: 10px 60px;
+}
+
+.alert {
+  position: fixed;
+}
+
+.alert-error {
+  .alert-danger;
+}

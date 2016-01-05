@@ -63,12 +63,19 @@ module.exports = BaseMapperView.extend({
     this.requestView = new RequestView({
       model : model
     });
-    this.listenTo(this.requestView, 'back', function(){
+    this.listenTo(this.requestView, 'back', function(message){
       self.requestView.remove();
       delete self.requestView;
       self.collection.fetch();
       self.render();
       window.history.pushState('', "Request List", "/");
+      if (message){
+        //TODO: this should be hooking into an after render event or some such..
+        setTimeout(function(){
+          self.trigger('notify', 'success', message);  
+        }, 100);
+        
+      }
     });
     this.$el.html(this.requestView.$el);
     if (model.isNew()){

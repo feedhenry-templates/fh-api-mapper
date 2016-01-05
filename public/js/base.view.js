@@ -11,9 +11,16 @@ module.exports = Backbone.View.extend({
       message = className;
       className = 'info';
     }
-    var notification = $(this.tplNotification({ message : message, className : className }));
+    var notification = $(this.tplNotification({ message : message, className : className })),
+    width;
     this.$el.find('.alert').remove();
     this.$el.prepend(notification);
+    width = notification.parent().width();
+    notification.css({
+      position : 'fixed',
+      width : width,
+      'z-index' : 1000
+    });
     setTimeout(function(){
       notification.fadeOut({
         complete : function(){

@@ -12,13 +12,15 @@ module.exports = BaseMapperView.extend({
     'click .btn-back' : 'back',
     'click .btn-delete' : 'deleteRequest',
     'submit form.try' : 'tryRequest',
+    'click a.try' : 'tryRequest',
     'change input' : 'inputChanged',
     'change select' : 'inputChanged',
     'change textarea' : 'inputChanged',
     'click .add-header' : 'addHeaderField',
     'click .remove-header' : 'removeHeaderField',
     'change  select[name=method]' : 'render',
-    'click .btn-add-mapping' : 'addMapping'
+    'click .btn-add-mapping' : 'addMapping',
+    'click #removeMapping' : 'removeMapping'
   },
   initialize : function(options){
     BaseMapperView.prototype.initialize.apply(this, arguments);
@@ -52,12 +54,15 @@ module.exports = BaseMapperView.extend({
     this.$responseHeaders = this.$el.find('.response-headers');
     this.$responseRaw = this.$el.find('.response-raw');
     this.$responseBody = this.$el.find('.response-body');
+    this.$mappedResponseBody = this.$el.find('.mapped-response-body');
     this.$status = this.$el.find('.status');
     this.$sampleNodejs = this.$el.find('#sample-nodejs');
+    this.$sampleFhService = this.$el.find('#sample-fhservice');
     this.$sampleCurl = this.$el.find('#sample-curl');
     this.$mountPath = this.$el.find('#mountPath');
     this.$mapping = this.$el.find('.fh-mapping');
     this.$tplNodejsRequest = Handlebars.compile($('#tplNodejsRequest').html());
+    this.$tplFhServiceRequest = Handlebars.compile($('#tplFhServiceRequest').html());
     this.$tplCurlRequest = Handlebars.compile($('#tplCurlRequest').html());
     this.$tplEditableHeaders = Handlebars.compile($("#tplEditableHeaders").html());
     this.$tplHeaderRow = Handlebars.compile($("#tplHeaderRow").html());
@@ -68,8 +73,11 @@ module.exports = BaseMapperView.extend({
   },
   renderSnippets : function(){
     // Set up sample snippets
-    this.$sampleNodejs.html(this.$tplNodejsRequest(this.model.toJSON()));
-    this.$sampleCurl.html(this.$tplCurlRequest(this.model.toJSON()));
+    var snippetModel = this.model.toJSON();
+    snippetModel.guid = process.env.FH_INSTANCE || 'Unknown service GUID';
+    this.$sampleNodejs.html(this.$tplNodejsRequest(snippetModel));
+    this.$sampleFhService.html(this.$tplFhServiceRequest(snippetModel));
+    this.$sampleCurl.html(this.$tplCurlRequest(snippetModel));
   },
   renderHeaders : function(){
     var model = this.model.toJSON();
@@ -160,8 +168,7 @@ module.exports = BaseMapperView.extend({
     request = this.getFormValuesAsJSON();
     this.model.save(request, {
       success : function(){
-        self.trigger('notify', 'success', 'Notification saved successfully');
-        self.trigger('back');
+        self.trigger('back', 'Request saved successfully');
       }, 
       error : function(model, xhr){
         log.error(xhr.responseText);
@@ -204,6 +211,7 @@ module.exports = BaseMapperView.extend({
     this.$status.text('In progress...');
     this.$el.addClass('request-pending').removeClass('request-done');
     this.$sampleNodejs.val('');
+    this.$sampleFhService.val('');
     
     
   },
@@ -226,7 +234,7 @@ module.exports = BaseMapperView.extend({
     this.$requestRaw.text( request.raw );
     this.$responseRaw.text( response.raw );
     this.$responseBody.text(prettyResponseBody);
-    this.$el.find('.mapped-body').text(prettyMappedBody);
+    this.$mappedResponseBody.text(prettyMappedBody);
   },
   onRequestFailed : function(status, responseRaw){
     this.$status.text(status);
@@ -297,5 +305,11 @@ module.exports = BaseMapperView.extend({
     this.listenToOnce(this.mappingView, 'removed', function(){
       this.model.fetch();
     }, this);
+  },
+  removeMapping : function(e){
+    if (e){
+      $(e.target).remove();
+    }
+    this.mappingView.removeMapping();
   }
 });

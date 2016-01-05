@@ -9,7 +9,6 @@ require('../lib/bootstrap-treeview/bootstrap-treeview.min.js');
 module.exports = BaseMapperView.extend({
   className: "mapping",
   events : {
-    'click #removeMapping' : 'removeMapping',
     'change .detailView form input' : 'updateMapping',
     'change .detailView form select' : 'updateMapping'
   },
