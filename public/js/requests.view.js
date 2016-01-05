@@ -24,6 +24,7 @@ module.exports = BaseMapperView.extend({
     if (this.requestView){
       return;
     }
+    $('.navbar-utility').hide();
     var tpl = Handlebars.compile($('#tplRequestsList').html());
     this.$el.html(tpl({ requests : this.collection.toJSON() }));
     return this;
@@ -31,9 +32,10 @@ module.exports = BaseMapperView.extend({
   showSavedRequest : function(e){
     var self = this,
     el = $(e.target),
+    tagName = e.target.tagName.toLowerCase(),
     id, model;
-    if (e.target.tagName.toLowerCase() !== 'tr'){
-      if (!el.hasClass('btn-edit')){
+    if (tagName !== 'tr'){
+      if (tagName !== "td" && !el.hasClass('btn-edit')){
         return;
       }
       el = el.parents('tr');  
@@ -60,10 +62,12 @@ module.exports = BaseMapperView.extend({
   },
   showRequestView : function(model){
     var self = this;
+    $('.navbar-utility').show();
     this.requestView = new RequestView({
       model : model
     });
     this.listenTo(this.requestView, 'back', function(message){
+      // TODO: This belongs in a view some place..
       self.requestView.remove();
       delete self.requestView;
       self.collection.fetch();
@@ -74,7 +78,6 @@ module.exports = BaseMapperView.extend({
         setTimeout(function(){
           self.trigger('notify', 'success', message);  
         }, 100);
-        
       }
     });
     this.$el.html(this.requestView.$el);
