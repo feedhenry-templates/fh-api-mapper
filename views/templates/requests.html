@@ -3,11 +3,6 @@
 
       <div class="row">
         <div class="col-md-12">
-<!--
-          <ul class="breadcrumb fh-request-breadcrumb">
-            <li class="active">Home</li>
-          </ul>
--->
           {{#if requests}}
           <table class="table">
             <thead>
@@ -15,7 +10,6 @@
               <th>Type</th>
               <th>URL</th>
               <th>Mount Path</th>
-              <!--<th>Date</th>-->
               <th class="fh-request-list-actions">
                 <button class="btn btn-primary createRequest" type="button"><i class="fa fa-plus"></i> New Request</button>
               </th>
@@ -27,11 +21,12 @@
               <td>{{method}}</td>
               <td>{{url}}</td>
               <td>{{mountPath}}</td>
-              <!--<td>May 12th, 2015</td>-->
               <td class="fh-request-list-actions">
+                <div class="btn-group" role="group">
                 <a class="btn btn-default btn-small btn-edit" type="button"><i class="fa fa-pencil"></i> Edit</a>
                 <a class="btn btn-default btn-small btn-delete" type="button"><i class="fa fa-trash-o fa-lg"></i> Delete</a>
                 <a href="/api/requests/{{_id}}/export" class="btn btn-default btn-small btn-export" type="button"><i class="fa fa-download"></i> Export</a>
+                </div>
               </td>
             </tr>
             {{/each}}
@@ -52,7 +47,6 @@
               </div>
             </div>
           {{/if}}
-
         </div>
       </div>
   </section>

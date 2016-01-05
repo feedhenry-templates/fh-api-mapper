@@ -4,7 +4,12 @@ MappingModel = require('./mapping.model.js'),
 MappingView = require('./mapping.view.js'),
 Handlebars = require('./handlebars.js'),
 _ = require('underscore'),
-$ =require('jquery');
+$ =require('jquery'),
+ace = require('brace');
+require('brace/mode/javascript');
+require('brace/mode/json');
+require('brace/theme/monokai');
+
 module.exports = BaseMapperView.extend({
   className: "request",
   events : {
@@ -50,11 +55,11 @@ module.exports = BaseMapperView.extend({
     this.$editableHeaders = this.$el.find('#editableHeaders');
     this.$data = this.$el.find('textarea[name=data]');
     this.$requestHeaders = this.$el.find('.request-headers');
-    this.$requestRaw = this.$el.find('.request-raw');
+    this.$requestRaw = this.$el.find('#requestRaw');
     this.$responseHeaders = this.$el.find('.response-headers');
-    this.$responseRaw = this.$el.find('.response-raw');
-    this.$responseBody = this.$el.find('.response-body');
-    this.$mappedResponseBody = this.$el.find('.mapped-response-body');
+    this.$responseRaw = this.$el.find('#responseRaw');
+    this.$unmappedResponseBody = this.$el.find('#unmappedResponseBody');
+    this.$mappedResponseBody = this.$el.find('#mappedResponseBody');
     this.$status = this.$el.find('.status');
     this.$sampleNodejs = this.$el.find('#sample-nodejs');
     this.$sampleFhService = this.$el.find('#sample-fhservice');
@@ -78,6 +83,7 @@ module.exports = BaseMapperView.extend({
     this.$sampleNodejs.html(this.$tplNodejsRequest(snippetModel));
     this.$sampleFhService.html(this.$tplFhServiceRequest(snippetModel));
     this.$sampleCurl.html(this.$tplCurlRequest(snippetModel));
+    this.renderEditors(this.$sampleNodejs, this.$sampleFhService, this.$sampleCurl);
   },
   renderHeaders : function(){
     var model = this.model.toJSON();
@@ -151,6 +157,8 @@ module.exports = BaseMapperView.extend({
         mountPath = '/';
       }else{
         mountPath = mountPath.substring(mountPath.indexOf('/'), mountPath.length);  
+        // rip out query paths...
+        mountPath = mountPath.replace(/\?.+$/g, '');
       }
       
       mappedValues.mountPath = mountPath;
@@ -172,7 +180,16 @@ module.exports = BaseMapperView.extend({
       }, 
       error : function(model, xhr){
         log.error(xhr.responseText);
-        self.trigger('notify', 'error', 'Error saving request');
+        var responseErr = xhr.responseJSON;
+        var message = "Error saving request";
+        if (responseErr && responseErr.errors){
+          _.each(responseErr.errors, function(err){
+            if (err.message){
+              message += err.message + '\n';
+            }
+          });
+        }
+        self.trigger('notify', 'error', message);
         self.saveError(xhr.responseJSON);
       }
     });
@@ -221,7 +238,8 @@ module.exports = BaseMapperView.extend({
     response = data.response,
     prettyResponseBody = response.body,
     prettyMappedBody = response.mapped,
-    $tplHeaders = Handlebars.compile($('#tplHeaders').html());
+    $tplHeaders = Handlebars.compile($('#tplHeaders').html()),
+    mappedEditor, unmappedEditor;
     
     if (_.isObject(prettyResponseBody)){
       prettyResponseBody = JSON.stringify(prettyResponseBody, null, 2);
@@ -233,8 +251,9 @@ module.exports = BaseMapperView.extend({
     this.$responseHeaders.html($tplHeaders({ headers : response.headers }));
     this.$requestRaw.text( request.raw );
     this.$responseRaw.text( response.raw );
-    this.$responseBody.text(prettyResponseBody);
+    this.$unmappedResponseBody.text(prettyResponseBody);
     this.$mappedResponseBody.text(prettyMappedBody);
+    this.renderEditors(this.$mappedResponseBody, this.$unmappedResponseBody, this.$requestRaw, this.$responseRaw);
   },
   onRequestFailed : function(status, responseRaw){
     this.$status.text(status);
@@ -311,5 +330,17 @@ module.exports = BaseMapperView.extend({
       $(e.target).remove();
     }
     this.mappingView.removeMapping();
+  },
+  renderEditors : function(){
+    _.each(arguments, function(el){
+      var id = el.attr('id'),
+      type = el.data('type'),
+      editor = ace.edit(id);
+      if (['javascript', 'json'].indexOf(type)>-1){
+        editor.getSession().setMode('ace/mode/' + type);  
+      }
+      editor.setTheme('ace/theme/monokai');
+      editor.setReadOnly(true);
+    });
   }
 });

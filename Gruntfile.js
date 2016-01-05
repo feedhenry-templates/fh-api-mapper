@@ -58,6 +58,13 @@ module.exports = function(grunt) {
             src: '{less,components,fonts,dist}/**',
             dest: 'public/lib/patternfly/'
           },
+          {
+            cwd : 'node_modules/brace',
+            expand: true,
+            flatten: false,
+            src: '**/*',
+            dest: 'public/lib/brace/'
+          }
         ]
       }
     }

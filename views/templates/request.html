@@ -170,7 +170,7 @@ curl -X {{method}}{{#if headers}}{{#each headers}} -H "{{key}}:{{value}}" {{/eac
 
 
             <!-- Tab panes -->
-            <div class="tab-content card-pf-body">
+            <div class="tab-content card-pf-body requestTabBody">
 
               <div class="row fh-headers tab-pane fade in active" role="tabpanel" id="headers">
                 <div class="col-md-6 fh-request-headers">
@@ -195,7 +195,7 @@ curl -X {{method}}{{#if headers}}{{#each headers}} -H "{{key}}:{{value}}" {{/eac
               </div>
               
               <div id="rawRequestCollapsible" role="tabpanel" class="tab-pane fade">
-                <pre class="request-raw"><a href="#" class="try">Try this request</a> to see it's raw body</pre>
+                <pre id="requestRaw" class="bodyEditor" data-type="http"><a href="#" class="try">Try this request</a> to see it's raw body</pre>
               </div>
               
 
@@ -204,48 +204,6 @@ curl -X {{method}}{{#if headers}}{{#each headers}} -H "{{key}}:{{value}}" {{/eac
           </div><!-- card -->
         </div><!-- col -->
       </div><!-- row -->
-
-<!--
-      <div class="row">
-        <div class="col-md-6 fh-request-headers">
-          <h4 class="fh-secondary-header">Headers</h4>
-          <div id="editableHeaders"></div>
-          
-        </div>
-        {{#if hasBody}}
-        <div class="col-md-6 fh-request-body">
-          <h4 class="fh-secondary-header">Body</h4>
-          <textarea name="body" rows="3" class="col-md-6">{{ model.body }}</textarea>
-        </div>
-        {{/if}}
-      </div>
-       row -->
-
-<!--
-      <div class="row">
-        <div class="col-md-12">
-          <h4 class="fh-secondary-header"><a class="toggleable collapsed" data-toggle="collapse" href="#reqHeadersCollapsible">{{fa "fa-chevron-down"}} Request Headers</a></h4>
-          <div id="reqHeadersCollapsible" class="dl-horizontal collapse">
-            <div class="request-headers">Try a request to see the headers</div>
-          </div>
-          
-          <h4 class="fh-secondary-header"><a class="toggleable collapsed" data-toggle="collapse" href="#rawRequestCollapsible">{{fa "fa-chevron-down"}} Raw Request</a></h4>
-          <div id="rawRequestCollapsible" class="dl-horizontal collapse">
-            <pre class="request-raw">Try a request to see it's raw body</pre>
-          </div>
-
-        </div>
-        
-        <div class="col-md-12">
-          <h4 class="fh-secondary-header">{{fa "fa-thumb-tack"}} Mount Path</h4>
-          <input type="text" id="mountPath" name="mountPath" class="form-control" aria-describedby="mountPathHelp" value="{{ model.mountPath }}">
-          <span id="mountPathHelp" class="help-block">Where should we expose your new request? Defaults to the same path as on the remote server</span>
-
-          
-        </div>
-        
-      </div>
-       row -->
     </form><!-- container -->
   </section><!-- fh-request -->
   
@@ -302,29 +260,29 @@ curl -X {{method}}{{#if headers}}{{#each headers}} -H "{{key}}:{{value}}" {{/eac
                   </ul>
                   
                   <div role="tabpanel" class="tab-pane active" id="unmappedBody">
-                    <pre class="pre-scrollable response-body"></pre>
+                    <pre id="unmappedResponseBody" data-type="json" class="bodyEditor"></pre>
                   </div>
                   
                   <div role="tabpanel" class="tab-pane" id="mappedBody">
-                    <pre class="pre-scrollable mapped-response-body"></pre>
+                    <pre data-type="json" id="mappedResponseBody" class="bodyEditor"></pre>
                   </div>
                 </div>
               </div>
               
               <div role="tabpanel" class="tab-pane" id="rawResponse">
-                <pre class="response-raw prettyprint">Send a request to see the raw response</pre>
+                <pre id="responseRaw" class="bodyEditor" data-type="http" class="prettyprint">Send a request to see the raw response</pre>
               </div>
               
               <div role="tabpanel" class="tab-pane" id="sampleCode">
                 <h5>fh.service snippet</h5>
                 <p>Call the mapped service from your Cloud App or another mBaaS Service within the platform</p>
-                <pre id="sample-fhservice"></pre>
+                <pre id="sample-fhservice" data-type="javascript" class="snippetEditor"></pre>
                 <h5>Node.js Request Module</h5>
                 <p>Call the endpoint directly using the Node.js request module</p>
-                <pre id="sample-nodejs"></pre>
+                <pre id="sample-nodejs" data-type="javascript" class="snippetEditor"></pre>
                 <h5>cURL Request</h5>
                 <p>Call the endpoint directly from the command line using cURL</p>
-                <pre id="sample-curl"></pre>
+                <pre id="sample-curl" data-type="bash" class="snippetEditor"></pre>
               </div>
           
           </div><!-- body -->

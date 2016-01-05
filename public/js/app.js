@@ -9,7 +9,7 @@ global.jQuery = jQuery;
 var bootstrap = require('bootstrap');
 
 
-
+App.bootstrap = bootstrap;
 App.init = (function() {
   var path = window.location.pathname || "",
   id, model;

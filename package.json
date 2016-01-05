@@ -6,6 +6,7 @@
     "body-parser": "1.13.3",
     "bootstrap": "^3.3.4",
     "bootstrap-treeview": "^1.2.0",
+    "brace": "^0.7.0",
     "browserify-middleware": "^7.0.0",
     "cors": "2.7.1",
     "ejs": "^2.3.4",
