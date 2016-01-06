@@ -62,7 +62,7 @@
   },
   "_id": "brace@0.7.0",
   "_shasum": "90651da5bd486edbb41888dec78afdcd07375b21",
-  "_from": "brace@*",
+  "_from": "brace@^0.7.0",
   "_npmVersion": "2.14.7",
   "_nodeVersion": "4.2.3",
   "_npmUser": {
@@ -80,5 +80,6 @@
     }
   ],
   "directories": {},
-  "_resolved": "http://registry.npmjs.org/brace/-/brace-0.7.0.tgz"
+  "_resolved": "http://registry.npmjs.org/brace/-/brace-0.7.0.tgz",
+  "readme": "ERROR: No README data found!"
 }

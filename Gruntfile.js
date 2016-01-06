@@ -5,6 +5,12 @@ module.exports = function(grunt) {
       all: ['application.js', 'lib/**/*.js', 'test/**/*.js', 'public/js/*.js']
     },
     unit: ['mocha -A -u exports --recursive -t 10000 ./test/unit'],
+    browserify : {
+      client : {
+        src : 'public/js/app.js',
+        dest : 'public/js/app-built.js'  
+      }
+    },
     nodemon: {
       dev: {
         script: 'application.js',
@@ -92,9 +98,10 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-nodemon');
   grunt.loadNpmTasks('grunt-mocha-phantomjs');
+  grunt.loadNpmTasks('grunt-browserify');
   
-  grunt.registerTask('serve', ['copy', 'nodemon']);
+  grunt.registerTask('serve', ['copy', 'browserify:client', 'nodemon']);
   grunt.registerTask('test', ['jshint', 'fh:unit', 'test-frontend']);
-  grunt.registerTask('default', ['copy', 'test']);
+  grunt.registerTask('default', ['test']);
   grunt.registerTask('test-frontend', ['serve-frontend-tests', 'mocha_phantomjs']);
 };
