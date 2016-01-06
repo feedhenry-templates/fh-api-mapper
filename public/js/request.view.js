@@ -238,8 +238,7 @@ module.exports = BaseMapperView.extend({
     response = data.response,
     prettyResponseBody = response.body,
     prettyMappedBody = response.mapped,
-    $tplHeaders = Handlebars.compile($('#tplHeaders').html()),
-    mappedEditor, unmappedEditor;
+    $tplHeaders = Handlebars.compile($('#tplHeaders').html());
     
     if (_.isObject(prettyResponseBody)){
       prettyResponseBody = JSON.stringify(prettyResponseBody, null, 2);
