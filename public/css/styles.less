@@ -181,8 +181,29 @@ table.table{
   .alert-danger;
 }
 
+pre#responseRaw {
+  height: 350px;
+}
+
+pre#requestRaw {
+  height: 100px;
+}
+
 .bodyEditor {
   height: 350px;
+  overflow: scroll;
+  background-color: #272822;
+ & > div {
+    padding: 0;
+    height: 100%;
+  }
+  pre {
+    height: 100%;
+  }
+  h3 {
+    color: #fff;
+    margin-left: 50px;
+  }
 }
 
 .snippetEditor {
@@ -190,4 +211,52 @@ table.table{
 }
 .snippetEditor#sample-curl {
   height: 50px;
+}
+
+.treeView {
+  .treeNodeName {
+    display: inline-block;
+    max-width: 54%;
+    overflow: hidden;  
+  }
+  .list-group-item>.badge {
+    width: 36px;
+    height: 17px;
+    .treeWrap {
+      padding: 3px 0 0 0;
+      height: 100%;
+      width: 100%;
+      &.times {
+        background: @btn-danger-bg;
+      }
+      &.check {
+        background : @brand-success;
+      }
+    }
+  }
+  /* Select all enabled/disabled spans */
+  .list-group-item>span.badge:last-of-type{
+    padding: 0;
+  }  
+}
+
+.tableLegend {
+  div {
+    display: inline-block;
+    &.fieldName {
+      width: 76%;
+    }
+    &.fieldEnabled, .fieldType {
+      float: right;
+      width: 12%;
+      text-align: right;
+    }
+    &.fieldType {
+      padding-right: 2px;
+    }
+  }
+}
+
+.card-pf-heading form, .card-pf-heading form label {
+  margin-right: 12px;
 }

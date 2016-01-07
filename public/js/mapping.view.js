@@ -17,9 +17,6 @@ module.exports = BaseMapperView.extend({
     this.tpl = Handlebars.compile($('#tplMappingView').html());
     this.model = options.model;
     this.request = options.request;
-    this.transformations = new TransformationsCollection();
-    this.transformations.fetch();
-    this.listenTo(this.transformations, 'sync', this.render);
     this.listenTo(this.model, 'sync', this.renderTree);
   },
   render : function(){
@@ -37,6 +34,7 @@ module.exports = BaseMapperView.extend({
     if (!treeData.fields.length && (!treeData.nodes || !treeData.nodes.length)){
       return;
     }
+        
     tree = treeEl.treeview({
       data: treeData.nodes,
       levels : (treeData.nodes.length === 1) ? 2 : 1,
@@ -46,15 +44,29 @@ module.exports = BaseMapperView.extend({
       selectedBackColor : '#d6ecf9',
       selectedColor : '#6c696a'
     });
+    
+    if (this.selectedNode){
+      // first expand every parent..
+      parentId = this.selectedNode.parentId;
+      while (parentId){
+        this.tree.treeview('expandNode', parentId);  
+        parentId = this.tree.treeview('getNode', parentId).parentId;
+      }
+      this.tree.treeview('selectNode', this.selectedNode.nodeId);
+    }
+    
     this.tree = tree;
     tree.on('nodeSelected', jQuery.proxy(this.nodeSelected, this));
     tree.treeview('selectNode', this.selectedNode || 0);
   },
   nodeSelected : function(e, field){
+    this.selectedNode = field;
     if (field.href === false){
       // Don't allow the sellecting of the placeholder for array item maps
       // instead always select it's first child
-      var id = _.first(field.nodes).nodeId;
+      var  firstChildNode = _.first(field.nodes),
+      id = firstChildNode.nodeId;
+      this.selectedNode = firstChildNode;
       this.toggleExpanded(e, field);
       return this.tree.treeview('selectNode', id);
     }
@@ -65,7 +77,6 @@ module.exports = BaseMapperView.extend({
     if (field.transformation){
       this.$el.find('select[name=transformation]').val(field.transformation);
     }
-    this.selectedNode = field.nodeId;
   },
   toggleExpanded : function(e, field){
     this.tree.treeview('toggleNodeExpanded', field.nodeId);
@@ -86,19 +97,19 @@ module.exports = BaseMapperView.extend({
     var icon = '';
     switch(type){
       case 'string':
-        icon = '\"\"';
+        icon = '\" \"';
         break;
       case 'number':
         icon = '123';
         break;
       case 'boolean':
-        icon = this.fa('checkmark');
+        icon = this.fa('check') + ' ' + this.fa('times');
         break;
       case 'object':
-        icon = '{}';
+        icon = '{ }';
         break;
       case 'array':
-        icon = '[]';
+        icon = '[ ]';
         break;
       default:
         icon = '?';
@@ -109,25 +120,39 @@ module.exports = BaseMapperView.extend({
   buildTree : function(model){
     var nodes = _.map(model.fields, this.buildTree, this),
     iconForType = this.iconForType(model.type),
-    use = (model.use) ? this.fa('check') : this.fa('times'),
+    iconName = (model.use) ? 'check' : 'times',
+    use = this.fa(iconName),
     name = model.from || 'Root',
     tree;
+    use = '<div class="treeWrap ' + iconName + '">' + use + '</div>';
     if (model.from && model.to && model.from !== model.to){
       name += '<small> &rarr;' + model.to + '</small>';
     }
+    // wrap the name tag so we can style it
+    name = '<div class="treeNodeName">' + name + '</div>';
     tree = {
       href : model._id,
       text : name,
-      tags : [iconForType, use]
+      tags : [iconForType, use],
+      state : {}
     };
     
     if (model.element && model.element.fields && model.element.fields.length){
       nodes = [{
         href : false,
         backColor : '#ccc',
-        text : '(Array Items)',
+        text : '<div class="treeNodeName">(Array Items)</div>',
+        state : {},
         nodes : this.buildTree(model.element).nodes
-      }];
+      }];      
+    }
+    
+    // Nodes not in use should have all their children inaccessible
+    if (model.use === false){
+        nodes.forEach(function(node){
+          node.state.disabled = true;
+          node.tags = [];
+        });
     }
     
     // Arrays which have a transformation per-element applied do not get sub-fields
@@ -138,6 +163,7 @@ module.exports = BaseMapperView.extend({
         node.text = "<small>Disable transformations to edit sub fields</small>";
       });
     }
+    
     
     // don't set nodes to [], or it'll show as expandible
     if (nodes.length && nodes.length > 0){
@@ -163,7 +189,7 @@ module.exports = BaseMapperView.extend({
       updateObject = { use : el.prop('checked') };
     }
     
-    if (updateObject.transformation === 'none'){
+    if (updateObject.transformation === 'none' || updateObject.transformation === 'No transformation'){
       updateObject.transformation = null;
     }
     
@@ -172,6 +198,7 @@ module.exports = BaseMapperView.extend({
     this.model.save(updatedMapping, {
       success : function(){
         self.notify('success', 'Mapping updated');
+        self.trigger('updated');
       },
       error : function(){
         self.notify('error', 'Error saving update to mapping');

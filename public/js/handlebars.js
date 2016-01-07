@@ -18,7 +18,6 @@ Handlebars.registerHelper('fa', function(icon){
 
 Handlebars.registerHelper('transformationsForField', function(field, transformations){
   if (!transformations ){
-    // TODO: Figure this context passing bug
     transformations = availableTransformations.toJSON();
   }
   var relevantTransformations = _.where(transformations, {type : field.type});

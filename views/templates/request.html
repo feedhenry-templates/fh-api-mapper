@@ -1,7 +1,7 @@
 <script id="tplNodejsRequest" type="text/x-handlebars-template">
 var request = require('request');
 request({
-  url: "{{url}}",
+  url: "{{ fullUrl }}",
   method: "{{method}}",
   {{#if headers}}
   headers: {
@@ -48,7 +48,7 @@ fh.service({
 
 
 <script id="tplCurlRequest" type="text/x-handlebars-template">
-curl -X {{method}}{{#if headers}}{{#each headers}} -H "{{key}}:{{value}}" {{/each}} {{/if}} {{#if data}}--data "{{escapeSingleQuotes data}}"{{/if}} {{url}} 
+curl -X {{method}}{{#if headers}}{{#each headers}} -H "{{key}}:{{value}}" {{/each}} {{/if}} {{#if data}}--data "{{escapeSingleQuotes data}}"{{/if}} {{fullUrl}}
 </script>
 
 <script id="tplHeaders" type="text/x-handlebars-template">
@@ -112,6 +112,7 @@ curl -X {{method}}{{#if headers}}{{#each headers}} -H "{{key}}:{{value}}" {{/eac
             <div class="card-pf-heading">
               {{#if model.mapping}}
                 <a href="#" id="removeMapping" class="btn btn-sm btn-danger pull-right">Remove Mapping from Request</a>
+                <form class="pull-right"><label>Retry Request on Save?</label><input id="autoRetry" type="checkbox" checked class=""></input></form>
               {{/if}}
               <h2 class="card-pf-title">
                 Response Mapping
@@ -195,7 +196,7 @@ curl -X {{method}}{{#if headers}}{{#each headers}} -H "{{key}}:{{value}}" {{/eac
               </div>
               
               <div id="rawRequestCollapsible" role="tabpanel" class="tab-pane fade">
-                <pre id="requestRaw" class="bodyEditor" data-type="http"><a href="#" class="try">Try this request</a> to see it's raw body</pre>
+                <pre id="requestRaw" class="bodyEditor" data-type="http"><a href="#" class="try">Try this request</a> to see its raw body</pre>
               </div>
               
 
@@ -234,7 +235,7 @@ curl -X {{method}}{{#if headers}}{{#each headers}} -H "{{key}}:{{value}}" {{/eac
             </section>
             
             <p class="fh-response-pre">
-              <a href="#" class="try">Try this request</a> to see it's response
+              <a href="#" class="try">Try this request</a> to see its response
               <br /><br />
             </p>
             
@@ -253,20 +254,7 @@ curl -X {{method}}{{#if headers}}{{#each headers}} -H "{{key}}:{{value}}" {{/eac
               </div>
               
               <div role="tabpanel" class="tab-pane" id="responseBody">
-                <div class="card-pf-body tab-content">
-                  <ul class="nav nav-tabs">
-                    <li role="presentation" class="active"><a href="#unmappedBody" aria-controls="unmappedBody" role="tab" data-toggle="tab">Body</a></li>
-                    <li><a href="#mappedBody" aria-controls="mappedBody" role="tab" data-toggle="tab">Mapped Body</a></li>
-                  </ul>
-                  
-                  <div role="tabpanel" class="tab-pane active" id="unmappedBody">
-                    <pre id="unmappedResponseBody" data-type="json" class="bodyEditor"></pre>
-                  </div>
-                  
-                  <div role="tabpanel" class="tab-pane" id="mappedBody">
-                    <pre data-type="json" id="mappedResponseBody" class="bodyEditor"></pre>
-                  </div>
-                </div>
+                
               </div>
               
               <div role="tabpanel" class="tab-pane" id="rawResponse">
@@ -291,4 +279,22 @@ curl -X {{method}}{{#if headers}}{{#each headers}} -H "{{key}}:{{value}}" {{/eac
     </div><!-- row -->
   </section><!-- fh-result -->
   
+</script>
+
+<script id="tplResponseBodies" type="text/x-handlebars-template">
+  <div class="card-pf-body row bodyEditor">
+    <div id="unmappedBody" class="col-md-6">
+      <h3>Unmapped Response</h3>
+      <pre id="unmappedResponseBody" data-type="json" class="">
+{{unmapped}}
+      </pre>
+    </div>
+    
+    <div id="mappedBody" class="col-md-6">
+      <h3>Mapped Response</h3>
+      <pre data-type="json" id="mappedResponseBody" class="">
+{{mapped}}
+      </pre>
+    </div>
+  </div>
 </script>

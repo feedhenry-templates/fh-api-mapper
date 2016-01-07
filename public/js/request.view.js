@@ -12,6 +12,7 @@ require('brace/theme/monokai');
 
 module.exports = BaseMapperView.extend({
   className: "request",
+  autoRetry : true,
   events : {
     'click #saveRequest' : 'saveRequest',
     'click .btn-back' : 'back',
@@ -25,7 +26,8 @@ module.exports = BaseMapperView.extend({
     'click .remove-header' : 'removeHeaderField',
     'change  select[name=method]' : 'render',
     'click .btn-add-mapping' : 'addMapping',
-    'click #removeMapping' : 'removeMapping'
+    'click #removeMapping' : 'removeMapping',
+    'change #autoRetry' : 'toggleAutoRetry'
   },
   initialize : function(options){
     BaseMapperView.prototype.initialize.apply(this, arguments);
@@ -36,6 +38,7 @@ module.exports = BaseMapperView.extend({
     this.listenTo(this.model, 'trying', this.onRequestTrying);
     this.listenTo(this.model, 'sync', this.render);
     this.listenTo(this.model, 'change:mapping', this.renderMapping);
+    this.autoRetry = !(localStorage.getItem('autoRetry') === 'false');
   },
   render : function(){
     var model = this.model.toJSON();
@@ -58,8 +61,7 @@ module.exports = BaseMapperView.extend({
     this.$requestRaw = this.$el.find('#requestRaw');
     this.$responseHeaders = this.$el.find('.response-headers');
     this.$responseRaw = this.$el.find('#responseRaw');
-    this.$unmappedResponseBody = this.$el.find('#unmappedResponseBody');
-    this.$mappedResponseBody = this.$el.find('#mappedResponseBody');
+    this.$responseBodies = this.$el.find('#responseBody');
     this.$status = this.$el.find('.status');
     this.$sampleNodejs = this.$el.find('#sample-nodejs');
     this.$sampleFhService = this.$el.find('#sample-fhservice');
@@ -75,11 +77,13 @@ module.exports = BaseMapperView.extend({
     this.renderSnippets();
     this.renderHeaders();
     this.renderMapping();
+    this.$el.find('#autoRetry').prop('checked', this.autoRetry);
   },
   renderSnippets : function(){
     // Set up sample snippets
     var snippetModel = this.model.toJSON();
-    snippetModel.guid = process.env.FH_INSTANCE || 'Unknown service GUID';
+    snippetModel.guid = guid || 'Unknown service GUID';
+    snippetModel.fullUrl = window.location.origin + snippetModel.mountPath;
     this.$sampleNodejs.html(this.$tplNodejsRequest(snippetModel));
     this.$sampleFhService.html(this.$tplFhServiceRequest(snippetModel));
     this.$sampleCurl.html(this.$tplCurlRequest(snippetModel));
@@ -238,7 +242,8 @@ module.exports = BaseMapperView.extend({
     response = data.response,
     prettyResponseBody = response.body,
     prettyMappedBody = response.mapped,
-    $tplHeaders = Handlebars.compile($('#tplHeaders').html());
+    $tplHeaders = Handlebars.compile($('#tplHeaders').html()),
+    $tplResponseBodies = Handlebars.compile($('#tplResponseBodies').html());
     
     if (_.isObject(prettyResponseBody)){
       prettyResponseBody = JSON.stringify(prettyResponseBody, null, 2);
@@ -250,9 +255,11 @@ module.exports = BaseMapperView.extend({
     this.$responseHeaders.html($tplHeaders({ headers : response.headers }));
     this.$requestRaw.text( request.raw );
     this.$responseRaw.text( response.raw );
-    this.$unmappedResponseBody.text(prettyResponseBody);
-    this.$mappedResponseBody.text(prettyMappedBody);
-    this.renderEditors(this.$mappedResponseBody, this.$unmappedResponseBody, this.$requestRaw, this.$responseRaw);
+    this.$responseBodies.html($tplResponseBodies({
+      unmapped : prettyResponseBody,
+      mapped : prettyMappedBody
+    }));
+    this.renderEditors(this.$el.find('#unmappedResponseBody'), this.$el.find('#mappedResponseBody'), this.$requestRaw, this.$responseRaw);
   },
   onRequestFailed : function(status, responseRaw){
     this.$status.text(status);
@@ -311,6 +318,7 @@ module.exports = BaseMapperView.extend({
     });
   },
   renderMappingView : function(model){
+    var self = this;
     model.request = this.model;
     this.mappingView = new MappingView({
       request : this.model,
@@ -323,6 +331,12 @@ module.exports = BaseMapperView.extend({
     this.listenToOnce(this.mappingView, 'removed', function(){
       this.model.fetch();
     }, this);
+    this.listenTo(this.mappingView, 'updated', function(){
+      if (!this.autoRetry){
+        return;
+      }
+      self.tryRequest();
+    });
   },
   removeMapping : function(e){
     if (e){
@@ -332,14 +346,22 @@ module.exports = BaseMapperView.extend({
   },
   renderEditors : function(){
     _.each(arguments, function(el){
+      el.attr('class', '');
       var id = el.attr('id'),
       type = el.data('type'),
       editor = ace.edit(id);
       if (['javascript', 'json'].indexOf(type)>-1){
-        editor.getSession().setMode('ace/mode/' + type);  
+        editor.setOptions({
+            maxLines: Infinity
+        });
+        editor.getSession().setMode('ace/mode/' + type);
       }
       editor.setTheme('ace/theme/monokai');
       editor.setReadOnly(true);
     });
+  },
+  toggleAutoRetry : function(){
+    this.autoRetry = !this.autoRetry;
+    localStorage.setItem('autoRetry', this.autoRetry.toString());
   }
 });

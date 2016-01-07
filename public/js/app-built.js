@@ -42712,7 +42712,6 @@ Handlebars.registerHelper('fa', function(icon){
 
 Handlebars.registerHelper('transformationsForField', function(field, transformations){
   if (!transformations ){
-    // TODO: Figure this context passing bug
     transformations = availableTransformations.toJSON();
   }
   var relevantTransformations = _.where(transformations, {type : field.type});
@@ -42771,9 +42770,6 @@ module.exports = BaseMapperView.extend({
     this.tpl = Handlebars.compile($('#tplMappingView').html());
     this.model = options.model;
     this.request = options.request;
-    this.transformations = new TransformationsCollection();
-    this.transformations.fetch();
-    this.listenTo(this.transformations, 'sync', this.render);
     this.listenTo(this.model, 'sync', this.renderTree);
   },
   render : function(){
@@ -42791,6 +42787,7 @@ module.exports = BaseMapperView.extend({
     if (!treeData.fields.length && (!treeData.nodes || !treeData.nodes.length)){
       return;
     }
+        
     tree = treeEl.treeview({
       data: treeData.nodes,
       levels : (treeData.nodes.length === 1) ? 2 : 1,
@@ -42800,15 +42797,29 @@ module.exports = BaseMapperView.extend({
       selectedBackColor : '#d6ecf9',
       selectedColor : '#6c696a'
     });
+    
+    if (this.selectedNode){
+      // first expand every parent..
+      parentId = this.selectedNode.parentId;
+      while (parentId){
+        this.tree.treeview('expandNode', parentId);  
+        parentId = this.tree.treeview('getNode', parentId).parentId;
+      }
+      this.tree.treeview('selectNode', this.selectedNode.nodeId);
+    }
+    
     this.tree = tree;
     tree.on('nodeSelected', jQuery.proxy(this.nodeSelected, this));
     tree.treeview('selectNode', this.selectedNode || 0);
   },
   nodeSelected : function(e, field){
+    this.selectedNode = field;
     if (field.href === false){
       // Don't allow the sellecting of the placeholder for array item maps
       // instead always select it's first child
-      var id = _.first(field.nodes).nodeId;
+      var  firstChildNode = _.first(field.nodes),
+      id = firstChildNode.nodeId;
+      this.selectedNode = firstChildNode;
       this.toggleExpanded(e, field);
       return this.tree.treeview('selectNode', id);
     }
@@ -42819,7 +42830,6 @@ module.exports = BaseMapperView.extend({
     if (field.transformation){
       this.$el.find('select[name=transformation]').val(field.transformation);
     }
-    this.selectedNode = field.nodeId;
   },
   toggleExpanded : function(e, field){
     this.tree.treeview('toggleNodeExpanded', field.nodeId);
@@ -42840,19 +42850,19 @@ module.exports = BaseMapperView.extend({
     var icon = '';
     switch(type){
       case 'string':
-        icon = '\"\"';
+        icon = '\" \"';
         break;
       case 'number':
         icon = '123';
         break;
       case 'boolean':
-        icon = this.fa('checkmark');
+        icon = this.fa('check') + ' ' + this.fa('times');
         break;
       case 'object':
-        icon = '{}';
+        icon = '{ }';
         break;
       case 'array':
-        icon = '[]';
+        icon = '[ ]';
         break;
       default:
         icon = '?';
@@ -42863,25 +42873,39 @@ module.exports = BaseMapperView.extend({
   buildTree : function(model){
     var nodes = _.map(model.fields, this.buildTree, this),
     iconForType = this.iconForType(model.type),
-    use = (model.use) ? this.fa('check') : this.fa('times'),
+    iconName = (model.use) ? 'check' : 'times',
+    use = this.fa(iconName),
     name = model.from || 'Root',
     tree;
+    use = '<div class="treeWrap ' + iconName + '">' + use + '</div>';
     if (model.from && model.to && model.from !== model.to){
       name += '<small> &rarr;' + model.to + '</small>';
     }
+    // wrap the name tag so we can style it
+    name = '<div class="treeNodeName">' + name + '</div>';
     tree = {
       href : model._id,
       text : name,
-      tags : [iconForType, use]
+      tags : [iconForType, use],
+      state : {}
     };
     
     if (model.element && model.element.fields && model.element.fields.length){
       nodes = [{
         href : false,
         backColor : '#ccc',
-        text : '(Array Items)',
+        text : '<div class="treeNodeName">(Array Items)</div>',
+        state : {},
         nodes : this.buildTree(model.element).nodes
-      }];
+      }];      
+    }
+    
+    // Nodes not in use should have all their children inaccessible
+    if (model.use === false){
+        nodes.forEach(function(node){
+          node.state.disabled = true;
+          node.tags = [];
+        });
     }
     
     // Arrays which have a transformation per-element applied do not get sub-fields
@@ -42892,6 +42916,7 @@ module.exports = BaseMapperView.extend({
         node.text = "<small>Disable transformations to edit sub fields</small>";
       });
     }
+    
     
     // don't set nodes to [], or it'll show as expandible
     if (nodes.length && nodes.length > 0){
@@ -42917,7 +42942,7 @@ module.exports = BaseMapperView.extend({
       updateObject = { use : el.prop('checked') };
     }
     
-    if (updateObject.transformation === 'none'){
+    if (updateObject.transformation === 'none' || updateObject.transformation === 'No transformation'){
       updateObject.transformation = null;
     }
     
@@ -42926,6 +42951,7 @@ module.exports = BaseMapperView.extend({
     this.model.save(updatedMapping, {
       success : function(){
         self.notify('success', 'Mapping updated');
+        self.trigger('updated');
       },
       error : function(){
         self.notify('error', 'Error saving update to mapping');
@@ -43004,7 +43030,6 @@ module.exports = Backbone.Model.extend({
 });
 
 },{"./logger.js":60,"backbone":1,"jquery":55}],64:[function(require,module,exports){
-(function (process){
 var log = require('./logger.js'),
 BaseMapperView = require('./base.view.js'),
 MappingModel = require('./mapping.model.js'),
@@ -43019,6 +43044,7 @@ require('brace/theme/monokai');
 
 module.exports = BaseMapperView.extend({
   className: "request",
+  autoRetry : true,
   events : {
     'click #saveRequest' : 'saveRequest',
     'click .btn-back' : 'back',
@@ -43032,7 +43058,8 @@ module.exports = BaseMapperView.extend({
     'click .remove-header' : 'removeHeaderField',
     'change  select[name=method]' : 'render',
     'click .btn-add-mapping' : 'addMapping',
-    'click #removeMapping' : 'removeMapping'
+    'click #removeMapping' : 'removeMapping',
+    'change #autoRetry' : 'toggleAutoRetry'
   },
   initialize : function(options){
     BaseMapperView.prototype.initialize.apply(this, arguments);
@@ -43043,6 +43070,7 @@ module.exports = BaseMapperView.extend({
     this.listenTo(this.model, 'trying', this.onRequestTrying);
     this.listenTo(this.model, 'sync', this.render);
     this.listenTo(this.model, 'change:mapping', this.renderMapping);
+    this.autoRetry = !(localStorage.getItem('autoRetry') === 'false');
   },
   render : function(){
     var model = this.model.toJSON();
@@ -43065,8 +43093,7 @@ module.exports = BaseMapperView.extend({
     this.$requestRaw = this.$el.find('#requestRaw');
     this.$responseHeaders = this.$el.find('.response-headers');
     this.$responseRaw = this.$el.find('#responseRaw');
-    this.$unmappedResponseBody = this.$el.find('#unmappedResponseBody');
-    this.$mappedResponseBody = this.$el.find('#mappedResponseBody');
+    this.$responseBodies = this.$el.find('#responseBody');
     this.$status = this.$el.find('.status');
     this.$sampleNodejs = this.$el.find('#sample-nodejs');
     this.$sampleFhService = this.$el.find('#sample-fhservice');
@@ -43082,11 +43109,13 @@ module.exports = BaseMapperView.extend({
     this.renderSnippets();
     this.renderHeaders();
     this.renderMapping();
+    this.$el.find('#autoRetry').prop('checked', this.autoRetry);
   },
   renderSnippets : function(){
     // Set up sample snippets
     var snippetModel = this.model.toJSON();
-    snippetModel.guid = process.env.FH_INSTANCE || 'Unknown service GUID';
+    snippetModel.guid = guid || 'Unknown service GUID';
+    snippetModel.fullUrl = window.location.origin + snippetModel.mountPath;
     this.$sampleNodejs.html(this.$tplNodejsRequest(snippetModel));
     this.$sampleFhService.html(this.$tplFhServiceRequest(snippetModel));
     this.$sampleCurl.html(this.$tplCurlRequest(snippetModel));
@@ -43245,7 +43274,8 @@ module.exports = BaseMapperView.extend({
     response = data.response,
     prettyResponseBody = response.body,
     prettyMappedBody = response.mapped,
-    $tplHeaders = Handlebars.compile($('#tplHeaders').html());
+    $tplHeaders = Handlebars.compile($('#tplHeaders').html()),
+    $tplResponseBodies = Handlebars.compile($('#tplResponseBodies').html());
     
     if (_.isObject(prettyResponseBody)){
       prettyResponseBody = JSON.stringify(prettyResponseBody, null, 2);
@@ -43257,9 +43287,11 @@ module.exports = BaseMapperView.extend({
     this.$responseHeaders.html($tplHeaders({ headers : response.headers }));
     this.$requestRaw.text( request.raw );
     this.$responseRaw.text( response.raw );
-    this.$unmappedResponseBody.text(prettyResponseBody);
-    this.$mappedResponseBody.text(prettyMappedBody);
-    this.renderEditors(this.$mappedResponseBody, this.$unmappedResponseBody, this.$requestRaw, this.$responseRaw);
+    this.$responseBodies.html($tplResponseBodies({
+      unmapped : prettyResponseBody,
+      mapped : prettyMappedBody
+    }));
+    this.renderEditors(this.$el.find('#unmappedResponseBody'), this.$el.find('#mappedResponseBody'), this.$requestRaw, this.$responseRaw);
   },
   onRequestFailed : function(status, responseRaw){
     this.$status.text(status);
@@ -43318,6 +43350,7 @@ module.exports = BaseMapperView.extend({
     });
   },
   renderMappingView : function(model){
+    var self = this;
     model.request = this.model;
     this.mappingView = new MappingView({
       request : this.model,
@@ -43330,6 +43363,12 @@ module.exports = BaseMapperView.extend({
     this.listenToOnce(this.mappingView, 'removed', function(){
       this.model.fetch();
     }, this);
+    this.listenTo(this.mappingView, 'updated', function(){
+      if (!this.autoRetry){
+        return;
+      }
+      self.tryRequest();
+    });
   },
   removeMapping : function(e){
     if (e){
@@ -43339,20 +43378,27 @@ module.exports = BaseMapperView.extend({
   },
   renderEditors : function(){
     _.each(arguments, function(el){
+      el.attr('class', '');
       var id = el.attr('id'),
       type = el.data('type'),
       editor = ace.edit(id);
       if (['javascript', 'json'].indexOf(type)>-1){
-        editor.getSession().setMode('ace/mode/' + type);  
+        editor.setOptions({
+            maxLines: Infinity
+        });
+        editor.getSession().setMode('ace/mode/' + type);
       }
       editor.setTheme('ace/theme/monokai');
       editor.setReadOnly(true);
     });
+  },
+  toggleAutoRetry : function(){
+    this.autoRetry = !this.autoRetry;
+    localStorage.setItem('autoRetry', this.autoRetry.toString());
   }
 });
 
-}).call(this,require('_process'))
-},{"./base.view.js":58,"./handlebars.js":59,"./logger.js":60,"./mapping.model.js":61,"./mapping.view.js":62,"_process":24,"brace":15,"brace/mode/javascript":16,"brace/mode/json":17,"brace/theme/monokai":19,"jquery":55,"underscore":56}],65:[function(require,module,exports){
+},{"./base.view.js":58,"./handlebars.js":59,"./logger.js":60,"./mapping.model.js":61,"./mapping.view.js":62,"brace":15,"brace/mode/javascript":16,"brace/mode/json":17,"brace/theme/monokai":19,"jquery":55,"underscore":56}],65:[function(require,module,exports){
 var Backbone = require('backbone'),
 RequestModel = require('./request.model.js');
 

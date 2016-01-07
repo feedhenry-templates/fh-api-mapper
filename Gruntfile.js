@@ -8,7 +8,10 @@ module.exports = function(grunt) {
     browserify : {
       client : {
         src : 'public/js/app.js',
-        dest : 'public/js/app-built.js'  
+        dest : 'public/js/app-built.js',
+        options : {
+          watch : true
+        }
       }
     },
     nodemon: {
