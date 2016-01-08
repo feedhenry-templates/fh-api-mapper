@@ -41,6 +41,7 @@
     "it" : true,
     "beforeEach" : true,
     "assert" : true,
-    "jQuery" : true
-  }   
+    "jQuery" : true,
+    "guid" : true
+  }
 }

@@ -38,7 +38,7 @@ module.exports = BaseMapperView.extend({
     this.listenTo(this.model, 'trying', this.onRequestTrying);
     this.listenTo(this.model, 'sync', this.render);
     this.listenTo(this.model, 'change:mapping', this.renderMapping);
-    this.autoRetry = !(localStorage.getItem('autoRetry') === 'false');
+    this.autoRetry = localStorage.getItem('autoRetry') !== 'false';
   },
   render : function(){
     var model = this.model.toJSON();
