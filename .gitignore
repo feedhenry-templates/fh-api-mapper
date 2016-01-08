@@ -5,7 +5,7 @@ coverage/
 cov-*
 .project
 .settings/
-dist/
+/dist
 output/
 man/
 plato/

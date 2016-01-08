@@ -1,4 +1,11 @@
-App.RequestsListView = App.BaseMapperView.extend({
+var BaseMapperView = require('./base.view.js'),
+RequestsCollection = require('./requests.collection.js'),
+RequestModel = require('./request.model.js'),
+RequestView = require('./request.view.js'),
+Handlebars = require('./handlebars.js'),
+$ =require('jquery');
+
+module.exports = BaseMapperView.extend({
   className: "requests",
   el : '.content',
   events : {
@@ -7,22 +14,28 @@ App.RequestsListView = App.BaseMapperView.extend({
     'click .btn-delete' : 'deleteRequest'
   },
   initialize : function(){
-    App.BaseMapperView.prototype.initialize.apply(this, arguments);
-    this.collection = new App.RequestsCollection();
+    BaseMapperView.prototype.initialize.apply(this, arguments);
+    this.collection = new RequestsCollection();
     this.collection.fetch();
     this.listenTo(this.collection, 'sync', this.render);
     this.listenTo(this.collection, 'destroy', this.render);
   },
   render : function(){
+    if (this.requestView){
+      return;
+    }
+    $('.navbar-utility').hide();
     var tpl = Handlebars.compile($('#tplRequestsList').html());
     this.$el.html(tpl({ requests : this.collection.toJSON() }));
     return this;
   },
   showSavedRequest : function(e){
-    var el = $(e.target),
+    var self = this,
+    el = $(e.target),
+    tagName = e.target.tagName.toLowerCase(),
     id, model;
-    if (e.target.tagName.toLowerCase() !== 'tr'){
-      if (!el.hasClass('btn-edit')){
+    if (tagName !== 'tr'){
+      if (tagName !== "td" && !el.hasClass('btn-edit')){
         return;
       }
       el = el.parents('tr');  
@@ -33,26 +46,44 @@ App.RequestsListView = App.BaseMapperView.extend({
     if (!model){
       return this.trigger('notify', 'error', 'Could not find request with id ' + id);
     }
-    window.history.pushState(id, "Edit Request", "/requests/" + id);
-    this.showRequestView(model);
+    model.fetch({
+      success : function(){
+        window.history.pushState(id, "Edit Request", "/requests/" + id);
+        self.showRequestView(model);    
+      },
+      error : function(){
+        self.trigger('notify', 'error', 'Could not load request details');
+      }
+    });
   },
   newRequest : function(){
     window.history.pushState("new", "New Request", "/requests/new");
-    this.showRequestView(new App.RequestModel());
+    this.showRequestView(new RequestModel());
   },
   showRequestView : function(model){
     var self = this;
-    this.requestView = new App.RequestView({
+    $('.navbar-utility').show();
+    this.requestView = new RequestView({
       model : model
     });
-    this.listenTo(this.requestView, 'back', function(){
+    this.listenTo(this.requestView, 'back', function(message){
+      // TODO: This belongs in a view some place..
       self.requestView.remove();
+      delete self.requestView;
       self.collection.fetch();
       self.render();
       window.history.pushState('', "Request List", "/");
+      if (message){
+        //TODO: this should be hooking into an after render event or some such..
+        setTimeout(function(){
+          self.trigger('notify', 'success', message);  
+        }, 100);
+      }
     });
-    this.requestView.render();
     this.$el.html(this.requestView.$el);
+    if (model.isNew()){
+      this.requestView.render();
+    }
   },
   deleteRequest : function(e){
     var self = this,

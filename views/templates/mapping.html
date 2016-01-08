@@ -1,0 +1,51 @@
+<script id="tplMappingView" type="text/x-handlebars-template">
+  <div class="row">
+    <div class="col-md-4">
+      <h4>Fields</h4>
+      <p>Select a field from the response to map it</p>
+      <div class="tableLegend">
+        <div class="fieldName">Name</div>
+        <div class="fieldEnabled">Enabled</div>
+        <div class="fieldType">Type</div>
+      </div>
+      <div class="treeView"></div>
+    </div>
+    <div class="col-md-8">
+      <div class="detailView"></div>  
+    </div>
+  </div>
+</script>
+
+<script id="tplFieldMapping" type="text/x-handlebars-template">
+  <h4>Field Mapping: <strong>{{ field.from }}</strong> <span class="label label-default"> {{ field.type }} </span></h4>
+  <p>Define how the field is output</p>
+  <form class="form-horizontal" data-id={{field._id}}>
+    <div class="form-group">
+      <div class="col-sm-offset-2 col-sm-10">
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" id="inputUse" name="use" {{#if field.use}}checked{{/if}}> Use this field? Untick to discard it
+          </label>
+        </div>
+      </div>
+    </div>
+ 
+    <div class="form-group">
+      <label class="col-sm-2 control-label">Rename Field</label>
+      <div class="col-sm-10">
+        <input class="form-control" value="{{#if field.to}}{{ field.to }}{{else}}{{field.from}}{{/if}}" name="to" type="text" id="inputMapTo" placeholder="Rename field to">
+        <span id="helpBlock" class="help-block">Current name is <strong>{{ field.from }}</strong></span>
+      </div>
+    </div>
+    
+    <div class="form-group">
+      <label for="inputUse" class="col-sm-2 control-label">Transform</label>
+      <div class="col-sm-10">
+        {{transformationsForField this.field ../../transformations}}
+        <span id="helpBlock" class="help-block">Select a transformation function for this field</span>
+      </div>
+    </div>
+    
+    
+  </form>
+</script>
