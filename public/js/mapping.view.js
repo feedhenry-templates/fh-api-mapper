@@ -1,5 +1,4 @@
 var BaseMapperView = require('./base.view.js'),
-TransformationsCollection = require('./transformations.collection.js'),
 Handlebars = require('./handlebars.js'),
 _ = require('underscore'),
 $ = require('jquery');
@@ -30,7 +29,7 @@ module.exports = BaseMapperView.extend({
   renderTree : function(){
     var treeData = this.buildTree(this.model.toJSON()),
     treeEl = $(this.$el.find('.treeView')),
-    tree; 
+    tree;
     if (!treeData.fields.length && (!treeData.nodes || !treeData.nodes.length)){
       return;
     }
@@ -46,6 +45,7 @@ module.exports = BaseMapperView.extend({
     });
     
     if (this.selectedNode){
+      var parentId;
       // first expand every parent..
       parentId = this.selectedNode.parentId;
       while (parentId){

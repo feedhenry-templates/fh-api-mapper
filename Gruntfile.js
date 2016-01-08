@@ -104,7 +104,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-browserify');
   
   grunt.registerTask('serve', ['copy', 'browserify:client', 'nodemon']);
-  grunt.registerTask('test', ['jshint', 'fh:unit', 'test-frontend']);
+  grunt.registerTask('test', ['jshint', 'fh:unit']);
   grunt.registerTask('default', ['test']);
   grunt.registerTask('test-frontend', ['serve-frontend-tests', 'mocha_phantomjs']);
 };
