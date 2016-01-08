@@ -78,6 +78,7 @@ module.exports = BaseMapperView.extend({
     this.renderHeaders();
     this.renderMapping();
     this.$el.find('#autoRetry').prop('checked', this.autoRetry);
+    this.trigger('rendered');
   },
   renderSnippets : function(){
     // Set up sample snippets
@@ -101,7 +102,8 @@ module.exports = BaseMapperView.extend({
     }
     
     // Set the values for selects which we can't do in handlebars
-    this.$method.val(this.model.get('method'));
+    var selectedMethod = this.model.get('method') || 'GET';
+    this.$method.val(selectedMethod);
     
     var contentType = _.findWhere(this.model.get('headers'), { key : 'content-type' });
     if (model.type !== 'GET' && contentType){
@@ -180,7 +182,9 @@ module.exports = BaseMapperView.extend({
     request = this.getFormValuesAsJSON();
     this.model.save(request, {
       success : function(){
-        self.trigger('back', 'Request saved successfully');
+        self.on('rendered', function(){
+          self.trigger('notify', 'success', 'Request saved successfully');  
+        });
       }, 
       error : function(model, xhr){
         log.error(xhr.responseText);

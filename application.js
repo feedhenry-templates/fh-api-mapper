@@ -38,7 +38,6 @@ app.use('/', require('./lib/api')({
   
 }));
 // fhlint-end
-app.use(express['static'](__dirname + '/public'));
 
 // Important that this is last!
 app.use(mbaasExpress.errorHandler());

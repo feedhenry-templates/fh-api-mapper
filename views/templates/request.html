@@ -148,7 +148,7 @@ curl -X {{method}}{{#if headers}}{{#each headers}} -H "{{key}}:{{value}}" {{/eac
             <div class="fh-request-input">
               <select name="method" class="form-control input-lg">
                 {{#each methods}}
-                <option>{{this}}</option>
+                  <option value="{{this}}">{{this}}</option>
                 {{/each}}
               </select>
               <input name="url" value="{{model.url}}" class="form-control input-lg" id="appendedPrependedDropdownButton" type="text" placeholder="Enter Request URL here">
@@ -157,6 +157,7 @@ curl -X {{method}}{{#if headers}}{{#each headers}} -H "{{key}}:{{value}}" {{/eac
             <div class="fh-request-actions">
               <button class="btn btn-primary btn-lg" type="submit">Send Request</button>
               <button id="saveRequest" class="btn btn-default btn-lg" type="button">{{#if isNew}}Create{{else}}Update{{/if}} Request</button>
+              <a href="/" id="doneEditing" class="btn btn-default btn-lg">Done</a>
               
 
             </div><!-- fh-request-actions -->
@@ -165,8 +166,6 @@ curl -X {{method}}{{#if headers}}{{#each headers}} -H "{{key}}:{{value}}" {{/eac
             <ul class="nav nav-tabs nav-tabs-pf fh-request-nav" role="tablist">
               <li role="presentation" class="active"><a href="#headers" aria-controls="headers" role="tab" data-toggle="tab">Headers</a></li>
               <li role="presentation"><a href="#mount-path" aria-controls="mount-path" role="tab" data-toggle="tab">Mount Path</a></li>
-              <li role="presentation"><a href="#reqHeadersCollapsible" aria-controls="reqHeadersCollapsible" role="tab" data-toggle="tab">Request Headers</a></li>
-              <li role="presentation"><a href="#rawRequestCollapsible" aria-controls="rawRequestCollapsible" role="tab" data-toggle="tab">Raw Request</a></li>
             </ul>
 
 
@@ -188,18 +187,6 @@ curl -X {{method}}{{#if headers}}{{#each headers}} -H "{{key}}:{{value}}" {{/eac
                 <input type="text" id="mountPath" name="mountPath" class="form-control" aria-describedby="mountPathHelp" value="{{ model.mountPath }}">
                 <span id="mountPathHelp" class="help-block">Where should we expose your new request? Defaults to the same path as on the remote server</span>
               </div>
-              
-              <div id="reqHeadersCollapsible" role="tabpanel" class="tab-pane fade">
-                <div class="request-headers">
-                  <p><a href="#" class="try">Try this request</a> to see the request headers which get sent</p>
-                </div>
-              </div>
-              
-              <div id="rawRequestCollapsible" role="tabpanel" class="tab-pane fade">
-                <pre id="requestRaw" class="bodyEditor" data-type="http"><a href="#" class="try">Try this request</a> to see its raw body</pre>
-              </div>
-              
-
             </div><!-- tab pane -->
             
           </div><!-- card -->
@@ -242,13 +229,25 @@ curl -X {{method}}{{#if headers}}{{#each headers}} -H "{{key}}:{{value}}" {{/eac
             <div class="card-pf-body tab-content fh-response">
 
               <ul class="nav nav-tabs nav-tabs-pf fh-request-nav" role="tablist">
-                <li role="presentation" class="active"><a href="#responseHeader" aria-controls="responseHeader" role="tab" data-toggle="tab">Headers</a></li>
+                <li role="presentation" class="active"><a href="#reqHeadersCollapsible" aria-controls="reqHeadersCollapsible" role="tab" data-toggle="tab">Request Headers</a></li>
+                <li role="presentation"><a href="#rawRequestCollapsible" aria-controls="rawRequestCollapsible" role="tab" data-toggle="tab">Raw Request</a></li>
+                <li role="presentation"><a href="#responseHeader" aria-controls="responseHeader" role="tab" data-toggle="tab">Response Headers</a></li>
                 <li role="presentation"><a href="#responseBody" aria-controls="responseBody" role="tab" data-toggle="tab">Response Body</a></li>
                 <li role="presentation"><a href="#rawResponse" aria-controls="rawResponse" role="tab" data-toggle="tab">Raw Response</a></li>
                 <li role="presentation"><a href="#sampleCode" aria-controls="sampleCode" role="tab" data-toggle="tab">Sample Code</a></li>
               </ul>
               
-              <div role="tabpanel" class="tab-pane active" id="responseHeader">
+              <div id="reqHeadersCollapsible" role="tabpanel" class="tab-pane active">
+                <div class="request-headers">
+                  <p><a href="#" class="try">Try this request</a> to see the request headers which get sent</p>
+                </div>
+              </div>
+              
+              <div id="rawRequestCollapsible" role="tabpanel" class="tab-pane fade">
+                <pre id="requestRaw" class="bodyEditor" data-type="http"><a href="#" class="try">Try this request</a> to see its raw body</pre>
+              </div>
+              
+              <div role="tabpanel" class="tab-pane" id="responseHeader">
                 <p class="status"></p>
                 <div class="response-headers"></div>
               </div>

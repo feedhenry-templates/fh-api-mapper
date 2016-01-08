@@ -43,9 +43,12 @@ table.table{
 .fh-request-actions{
   display: inline-block;
   width: 24%;
-  button{
+  button, a.btn{
     padding: 13px 0px 12px 0px;
-    width: 48%;
+    width: 38%;
+  }
+  a#doneEditing {
+    width: 20%;
   }
 }
 
@@ -209,7 +212,7 @@ pre#requestRaw {
 .snippetEditor {
   height: 210px;
 }
-.snippetEditor#sample-curl {
+#sample-curl {
   height: 50px;
 }
 
@@ -244,10 +247,9 @@ pre#requestRaw {
   div {
     display: inline-block;
     &.fieldName {
-      width: 76%;
+      width: 72%;
     }
-    &.fieldEnabled, .fieldType {
-      float: right;
+    &.fieldEnabled, &.fieldType {
       width: 12%;
       text-align: right;
     }
