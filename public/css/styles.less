@@ -1,69 +1,74 @@
-@import "../lib/bootstrap/less/bootstrap.less";
+@import "../lib/patternfly/less/patternfly.less";
 @import "../lib/font-awesome/less/font-awesome.less";
+@icon-font-path: "/lib/bootstrap/fonts/";
+@font-path: "/lib/patternfly/dist/fonts";
 @fa-font-path: "/lib/font-awesome/fonts";
 
-#grid {
-  .core  {
-    .span(@gridColumns) {
-      width: (@gridColumnWidth * @gridColumns) + (@gridGutterWidth * (@gridColumns - 1));
+table.table{
+  thead {
+    background: none;
+  }
+  tr {
+    cursor: pointer;
+    .btn-group {
+      margin: 4px auto;
     }
   }
-};
-
-.input-medium{
-  width: 40%;
-}
-
-.fh-request-breadcrumb{
-  //  background: red;
-  margin: 20px 0 10px 0;
 }
 
 
-.fh-secondary-header {
-  text-transform: uppercase;
-  font-size: @fontSizeMini;
-  background: @grayLight;
-  color: @white;
-  line-height: 25px;
-  padding:  0 7px;
-  text-decoration: none;
-  margin: 0 0 10px 0;
-  a{
-    color: @white;
-    text-decoration: none!important;
-  }
-  i{
-//    background: red;
-    width: 12px;
-    margin: 0;
-  }
-}
-
-.fh-request{
-  background: @grayLighter;
-  padding: 0;
-
-  // border-bottom: 1px solid @grayLight;
-}
-// Input
+// Request Input =================================
 
 .fh-request-input{
-  //  background: red;
-  width: 100%;
+  background: white; // rgba(0,0,0,0.1);
+  border: 1px solid rgba(0,0,0,0.2);
+  display: inline-block;
+  margin: 20px 0;
+  padding: 5px;
+  width: 75%;
+  select{
+    border:none;
+    background:none;
+    box-shadow: none;
+  }
+  input[type="text"]{
+    background: none;
+    border: none;
+    border-left: 1px solid rgba(0,0,0,0.3);
+    box-shadow: none;
+    width: 85%;
+  }
 }
 
-.fh-request-headers{
-  //  background: yellow;
+.fh-request-actions{
+  display: inline-block;
+  width: 24%;
+  button, a.btn{
+    padding: 13px 0px 12px 0px;
+    width: 38%;
+  }
+  a#doneEditing {
+    width: 20%;
+  }
+}
 
+
+.fh-request-nav{
+  margin-bottom: 20px;
+}
+
+// Request headers =================================
+
+.fh-request-headers{
   li{
-    //    background: red!important;
     margin-bottom: 5px;
     &:last-child{
       margin: 0;
+      border: none;
     }
     input[type="text"]{
-      margin: 0;
+     margin: 0;
+     width: 44%
     }
     select{
       margin: 0;
@@ -78,6 +83,7 @@
       display: inline-block;
     }
   }
+  
   /* In rows with a content type, the headerRow is the 2nd of type,
   where content-type li is 1st of type. */
   ul.hasContentType li.headerRow:nth-of-type(2){
@@ -94,21 +100,16 @@
     display: inline-block;
     margin-right: 3%;
   }
-
+  
   span{
-    //    background: aqua;
-    display: inline-block;
-    text-align: right;
-    float: right;
     a{
       display: inline-block;
-      line-height: 30px;
-      //      background: orange;
+      line-height: 26px;
       padding: 0 5px;
-      color: @grayLight;
+      color: @gray-light;
       &:hover{
-        color: @linkColor;
-        &:last-child{color: @red;}
+        color: @link-color;
+        &:last-child{color: red;}
       }
     }
     .reorder{
@@ -119,50 +120,145 @@
 
 .fh-request-body{
   textarea{
-    margin: 0;
+    width: 98%!important;
   }
 }
 
-.request-pending{
-  .loader{
-   display: block; 
+.mountPath{
+  input{
+    width: 95%!important;
   }
 }
 
 
-.request-done{
-  .fh-result{
-    display: block;
-  }  
+// Treeview =================================
+
+.treeview{
+  border: 1px solid rgba(0,0,0,.1);
+  padding-bottom: 0;
+  .list-group{margin-bottom: 0;}
+  .list-group-item{
+    padding: 3px 10px!important;
+  }
 }
 
-.loader{
-  display: none; 
-}
-
-.fh-result{
-  padding: 10px 0 40px 0;
+.loader {
   display: none;
 }
 
-
-
-
-
-.fh-request-list-actions{
-  text-align: right!important;
+.request-pending .loader {
+  display: block;
 }
 
-#rawRequestCollapsible > dl > {
-  dd.request-headers {
-    display: inline-block;
+.fh-result .fh-response {
+  display: none;
+}
+
+.request-done .fh-result .fh-response {
+  display: block;
+}
+
+.request-done .fh-response-pre, .request-pending .fh-response-pre {
+  display: none;
+}
+
+.response-headers .dl-horizontal {
+   dt {
+     width: 260px;
+   }
+   dd {
+     margin-left: 280px;
+   }
+}
+
+.noMapping {
+  text-align: center;
+  padding: 10px 60px;
+}
+
+.alert {
+  position: fixed;
+}
+
+.alert-error {
+  .alert-danger;
+}
+
+pre#responseRaw {
+  height: 350px;
+}
+
+pre#requestRaw {
+  height: 100px;
+}
+
+.bodyEditor {
+  height: 350px;
+  overflow: scroll;
+  background-color: #272822;
+ & > div {
+    padding: 0;
+    height: 100%;
+  }
+  pre {
+    height: 100%;
+  }
+  h3 {
+    color: #fff;
+    margin-left: 50px;
   }
 }
 
-a.toggleable.collapsed i.fa:before {
-  content: @fa-var-chevron-right;
+.snippetEditor {
+  height: 210px;
+}
+#sample-curl {
+  height: 50px;
 }
 
-a.toggleable i.fa:before {
-  content : @fa-var-chevron-down;
+.treeView {
+  .treeNodeName {
+    display: inline-block;
+    max-width: 54%;
+    overflow: hidden;  
+  }
+  .list-group-item>.badge {
+    width: 36px;
+    height: 17px;
+    .treeWrap {
+      padding: 3px 0 0 0;
+      height: 100%;
+      width: 100%;
+      &.times {
+        background: @btn-danger-bg;
+      }
+      &.check {
+        background : @brand-success;
+      }
+    }
+  }
+  /* Select all enabled/disabled spans */
+  .list-group-item>span.badge:last-of-type{
+    padding: 0;
+  }  
+}
+
+.tableLegend {
+  div {
+    display: inline-block;
+    &.fieldName {
+      width: 72%;
+    }
+    &.fieldEnabled, &.fieldType {
+      width: 12%;
+      text-align: right;
+    }
+    &.fieldType {
+      padding-right: 2px;
+    }
+  }
+}
+
+.card-pf-heading form, .card-pf-heading form label {
+  margin-right: 12px;
 }

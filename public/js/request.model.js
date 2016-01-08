@@ -1,6 +1,8 @@
-var log = App.logger;
+var log = require('./logger.js');
+var Backbone = require('backbone');
+var $ = require('jquery');
 
-App.RequestModel = Backbone.Model.extend({
+module.exports = Backbone.Model.extend({
   urlRoot : '/api/requests',
   idAttribute : '_id',
   execute : function(){
@@ -14,6 +16,7 @@ App.RequestModel = Backbone.Model.extend({
       contentType: "application/json"
     }).done(function( data ) {
       log.debug('done');
+      self.lastSuccess = data;
       self.trigger('success', data);
     }).fail(function( xhr, textStatus ) {
       log.error('fail');
@@ -34,5 +37,15 @@ App.RequestModel = Backbone.Model.extend({
       return xhr.responseText;
     }
     return textStatus;
+  },
+  getLastSuccess : function(cb){
+    if (this.lastSuccess){
+      return cb(null, this.lastSuccess);
+    }
+    this.listenToOnce(this, 'success', function(data){
+      return cb(null, data);
+    });
+    this.listenToOnce(this, 'fail', cb);
+    this.execute();
   }
 });

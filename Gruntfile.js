@@ -5,6 +5,15 @@ module.exports = function(grunt) {
       all: ['application.js', 'lib/**/*.js', 'test/**/*.js', 'public/js/*.js']
     },
     unit: ['mocha -A -u exports --recursive -t 10000 ./test/unit'],
+    browserify : {
+      client : {
+        src : 'public/js/app.js',
+        dest : 'public/js/app-built.js',
+        options : {
+          watch : true
+        }
+      }
+    },
     nodemon: {
       dev: {
         script: 'application.js',
@@ -18,15 +27,6 @@ module.exports = function(grunt) {
         }
       }
     },
-    bower: {
-      install: {
-        //just run 'grunt bower:install' and you'll see files from your Bower packages in lib directory
-        options: {
-          targetDir: './public/lib/',
-          layout: 'byComponent'
-        }
-      }
-    },
     mocha_phantomjs: {
       all: {
         options: {
@@ -34,6 +34,47 @@ module.exports = function(grunt) {
             'http://localhost:9001/test/frontend-tests.html'
           ]
         }
+      }
+    },
+    copy: {
+      main: {
+        files:[
+          {
+            cwd : 'node_modules/font-awesome',
+            expand: true,
+            flatten: false,
+            src: '{less,fonts}/**',
+            dest: 'public/lib/font-awesome/'
+          },
+          {
+            cwd : 'node_modules/bootstrap',
+            expand: true,
+            flatten: false,
+            src: '{js,less,fonts}/**',
+            dest: 'public/lib/bootstrap/'
+          },
+          {
+            cwd : 'node_modules/bootstrap-treeview/dist',
+            expand: true,
+            flatten: false,
+            src: '**/*.{js,css,less}',
+            dest: 'public/lib/bootstrap-treeview/'
+          },
+          {
+            cwd : 'node_modules/patternfly',
+            expand: true,
+            flatten: false,
+            src: '{less,components,fonts,dist}/**',
+            dest: 'public/lib/patternfly/'
+          },
+          {
+            cwd : 'node_modules/brace',
+            expand: true,
+            flatten: false,
+            src: '**/*',
+            dest: 'public/lib/brace/'
+          }
+        ]
       }
     }
   });
@@ -57,11 +98,13 @@ module.exports = function(grunt) {
 
   grunt.loadNpmTasks('grunt-fh-build');
   grunt.loadNpmTasks('grunt-contrib-jshint');
+  grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-nodemon');
-  grunt.loadNpmTasks('grunt-bower-task');
   grunt.loadNpmTasks('grunt-mocha-phantomjs');
-  grunt.registerTask('serve', ['bower', 'nodemon']);
+  grunt.loadNpmTasks('grunt-browserify');
+  
+  grunt.registerTask('serve', ['copy', 'browserify:client', 'nodemon']);
   grunt.registerTask('test', ['jshint', 'fh:unit', 'test-frontend']);
-  grunt.registerTask('default', ['bower', 'test']);
+  grunt.registerTask('default', ['test']);
   grunt.registerTask('test-frontend', ['serve-frontend-tests', 'mocha_phantomjs']);
 };
