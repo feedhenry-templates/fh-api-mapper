@@ -1,6 +1,6 @@
 var assert = require('assert'),
 map = require('../../lib/map.js'),
-transformations = require('../../lib/transformations'),
+transformations = require('../../lib/default_transformations'),
 mapping = require('../fixtures/fixture-comprehensive-mapping.js'),
 body = require('../fixtures/fixture-comprehensive-response.js');
 
