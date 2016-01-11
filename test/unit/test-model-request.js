@@ -62,7 +62,7 @@ exports.it_should_create_requests_with_a_mapping = function(done){
       method : 'get',
       url : 'http://www.google.ie',
       mapping : mappingId,
-      mountPath : '/'
+      mountPath : '/valid'
     });
     req.save(function(err){
       assert.ok(!err);

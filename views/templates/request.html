@@ -186,6 +186,8 @@ curl -X {{method}}{{#if headers}}{{#each headers}} -H "{{key}}:{{value}}" {{/eac
               <div id="mount-path" role="tabpanel" class="mountPath tab-pane fade">
                 <input type="text" id="mountPath" name="mountPath" class="form-control" aria-describedby="mountPathHelp" value="{{ model.mountPath }}">
                 <span id="mountPathHelp" class="help-block">Where should we expose your new request? Defaults to the same path as on the remote server</span>
+                <span id="mountPathLinkContainer">You can visit your new API at <a id="mountPathLink" href="{{model.mountPath}}">{{model.mountPath}}</a></span>
+                
               </div>
             </div><!-- tab pane -->
             
