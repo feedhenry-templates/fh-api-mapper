@@ -189,7 +189,7 @@ module.exports = BaseMapperView.extend({
       updateObject = { use : el.prop('checked') };
     }
     
-    if (updateObject.transformation === 'none' || updateObject.transformation === 'No transformation'){
+    if (!updateObject.transformation || updateObject.transformation === 'none' || updateObject.transformation === 'No transformation'){
       updateObject.transformation = null;
     }
     

@@ -2,6 +2,7 @@ var mbaasApi = require('fh-mbaas-api');
 var express = require('express');
 var mbaasExpress = mbaasApi.mbaasExpress();
 var lessMiddleware = require('less-middleware');
+var apiMapper = require('./lib/api');
 
 var cors = require('cors');
 
@@ -22,20 +23,11 @@ app.use(mbaasExpress.fhmiddleware());
 
 
 // fhlint-begin: custom-routes
-app.use('/', require('./lib/api')({
+app.use('/', apiMapper({
   transformations : {
-    customMixedArrayTransform : {
-      type : "array",
-      transform : function(values){
-        var newObj = {};
-        values.forEach(function(val, idx){
-          newObj[idx] = val;
-        });
-        return newObj;
-      }
-    }
+    // Add your custom transformations here! `customMixedArrayTransform` is an example of this.
+    mixedArrayTransform : require('./transformations/mixedArrayTransform.js')
   }
-  
 }));
 // fhlint-end
 
