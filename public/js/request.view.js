@@ -67,6 +67,8 @@ module.exports = BaseMapperView.extend({
     this.$sampleFhService = this.$el.find('#sample-fhservice');
     this.$sampleCurl = this.$el.find('#sample-curl');
     this.$mountPath = this.$el.find('#mountPath');
+    this.$mountPathLink = this.$el.find('#mountPathLink');
+    this.$mountPathLinkContainer = this.$el.find('#mountPathLinkContainer');
     this.$mapping = this.$el.find('.fh-mapping');
     this.$tplNodejsRequest = Handlebars.compile($('#tplNodejsRequest').html());
     this.$tplFhServiceRequest = Handlebars.compile($('#tplFhServiceRequest').html());
@@ -78,6 +80,11 @@ module.exports = BaseMapperView.extend({
     this.renderHeaders();
     this.renderMapping();
     this.$el.find('#autoRetry').prop('checked', this.autoRetry);
+    if (model.mountPath && model.method === 'GET'){
+      this.$mountPathLink.html(window.location.origin + model.mountPath);  
+    }else{
+      this.$mountPathLinkContainer.hide();
+    }
     this.trigger('rendered');
   },
   renderSnippets : function(){
@@ -170,7 +177,6 @@ module.exports = BaseMapperView.extend({
       mappedValues.mountPath = mountPath;
       this.$mountPath.val(mountPath);
     }
-    
     return mappedValues;  
   },
   inputChanged : function(){
@@ -189,7 +195,7 @@ module.exports = BaseMapperView.extend({
       error : function(model, xhr){
         log.error(xhr.responseText);
         var responseErr = xhr.responseJSON;
-        var message = "Error saving request";
+        var message = "Error saving request. ";
         if (responseErr && responseErr.errors){
           _.each(responseErr.errors, function(err){
             if (err.message){
