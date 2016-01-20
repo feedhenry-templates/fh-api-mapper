@@ -6,11 +6,31 @@
   </head>
   <body>
     <div class="content container">
+
       <div class="jumbotron">
-        <h2>Database Upgrade Needed</h2>
-        <p>We were unable to connect to your cloud service's database.</p>
-        <p>If you are running this app on a FeedHenry mBaaS target, you must first use the data browser to upgrade your database like so:
-          <img src="/images/upgrade.png" alt="Upgrade database image">
+        <h2>Service Setup Needed</h2>
+        <ol>
+          <li>
+            <p><strong>Make the service public</strong><br>In the <em>Service Details</em> page of the newly created API Mapper service, in the <em>Access Control</em> section, check <em>Make this Service Public to all Projects and Services</em> and click <em>Save Service</em>.
+              <img src="/images/api-mapper-make-public.png" alt="Make a service public">
+            </p>
+          </li>
+          <li>
+            <p><strong>Upgrade the database of the service</strong><br>The API Mapper service needs a dedicated database. To perform this task, the service needs to be fully deployed and running.</p>
+            <ol>
+              <li>
+                In the <em>Data Browser</em> section of the newly created service, click the <em>Upgrade Database</em> button in the top right corner, and confirm by clicking <em>Upgrade Now</em>.
+                <p>
+                  <img src="/images/upgrade.png" alt="Upgrade database image" width="713px">
+                </p>
+              </li>
+              <li>
+                Redeploy the service by clicking <em>Deploy Cloud App</em> in the <em>Deploy</em> section.
+              </li>
+            </ol>
+          </li>
+        </ol>
+
         <p>
           <a class="btn btn-primary btn-large" href="/">
             Retry &raquo;
@@ -18,6 +38,6 @@
         </p>
       </div>
 
-    </div>=
+    </div>
   </body>
 </html>

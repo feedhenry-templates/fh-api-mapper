@@ -21,6 +21,7 @@ module.exports = function(grunt) {
           ignore: ['public/**', 'public/lib/**', 'node_modules'],
           ext: 'js,html',
           env: {
+            FH_LOCAL: true,
             FH_PORT: 8001,
             FH_MONGODB_CONN_URL : 'localhost:27017'
           }
