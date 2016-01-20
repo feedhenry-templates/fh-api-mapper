@@ -1,6 +1,9 @@
 var assert = require('assert');
 var request = require('supertest');
 var proxyquire = require('proxyquire');
+
+process.env.FH_LOCAL = true;
+
 var app = proxyquire('../../application.js', {
   './lib/db.js' : function(){},
   '../models/request.js' : require('../fixtures/fixture-model-request')
