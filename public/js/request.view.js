@@ -160,6 +160,8 @@ module.exports = BaseMapperView.extend({
     }else{
       mappedValues.body = null;
     }
+    mappedValues.url = mappedValues.url && mappedValues.url.trim();
+    mappedValues.mountPath = mappedValues.mountPath && mappedValues.mountPath.trim();
     
     if (!mappedValues.mountPath && mappedValues.url){
       // Remove the protocol prefix
