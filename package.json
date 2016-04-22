@@ -15,7 +15,7 @@
     "cors": "2.7.1",
     "ejs": "^2.3.4",
     "express": "4.13.3",
-    "fh-mbaas-api": "5.10.0",
+    "fh-mbaas-api": "5.11.0",
     "font-awesome": "^4.4.0",
     "handlebars": "^3.0.3",
     "jquery": "^2.1.4",
@@ -42,7 +42,8 @@
     "grunt-nodemon": "^0.4.0",
     "jshint": "2.7.0",
     "mocha": "2.2.4",
-    "mockgoose": "^2.0.3"
+    "mockgoose": "^2.0.3",
+    "grunt-node-inspector": ">=0.2.0"
   },
   "scripts": {
     "test": "grunt test",
