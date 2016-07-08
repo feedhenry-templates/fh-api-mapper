@@ -1,6 +1,6 @@
 {
   "name": "fh-api-mapper",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "bin": {
     "bower": "node_modules/bower/bin/bower",
     "browserify": "node_modules/browserify/bin/cmd.js"
