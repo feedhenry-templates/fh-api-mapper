@@ -3,6 +3,7 @@ module.exports = {
   method : 'GET',
   headers : [
     { key : 'content-type', value : 'text/plain' },
-    { key : 'foo', value : 'bar' }
+    { key : 'foo', value : 'bar' },
+    { key : 'checkcase', value : 'UPCASE' }
   ]
 };
