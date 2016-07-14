@@ -1,9 +1,9 @@
 var assert = require('assert'),
-proxyquire = require('proxyquire'),
-requester = proxyquire('../../lib/requester.js', {
-  'request' : function(){}
-}),
-requestFixture = require('../fixtures/fixture-example-request.js');
+  proxyquire = require('proxyquire'),
+  requester = proxyquire('../../lib/requester.js', {
+    'request' : function(){}
+  }),
+  requestFixture = require('../fixtures/fixture-example-request.js');
 
 exports.it_should_skip_raw_for_non_debug = function(done){
   requester(requestFixture, function(err, requestResult){
@@ -19,12 +19,13 @@ exports.it_should_send_get_requests = function(done){
     assert.ok(requestResult, 'Expected a requestResult');
     assert.ok(requestResult.response, 'Expected requestResult to have a response');
     assert.ok(requestResult.request, 'Expected requestResult to have request data');
-    
+
     assert.ok(requestResult.request.raw);
     assert.ok(requestResult.response.raw);
     assert.ok(requestResult.request.raw.indexOf('GET')>-1, 'Raw should have HTTP Method');
     assert.ok(requestResult.request.raw.indexOf('foo')>-1, 'Raw should have header key');
     assert.ok(requestResult.request.raw.indexOf('foo')>-1, 'Raw should have header value');
+    assert.ok(requestResult.request.raw.indexOf('UPCASE')>-1, 'Should not convert header values to lowercase');
     return done();
   });
 };
