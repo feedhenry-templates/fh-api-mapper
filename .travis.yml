@@ -1,11 +1,12 @@
 language: node_js
+sudo: required
+services:
+  - docker
 node_js:
   - "0.10"
-  - "4.4.2"
-sudo: false
+  - "4.4.3"
 before_install:
-  - npm install -g npm@2.13.5
-  - npm install -g grunt@0.4.5
-  - npm install -g grunt-cli
-  - npm install -g bower
+  - git clone https://gist.github.com/psturc/8f386fd74d8b34faf113ff14d7638529
+  - cp 8f386fd74d8b34faf113ff14d7638529/build.sh .
+  - bash build.sh
 install: npm install
