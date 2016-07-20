@@ -3,9 +3,7 @@ var express = require('express');
 var mbaasExpress = mbaasApi.mbaasExpress();
 var lessMiddleware = require('less-middleware');
 var apiMapper = require('./lib/api');
-
 var cors = require('cors');
-
 var app = express();
 
 app.use(cors());
