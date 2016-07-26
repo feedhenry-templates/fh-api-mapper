@@ -41,6 +41,24 @@ exports.it_should_send_post_requests = function(done){
   });
 };
 
+exports.it_should_send_post_requests_with_valid_json = function(done){
+  requestFixture.method = 'post';
+  requestFixture.headers = [
+    { key : 'content-type', value : 'application/json' },
+    { key : 'accept', value : 'application/json' }
+  ];
+  requestFixture.body = { "barcode" : "077924004971" };
+  requestFixture.url = 'http://jsonplaceholder.typicode.com/posts';
+  requester(requestFixture, true, function(err, requestResult){
+    assert.ok(requestResult.request.raw.indexOf('POST')>-1, 'Raw should have HTTP Method');
+    assert.ok(requestResult.request.raw.indexOf('barcode')>-1, 'Raw should have json key name in the body');
+    assert.ok(requestResult.request.raw.indexOf('077924004971')>-1, 'Raw should have json value in the body');
+    assert.ok(requestResult.request.headers.accept === "application/json");
+    assert.ok(requestResult.request.headers["content-type"] === "application/json");
+    return done();
+  });
+};
+
 exports.it_should_throw_error_on_invalid_url = function(done){
   requester({url : 'invalid', method : 'get'}, function(err){
     assert.ok(err, 'Expected error on invalid url');
