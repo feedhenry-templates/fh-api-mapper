@@ -1,11 +1,13 @@
 language: node_js
+group: edge
+sudo: required
+services:
+  - mongodb
+  - docker
 node_js:
   - "0.10"
-  - "4.4.2"
-sudo: false
+  - "4.4.3"
 before_install:
-  - npm install -g npm@2.13.5
-  - npm install -g grunt@0.4.5
-  - npm install -g grunt-cli
-  - npm install -g bower
+  - npm install fh-build -g
+  - fh-build template
 install: npm install
