@@ -8,4 +8,6 @@ before_install:
   - npm install -g grunt@0.4.5
   - npm install -g grunt-cli
   - npm install -g bower
+  - export PHANTOMJS_CDNURL=https://bitbucket.org/ariya/phantomjs/downloads npm install phantomjs
+  - npm install -g phantomjs
 install: npm install
