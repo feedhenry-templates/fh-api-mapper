@@ -8,7 +8,7 @@ node_js:
   - "0.10"
   - "4.4.3"
 before_install:
-  - export PHANTOMJS_CDNURL=https://bitbucket.org/ariya/phantomjs/downloads npm install phantomjs -g
+  - export PHANTOMJS_CDNURL=https://bitbucket.org/ariya/phantomjs/downloads npm install phantomjs
   - npm install -g bower
   - npm install fh-build -g
   - fh-build template
