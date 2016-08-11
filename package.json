@@ -15,7 +15,7 @@
     "cors": "2.7.1",
     "ejs": "^2.3.4",
     "express": "4.13.3",
-    "fh-mbaas-api": "5.13.1",
+    "fh-mbaas-api": "^5.13.7",
     "font-awesome": "^4.4.0",
     "handlebars": "^3.0.3",
     "jquery": "^2.1.4",
