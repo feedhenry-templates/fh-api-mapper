@@ -23,10 +23,8 @@
     "mongoose": "^4.1.4",
     "mongoose-validators": "^0.1.0",
     "patternfly": "^2.8.0",
-    "proxyquire": "^1.7.1",
     "request": "2.61.0",
     "stream-buffers": "2.2.0",
-    "supertest": "^1.1.0",
     "underscore": "^1.8.3"
   },
   "devDependencies": {
@@ -43,6 +41,8 @@
     "jshint": "2.7.0",
     "mocha": "2.2.4",
     "mockgoose": "^2.0.3",
+    "supertest": "^1.1.0",
+    "proxyquire": "^1.7.1",
     "grunt-node-inspector": ">=0.2.0"
   },
   "scripts": {
