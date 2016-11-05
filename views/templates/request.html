@@ -166,6 +166,7 @@ curl -X {{method}}{{#if headers}}{{#each headers}} -H "{{key}}:{{value}}" {{/eac
             <ul class="nav nav-tabs nav-tabs-pf fh-request-nav" role="tablist">
               <li role="presentation" class="active"><a href="#headers" aria-controls="headers" role="tab" data-toggle="tab">Headers</a></li>
               <li role="presentation"><a href="#mount-path" aria-controls="mount-path" role="tab" data-toggle="tab">Mount Path</a></li>
+              <li role="presentation"><a href="#cache-tab" aria-controls="cache-tab" role="tab" data-toggle="tab">Cache requests</a></li>
             </ul>
 
 
@@ -188,6 +189,10 @@ curl -X {{method}}{{#if headers}}{{#each headers}} -H "{{key}}:{{value}}" {{/eac
                 <span id="mountPathHelp" class="help-block">Where should we expose your new request? Defaults to the same path as on the remote server</span>
                 <span id="mountPathLinkContainer">You can visit your new API at <a id="mountPathLink" href="{{model.mountPath}}">{{model.mountPath}}</a></span>
                 
+              </div>
+              <div id="cache-tab" role="tabpanel" class="cache tab-pane fade">
+                <input type="text" id="cache" name="cache" class="form-control" aria-describedby="cacheHelp" value="{{ model.cache }}">
+                <span id="cacheHelp" class="help-block">Provide cache timeout in seconds if you wish requests to be cached.</span>
               </div>
             </div><!-- tab pane -->
             
