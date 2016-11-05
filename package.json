@@ -1,6 +1,6 @@
 {
   "name": "fh-api-mapper",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "bin": {
     "bower": "node_modules/bower/bin/bower",
     "browserify": "node_modules/browserify/bin/cmd.js"
@@ -24,6 +24,7 @@
     "mongoose-validators": "^0.1.0",
     "patternfly": "^2.8.0",
     "request": "2.61.0",
+    "simple-xml2json": "^1.2.3",
     "stream-buffers": "2.2.0",
     "underscore": "^1.8.3"
   },
