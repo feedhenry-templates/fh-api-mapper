@@ -15,11 +15,13 @@ app.use('/mbaas', mbaasExpress.mbaas);
 app.use(lessMiddleware(__dirname + '/public'));
 app.use(express['static'](__dirname + '/public'));
 
+process.env.FH_MONGODB_CONN_URL="localhost:27017";
+
 app.use(function checkRequirements(req, res, next) {
-  if (!process.env.FH_LOCAL && (!process.env.FH_MONGODB_CONN_URL || process.env.FH_SERVICE_APP_PUBLIC !== 'true')) {
-    console.log('FH_MONGODB_CONN_URL:', process.env.FH_MONGODB_CONN_URL, 'FH_LOCAL:', process.env.FH_LOCAL, 'FH_SERVICE_APP_PUBLIC', process.env.FH_SERVICE_APP_PUBLIC);
-    return res.render('upgrade.html', {});
-  }
+  // if (!process.env.FH_LOCAL && (!process.env.FH_MONGODB_CONN_URL || process.env.FH_SERVICE_APP_PUBLIC !== 'true')) {
+  //   console.log('FH_MONGODB_CONN_URL:', process.env.FH_MONGODB_CONN_URL, 'FH_LOCAL:', process.env.FH_LOCAL, 'FH_SERVICE_APP_PUBLIC', process.env.FH_SERVICE_APP_PUBLIC);
+  //   return res.render('upgrade.html', {});
+  // }
   return next();
 });
 

@@ -166,6 +166,7 @@ curl -X {{method}}{{#if headers}}{{#each headers}} -H "{{key}}:{{value}}" {{/eac
             <ul class="nav nav-tabs nav-tabs-pf fh-request-nav" role="tablist">
               <li role="presentation" class="active"><a href="#headers" aria-controls="headers" role="tab" data-toggle="tab">Headers</a></li>
               <li role="presentation"><a href="#mount-path" aria-controls="mount-path" role="tab" data-toggle="tab">Mount Path</a></li>
+              <li role="presentation"><a href="#proxy" aria-controls="proxy" role="tab" data-toggle="tab">Proxy</a></li>
             </ul>
 
 
@@ -187,7 +188,15 @@ curl -X {{method}}{{#if headers}}{{#each headers}} -H "{{key}}:{{value}}" {{/eac
                 <input type="text" id="mountPath" name="mountPath" class="form-control" aria-describedby="mountPathHelp" value="{{ model.mountPath }}">
                 <span id="mountPathHelp" class="help-block">Where should we expose your new request? Defaults to the same path as on the remote server</span>
                 <span id="mountPathLinkContainer">You can visit your new API at <a id="mountPathLink" href="{{model.mountPath}}">{{model.mountPath}}</a></span>
-                
+              </div><!-- row -->
+
+               <div id="proxy" role="tabpanel" class="proxy tab-pane fade">
+                <span class="checkbox">
+                  <label>
+                    <input id="passthrough" name="passthrough" type="checkbox" {{#if model.passthrough}}checked{{/if}}>
+                      Pass all existing headers and path variables?
+                  </label>
+                </span>
               </div>
             </div><!-- tab pane -->
             
