@@ -49,6 +49,6 @@
     "test": "grunt test",
     "start": "node application.js"
   },
-  "license": "mit",
+  "license": "Apache-2.0",
   "main": "application.js"
 }
