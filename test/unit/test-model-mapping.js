@@ -4,7 +4,7 @@ mockgoose = require('mockgoose'),
 Mapping;
 
 // in-memory mongoose for model testing
-mockgoose(mongoose, true);
+mockgoose(mongoose);
 
 Mapping = require('../../lib/models/mapping');
 
