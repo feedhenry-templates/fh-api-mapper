@@ -5,9 +5,27 @@ var lessMiddleware = require('less-middleware');
 var apiMapper = require('./lib/api');
 var cors = require('cors');
 var app = express();
+var auth = require('basic-auth');
+var rhmapAuth = require('rhmap-auth');
 
 app.use(cors());
 app.engine('html', require('ejs').renderFile);
+
+function isAuthenticated(req, res, next) {
+  var user = auth(req) || { name: '', pass: '' };
+  rhmapAuth(user.name, user.pass, function (err, isValid) {
+    if (!err && isValid) {
+      return next();
+    } else {
+      res.statusCode = 401;
+      res.setHeader('WWW-Authenticate', 'Basic realm="example"');
+      res.end('Access denied');
+    }
+  });
+}
+
+app.use(isAuthenticated);
+
 
 // Note: the order which we add middleware to Express here is important!
 app.use('/sys', mbaasExpress.sys([]));
@@ -42,6 +60,6 @@ app.use(mbaasExpress.errorHandler());
 
 var port = process.env.FH_PORT || process.env.OPENSHIFT_NODEJS_PORT || 8001;
 var host = process.env.OPENSHIFT_NODEJS_IP || '0.0.0.0';
-module.exports = app.listen(port, host, function() {
+module.exports = app.listen(port, host, function () {
   console.log("App started at: " + new Date() + " on port: " + port);
 });
