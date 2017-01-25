@@ -1,8 +1,8 @@
 @import "../lib/patternfly/less/patternfly.less";
 @import "../lib/font-awesome/less/font-awesome.less";
-@icon-font-path: "/lib/bootstrap/fonts/";
-@font-path: "/lib/patternfly/dist/fonts";
-@fa-font-path: "/lib/font-awesome/fonts";
+@icon-font-path: "../lib/bootstrap/fonts/";
+@font-path: "../lib/patternfly/dist/fonts";
+@fa-font-path: "../lib/font-awesome/fonts";
 
 table.table{
   thead {
@@ -83,7 +83,7 @@ table.table{
       display: inline-block;
     }
   }
-  
+
   /* In rows with a content type, the headerRow is the 2nd of type,
   where content-type li is 1st of type. */
   ul.hasContentType li.headerRow:nth-of-type(2){
@@ -96,11 +96,11 @@ table.table{
       display: none;
     }
   }
-  label { 
+  label {
     display: inline-block;
     margin-right: 3%;
   }
-  
+
   span{
     a{
       display: inline-block;
@@ -220,7 +220,7 @@ pre#requestRaw {
   .treeNodeName {
     display: inline-block;
     max-width: 54%;
-    overflow: hidden;  
+    overflow: hidden;
   }
   .list-group-item>.badge {
     width: 36px;
@@ -240,7 +240,7 @@ pre#requestRaw {
   /* Select all enabled/disabled spans */
   .list-group-item>span.badge:last-of-type{
     padding: 0;
-  }  
+  }
 }
 
 .tableLegend {
