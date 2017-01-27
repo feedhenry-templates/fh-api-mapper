@@ -44263,7 +44263,7 @@ module.exports = BaseMapperView.extend({
 var Backbone = require('backbone');
 
 module.exports = Backbone.Collection.extend({
-  url: '../api/transformations'
+  url: './api/transformations'
 });
 
 },{"backbone":1}],68:[function(require,module,exports){
