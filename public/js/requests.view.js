@@ -48,7 +48,7 @@ module.exports = BaseMapperView.extend({
     }
     model.fetch({
       success : function(){
-        window.history.pushState(id, "Edit Request", "/requests/" + id);
+        window.history.pushState(id, "Edit Request", "./requests/" + id);
         self.showRequestView(model);    
       },
       error : function(){
@@ -57,7 +57,7 @@ module.exports = BaseMapperView.extend({
     });
   },
   newRequest : function(){
-    window.history.pushState("new", "New Request", "/requests/new");
+    window.history.pushState("new", "New Request", "./requests/new");
     this.showRequestView(new RequestModel());
   },
   showRequestView : function(model){

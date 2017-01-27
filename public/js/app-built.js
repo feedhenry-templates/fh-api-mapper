@@ -43475,7 +43475,7 @@ var Backbone = require('backbone');
 module.exports = Backbone.Model.extend({
   idAttribute : '_id',
   url : function(){
-    var url = '/api/requests/' + this.request.id + '/mapping';
+    var url = '../api/requests/' + this.request.id + '/mapping';
     if (this.id){
       url += '/' + this.id;
     }
@@ -43715,14 +43715,14 @@ var Backbone = require('backbone');
 var $ = require('jquery');
 
 module.exports = Backbone.Model.extend({
-  urlRoot : '/api/requests',
+  urlRoot : '../api/requests',
   idAttribute : '_id',
   execute : function(){
     this.trigger('trying');
     var self = this;
     
     $.ajax({
-      url: '/try',
+      url: '../try',
       method: 'post',
       data: JSON.stringify(this.toJSON()),
       contentType: "application/json"
@@ -44148,7 +44148,7 @@ var Backbone = require('backbone'),
 RequestModel = require('./request.model.js');
 
 module.exports = Backbone.Collection.extend({
-  url: '/api/requests',
+  url: './api/requests',
   model : RequestModel
 });
 
@@ -44203,7 +44203,7 @@ module.exports = BaseMapperView.extend({
     }
     model.fetch({
       success : function(){
-        window.history.pushState(id, "Edit Request", "/requests/" + id);
+        window.history.pushState(id, "Edit Request", "./requests/" + id);
         self.showRequestView(model);    
       },
       error : function(){
@@ -44212,7 +44212,7 @@ module.exports = BaseMapperView.extend({
     });
   },
   newRequest : function(){
-    window.history.pushState("new", "New Request", "/requests/new");
+    window.history.pushState("new", "New Request", "./requests/new");
     this.showRequestView(new RequestModel());
   },
   showRequestView : function(model){
@@ -44263,7 +44263,7 @@ module.exports = BaseMapperView.extend({
 var Backbone = require('backbone');
 
 module.exports = Backbone.Collection.extend({
-  url: '/api/transformations'
+  url: '../api/transformations'
 });
 
 },{"backbone":1}],68:[function(require,module,exports){
