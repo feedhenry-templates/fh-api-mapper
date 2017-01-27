@@ -20,7 +20,7 @@ App.init = (function() {
 
   // Always have requestsListView as the bottom view in the stack
   var listView = App.listView = new RequestsListView().render();
-  
+
   if (!path || !id){
     return;
   }

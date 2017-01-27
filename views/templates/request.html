@@ -65,7 +65,7 @@ curl -X {{method}}{{#if headers}}{{#each headers}} -H "{{key}}:{{value}}" {{/eac
 
 
 <script id="tplHeaderRow" type="text/x-handlebars-template">
- 
+
   <li class="headerRow">
     <input name="headers.key" type="text" placeholder="Header Key" value="{{key}}">
     <input name="headers.value" type="text" placeholder="Header Value" value="{{value}}">
@@ -92,7 +92,7 @@ curl -X {{method}}{{#if headers}}{{#each headers}} -H "{{key}}:{{value}}" {{/eac
           <option value="text/html">text/html</option>
           <option value="text/plain">text/plain</option>
         </select>
-        
+
       </li>
       {{/if}}
     {{#each model.headers}}
@@ -108,7 +108,7 @@ curl -X {{method}}{{#if headers}}{{#each headers}} -H "{{key}}:{{value}}" {{/eac
       <div class="row row-cards-pf">
         <div class="col-md-12">
           <div class="card-pf {{#unless model.mapping}}unmapped{{/unless}}">
-            
+
             <div class="card-pf-heading">
               {{#if model.mapping}}
                 <a href="#" id="removeMapping" class="btn btn-sm btn-danger pull-right">Remove Mapping from Request</a>
@@ -118,7 +118,7 @@ curl -X {{method}}{{#if headers}}{{#each headers}} -H "{{key}}:{{value}}" {{/eac
                 Response Mapping
               </h2>
             </div> <!-- card header -->
-            
+
             {{#unless model.mapping}}
             <div class="noMapping">
               <h3>This request doesn&apos;t use a mapping right now.</h3>
@@ -126,20 +126,20 @@ curl -X {{method}}{{#if headers}}{{#each headers}} -H "{{key}}:{{value}}" {{/eac
             </div>
             {{/unless}}
 
-            
+
             <div class="card-pf-body">
               <div id="mappingView"></div>
             </div><!-- card-body -->
           </div><!-- card -->
         </div><!-- col -->
-      </div><!-- row -->  
+      </div><!-- row -->
 </script>
 
 <script id="tplCreateEditRequestView" type="text/x-handlebars-template">
 
   <section class="fh-request">
 
-    
+
     <form class="try form-inline">
 
       <div class="row row-cards-pf">
@@ -157,12 +157,12 @@ curl -X {{method}}{{#if headers}}{{#each headers}} -H "{{key}}:{{value}}" {{/eac
             <div class="fh-request-actions">
               <button class="btn btn-primary btn-lg" type="submit">Send Request</button>
               <button id="saveRequest" class="btn btn-default btn-lg" type="button">{{#if isNew}}Create{{else}}Update{{/if}} Request</button>
-              <a href="/" id="doneEditing" class="btn btn-default btn-lg">Done</a>
-              
+              <a href="../" id="doneEditing" class="btn btn-default btn-lg">Done</a>
+
 
             </div><!-- fh-request-actions -->
-            
-            
+
+
             <ul class="nav nav-tabs nav-tabs-pf fh-request-nav" role="tablist">
               <li role="presentation" class="active"><a href="#headers" aria-controls="headers" role="tab" data-toggle="tab">Headers</a></li>
               <li role="presentation"><a href="#mount-path" aria-controls="mount-path" role="tab" data-toggle="tab">Mount Path</a></li>
@@ -182,39 +182,39 @@ curl -X {{method}}{{#if headers}}{{#each headers}} -H "{{key}}:{{value}}" {{/eac
                 </div>
                 {{/if}}
               </div><!-- row -->
-              
+
               <div id="mount-path" role="tabpanel" class="mountPath tab-pane fade">
                 <input type="text" id="mountPath" name="mountPath" class="form-control" aria-describedby="mountPathHelp" value="{{ model.mountPath }}">
                 <span id="mountPathHelp" class="help-block">Where should we expose your new request? Defaults to the same path as on the remote server</span>
                 <span id="mountPathLinkContainer">You can visit your new API at <a id="mountPathLink" href="{{model.mountPath}}">{{model.mountPath}}</a></span>
-                
+
               </div>
             </div><!-- tab pane -->
-            
+
           </div><!-- card -->
         </div><!-- col -->
       </div><!-- row -->
     </form><!-- container -->
   </section><!-- fh-request -->
-  
+
   <section class="fh-mapping">
   </section>
-  
-    
-  
+
+
+
   <section class="fh-result">
-      
-    
+
+
       <div class="row row-cards-pf">
         <div class="col-md-12">
           <div class="card-pf">
-            
+
             <div class="card-pf-heading">
               <h2 class="card-pf-title">
                 Response
               </h2>
             </div> <!-- card header -->
-            
+
             <section class="loader">
                 <div class="row">
                   <div class="col-md-12">
@@ -222,12 +222,12 @@ curl -X {{method}}{{#if headers}}{{#each headers}} -H "{{key}}:{{value}}" {{/eac
                   </div>
                 </div>
             </section>
-            
+
             <p class="fh-response-pre">
               <a href="#" class="try">Try this request</a> to see its response
               <br /><br />
             </p>
-            
+
             <div class="card-pf-body tab-content fh-response">
 
               <ul class="nav nav-tabs nav-tabs-pf fh-request-nav" role="tablist">
@@ -238,30 +238,30 @@ curl -X {{method}}{{#if headers}}{{#each headers}} -H "{{key}}:{{value}}" {{/eac
                 <li role="presentation"><a href="#rawResponse" aria-controls="rawResponse" role="tab" data-toggle="tab">Raw Response</a></li>
                 <li role="presentation"><a href="#sampleCode" aria-controls="sampleCode" role="tab" data-toggle="tab">Sample Code</a></li>
               </ul>
-              
+
               <div id="reqHeadersCollapsible" role="tabpanel" class="tab-pane active">
                 <div class="request-headers">
                   <p><a href="#" class="try">Try this request</a> to see the request headers which get sent</p>
                 </div>
               </div>
-              
+
               <div id="rawRequestCollapsible" role="tabpanel" class="tab-pane fade">
                 <pre id="requestRaw" class="bodyEditor" data-type="http"><a href="#" class="try">Try this request</a> to see its raw body</pre>
               </div>
-              
+
               <div role="tabpanel" class="tab-pane" id="responseHeader">
                 <p class="status"></p>
                 <div class="response-headers"></div>
               </div>
-              
+
               <div role="tabpanel" class="tab-pane" id="responseBody">
-                
+
               </div>
-              
+
               <div role="tabpanel" class="tab-pane" id="rawResponse">
                 <pre id="responseRaw" class="bodyEditor" data-type="http" class="prettyprint">Send a request to see the raw response</pre>
               </div>
-              
+
               <div role="tabpanel" class="tab-pane" id="sampleCode">
                 <h5>fh.service snippet</h5>
                 <p>Call the mapped service from your Cloud App or another mBaaS Service within the platform</p>
@@ -273,13 +273,13 @@ curl -X {{method}}{{#if headers}}{{#each headers}} -H "{{key}}:{{value}}" {{/eac
                 <p>Call the endpoint directly from the command line using cURL</p>
                 <pre id="sample-curl" data-type="bash" class="snippetEditor"></pre>
               </div>
-          
+
           </div><!-- body -->
         </div><!-- card -->
       </div><!-- col -->
     </div><!-- row -->
   </section><!-- fh-result -->
-  
+
 </script>
 
 <script id="tplResponseBodies" type="text/x-handlebars-template">
@@ -290,7 +290,7 @@ curl -X {{method}}{{#if headers}}{{#each headers}} -H "{{key}}:{{value}}" {{/eac
 {{unmapped}}
       </pre>
     </div>
-    
+
     <div id="mappedBody" class="col-md-6">
       <h3>Mapped Response</h3>
       <pre data-type="json" id="mappedResponseBody" class="">
