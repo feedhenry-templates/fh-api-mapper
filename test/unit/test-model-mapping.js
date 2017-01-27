@@ -1,12 +1,12 @@
-var assert = require('assert'),
-mongoose = require('mongoose'),
-mockgoose = require('mockgoose'),
-Mapping;
+var assert = require('assert');
+var mongoose = require('mongoose');
+var Mapping = require('../../lib/models/mapping');
 
-// in-memory mongoose for model testing
-mockgoose(mongoose);
-
-Mapping = require('../../lib/models/mapping');
+exports.before = function(done) {
+  mongoose.connect('mongodb://127.0.0.1:27017', function() {
+    done();
+  });
+};
 
 exports.it_should_create_a_simple_mapping = function(done){
   var mapping = new Mapping({
@@ -19,7 +19,7 @@ exports.it_should_create_a_simple_mapping = function(done){
       }
     ]
   });
-  return mapping.save(function(err){
+  mapping.save(function(err){
     assert.ok(!err, 'Unable to create simple mapping: ' + err);
     return done();
   });
@@ -93,7 +93,7 @@ exports.it_should_reject_transformations_which_dont_exist = function(done){
 
 exports.it_should_require_element_types = function(done){
   var mapping = new Mapping({
-    element : {  
+    element : {
       transformation : "capitalize",
       type : "string"
     }
@@ -125,7 +125,7 @@ exports.it_should_map_simple_objects = function(done){
     var field = newMapping.fields[0];
     assert.ok(field.from = 'foo');
     assert.ok(field.type = 'string');
-    return done();  
+    return done();
   });
 };
 
@@ -153,7 +153,7 @@ exports.it_should_map_objects_which_contain_arrays_which_contain_arrays = functi
     var subArray = arrayField.element.fields[1].element;
     assert.ok(subArray);
     assert.ok(subArray.fields[0].from === 'title');
-    return done();  
+    return done();
   });
 };
 
@@ -183,5 +183,10 @@ exports.it_should_mark_mixed_arrays_as_such = function(done){
     assert.ok(recordsField.mixed === true);
     return done();
   });
-
 };
+
+exports.after = function(done) {
+  mongoose.connection.close();
+  done();
+};
+
