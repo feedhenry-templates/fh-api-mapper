@@ -38,9 +38,9 @@ module.exports = BaseMapperView.extend({
       if (tagName !== "td" && !el.hasClass('btn-edit')){
         return;
       }
-      el = el.parents('tr');  
+      el = el.parents('tr');
     }
-    
+
     id = el.data('id');
     model = this.collection.get(id);
     if (!model){
@@ -48,8 +48,8 @@ module.exports = BaseMapperView.extend({
     }
     model.fetch({
       success : function(){
-        window.history.pushState(id, "Edit Request", "/requests/" + id);
-        self.showRequestView(model);    
+        window.history.pushState(id, "Edit Request", "./requests/" + id);
+        self.showRequestView(model);
       },
       error : function(){
         self.trigger('notify', 'error', 'Could not load request details');
@@ -57,7 +57,7 @@ module.exports = BaseMapperView.extend({
     });
   },
   newRequest : function(){
-    window.history.pushState("new", "New Request", "/requests/new");
+    window.history.pushState("new", "New Request", "./requests/new");
     this.showRequestView(new RequestModel());
   },
   showRequestView : function(model){
@@ -76,7 +76,7 @@ module.exports = BaseMapperView.extend({
       if (message){
         //TODO: this should be hooking into an after render event or some such..
         setTimeout(function(){
-          self.trigger('notify', 'success', message);  
+          self.trigger('notify', 'success', message);
         }, 100);
       }
     });
@@ -88,7 +88,7 @@ module.exports = BaseMapperView.extend({
   deleteRequest : function(e){
     var self = this,
     el = $(e.target).parents('tr'),
-    id = el.data('id'), 
+    id = el.data('id'),
     model = this.collection.get(id);
     if (!model){
       return this.trigger('notify', 'error', 'Could not find request with id ' + id);
