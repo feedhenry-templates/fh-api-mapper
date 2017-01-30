@@ -3,7 +3,7 @@ var Backbone = require('backbone');
 var $ = require('jquery');
 
 module.exports = Backbone.Model.extend({
-  urlRoot : '../api/requests',
+  urlRoot : './api/requests',
   idAttribute : '_id',
   execute : function(){
     this.trigger('trying');

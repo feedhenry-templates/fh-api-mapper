@@ -43362,7 +43362,7 @@ App.init = (function() {
   var listView = App.listView = new RequestsListView().render();
   
   if (!path || !id){
-    return;
+   
   }
 
   if (id === 'new'){
@@ -43371,6 +43371,10 @@ App.init = (function() {
       // Only show create new page once the list collection has loaded - prevent double render
       return listView.showRequestView(new RequestModel());
     });
+  }
+
+  if (!_.contains(path, 'requests')) {
+    return;
   }
 
   model = new RequestModel({ _id : id });
@@ -43715,7 +43719,7 @@ var Backbone = require('backbone');
 var $ = require('jquery');
 
 module.exports = Backbone.Model.extend({
-  urlRoot : '../api/requests',
+  urlRoot : './api/requests',
   idAttribute : '_id',
   execute : function(){
     this.trigger('trying');
