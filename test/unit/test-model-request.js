@@ -1,13 +1,13 @@
-var assert = require('assert'),
-mongoose = require('mongoose'),
-mockgoose = require('mockgoose'),
-Request, Mapping;
+var assert = require('assert');
+var mongoose = require('mongoose');
+var Request = require('../../lib/models/request');
+var Mapping = require('../../lib/models/mapping');
 
-// in-memory mongoose for model testing
-mockgoose(mongoose, true);
-
-Request = require('../../lib/models/request');
-Mapping = require('../../lib/models/mapping');
+exports.before = function(done) {
+  mongoose.connect('mongodb://127.0.0.1:27017', function() {
+    done();
+  });
+};
 
 exports.it_should_require_all_required_fields = function(done){
   var req = new Request({
@@ -37,6 +37,7 @@ exports.it_should_capitalise_methods = function(done){
     url : 'http://www.google.ie'
   });
   req.save(function(err, createRes){
+    console.log('Err', err);
     assert.ok(!err);
     assert.ok(createRes);
     assert.ok(createRes.method === method.toUpperCase());
@@ -69,4 +70,10 @@ exports.it_should_create_requests_with_a_mapping = function(done){
       return done();
     });
   });
+};
+
+
+exports.after = function(done) {
+  mongoose.connection.close();
+  done();
 };

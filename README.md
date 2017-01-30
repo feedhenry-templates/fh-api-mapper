@@ -1,4 +1,4 @@
-#RedHat Mobile API Mapper   [![Build Status](https://travis-ci.org/feedhenry-templates/fh-api-mapper.png?branch=master)](https://travis-ci.org/feedhenry-templates/fh-api-mapper)
+# API Mapper   [![Build Status](https://travis-ci.org/feedhenry-templates/fh-api-mapper.png?branch=master)](https://travis-ci.org/feedhenry-templates/fh-api-mapper)
 The API Mapper is a visual tool for transforming the response of JSON APIs. It allows users to:
 
 * Rename Fields
@@ -69,10 +69,49 @@ We're going to add a transformation called 'even', which changes even numbers to
 
 ## Developing
 
-    grunt serve
+- Needs mongodb to run locally
+  - e.g. `docker run -p 27017:27017 --name mongo_instance_001 -d mongo:3.2 --smallfiles`
+- Needs env vars set to start and connect to mongo (mimicing a SaaS MBaaS)
+  - e.g. `FH_SERVICE_APP_PUBLIC=true FH_MONGODB_CONN_URL=localhost:27017 npm start`
+
+### Client
+- Uses Patternfly http://www.patternfly.org/#_
+- less in public/css, auto recompiles using less-middleware mounted as a route
+  - https://github.com/feedhenry-templates/fh-api-mapper/tree/master/public/css
+- static content under public/
+  - https://github.com/feedhenry-templates/fh-api-mapper/tree/master/public
+- browserified js, served via `app-built.js`
+  - requires re-running `grunt browserify` to rebuild
+- uses handlebars templates in views/templates (html files)
+  - https://github.com/feedhenry-templates/fh-api-mapper/tree/master/views/templates
+- uses bootstrap js
+- uses backbone for models, collections & views https://github.com/feedhenry-templates/fh-api-mapper/tree/master/public/js
+  - Models
+    - Request https://github.com/feedhenry-templates/fh-api-mapper/blob/master/public/js/mapping.model.js
+    - Mapping https://github.com/feedhenry-templates/fh-api-mapper/blob/master/public/js/request.model.js
+  - Collections
+    - Requests https://github.com/feedhenry-templates/fh-api-mapper/blob/master/public/js/requests.collection.js
+    - Transformation https://github.com/feedhenry-templates/fh-api-mapper/blob/master/public/js/transformations.collection.js
+  - Views
+    - `base.view.js`, which others extend
+      - https://github.com/feedhenry-templates/fh-api-mapper/blob/master/public/js/base.view.js
+    - Request *Default View* (and request.html templates) https://github.com/feedhenry-templates/fh-api-mapper/blob/master/public/js/request.view.js
+    - Requests (default view) (and requests.html template) https://github.com/feedhenry-templates/fh-api-mapper/blob/master/public/js/requests.view.js
+    - Mapping (and mapping.html templates) https://github.com/feedhenry-templates/fh-api-mapper/blob/master/public/js/mapping.view.js
+
+### Backend
+- main api mapper routers in `lib/api.js`
+  - https://github.com/feedhenry-templates/fh-api-mapper/blob/master/lib/api.js
+- uses mongoose for requests and mappings models in lib/models/
+  - https://github.com/feedhenry-templates/fh-api-mapper/tree/master/lib/models
+- Mappings are dynamically mounted as routes in `lib/api.js` via populateSingleRoute & populateAllRoutes functions
+  - Whenever a Request or Mapping changes, routes are updated
+  - https://github.com/feedhenry-templates/fh-api-mapper/blob/master/lib/api.js#L33-L79
 
 Open [http://localhost:8001/](http://localhost:8001/)
 
-## Running Tests
+### Tests
 
-    grunt test
+```bash
+npm test
+```

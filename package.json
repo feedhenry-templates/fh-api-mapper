@@ -23,7 +23,7 @@
     "mongoose": "^4.1.4",
     "mongoose-validators": "^0.1.0",
     "patternfly": "^2.8.0",
-    "request": "2.61.0",
+    "request": "2.79.0",
     "stream-buffers": "2.2.0",
     "underscore": "^1.8.3"
   },
@@ -38,12 +38,12 @@
     "grunt-fh-build": "^0.5.0",
     "grunt-mocha-phantomjs": "^2.0.0",
     "grunt-nodemon": "0.4.2",
+    "grunt-node-inspector": ">=0.2.0",
     "jshint": "2.7.0",
     "mocha": "2.2.4",
-    "mockgoose": "^2.0.3",
-    "supertest": "^1.1.0",
+    "mockgoose": "^6.0.8",
     "proxyquire": "^1.7.1",
-    "grunt-node-inspector": ">=0.2.0"
+    "supertest": "^1.1.0"
   },
   "scripts": {
     "test": "grunt test",
