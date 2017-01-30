@@ -43361,8 +43361,8 @@ App.init = (function() {
   // Always have requestsListView as the bottom view in the stack
   var listView = App.listView = new RequestsListView().render();
   
-  if (!path || !id){
-   
+  if (!path || !id) {
+    return;
   }
 
   if (id === 'new'){
@@ -43719,7 +43719,7 @@ var Backbone = require('backbone');
 var $ = require('jquery');
 
 module.exports = Backbone.Model.extend({
-  urlRoot : './api/requests',
+  urlRoot : '../api/requests',
   idAttribute : '_id',
   execute : function(){
     this.trigger('trying');
@@ -44205,9 +44205,9 @@ module.exports = BaseMapperView.extend({
     if (!model){
       return this.trigger('notify', 'error', 'Could not find request with id ' + id);
     }
+    window.history.pushState(id, "Edit Request", "./requests/" + id);
     model.fetch({
       success : function(){
-        window.history.pushState(id, "Edit Request", "./requests/" + id);
         self.showRequestView(model);    
       },
       error : function(){
