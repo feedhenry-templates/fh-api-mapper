@@ -21,7 +21,7 @@ App.init = (function() {
   // Always have requestsListView as the bottom view in the stack
   var listView = App.listView = new RequestsListView().render();
   
-  if (!path || !id){
+  if (!path || !id) {
     return;
   }
 
@@ -31,6 +31,10 @@ App.init = (function() {
       // Only show create new page once the list collection has loaded - prevent double render
       return listView.showRequestView(new RequestModel());
     });
+  }
+
+  if (!_.contains(path, 'requests')) {
+    return;
   }
 
   model = new RequestModel({ _id : id });
