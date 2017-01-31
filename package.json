@@ -47,7 +47,7 @@
   },
   "scripts": {
     "test": "grunt test",
-    "postinstall" : "scripts/postinstall.sh",
+    "install" : "scripts/postinstall.sh",
     "start": "node application.js"
   },
   "license": "Apache-2.0",
