@@ -1,5 +1,6 @@
-# API Mapper   [![Build Status](https://travis-ci.org/feedhenry-templates/fh-api-mapper.png?branch=master)](https://travis-ci.org/feedhenry-templates/fh-api-mapper)
-The API Mapper is a visual tool for transforming the response of JSON APIs. It allows users to:
+# API Mapper
+[![Build Status](https://travis-ci.org/feedhenry-templates/fh-api-mapper.png?branch=master)](https://travis-ci.org/feedhenry-templates/fh-api-mapper)
+## The API Mapper is a visual tool for transforming the response of JSON APIs. It allows users to:
 
 * Rename Fields
 * Exclude fields which are not needed
