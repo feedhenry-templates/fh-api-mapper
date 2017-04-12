@@ -1,4 +1,5 @@
 # API Mapper
+[![Dependency Status](https://img.shields.io/david/feedhenry-templates/fh-api-mapper.svg?style=flat-square)](https://david-dm.org/feedhenry-templates/fh-api-mapper)
 [![Build Status](https://travis-ci.org/feedhenry-templates/fh-api-mapper.png?branch=master)](https://travis-ci.org/feedhenry-templates/fh-api-mapper)
 ## The API Mapper is a visual tool for transforming the response of JSON APIs. It allows users to:
 
