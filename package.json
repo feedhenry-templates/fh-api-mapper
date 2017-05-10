@@ -32,13 +32,14 @@
     "chai": "3.3.0",
     "grunt": "0.4.5",
     "grunt-browserify": "^4.0.1",
+    "grunt-cli": "~0.1.13",
     "grunt-contrib-clean": "0.6.0",
     "grunt-contrib-copy": "^0.8.2",
     "grunt-contrib-jshint": "0.11.2",
     "grunt-fh-build": "^0.5.0",
     "grunt-mocha-phantomjs": "^2.0.0",
-    "grunt-nodemon": "0.4.2",
     "grunt-node-inspector": ">=0.2.0",
+    "grunt-nodemon": "0.4.2",
     "jshint": "2.7.0",
     "mocha": "2.2.4",
     "mockgoose": "^6.0.8",
@@ -47,7 +48,7 @@
   },
   "scripts": {
     "test": "grunt test",
-    "start": "node application.js"
+    "start": "grunt serve"
   },
   "license": "Apache-2.0",
   "main": "application.js"
