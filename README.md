@@ -7,17 +7,25 @@
 * Exclude fields which are not needed
 * Transform Fields using built-in transformations, or custom transforms they have defined themselves
 
-##Setup
+
+## Setup
 There are currently some workarounds needed to get the API Mapper up and running within the platform. 
+
 
 1. Make the newly created service public
 ![Public Service](https://raw.githubusercontent.com/feedhenry-templates/fh-api-mapper/master/public/images/publicservice.jpg)
-2. Visit the data browser, depending on your application configuration a "Upgrade Database" action will be available, this means the application is using an old/legacy shared database and it needs to be upgraded to use a dedicated one. Note the application needs to be first finished its initial deploy and be running to perform this task.
-![Public Service](https://raw.githubusercontent.com/feedhenry-templates/fh-api-mapper/master/public/images/databrowser.jpg)
-3. Re-deploy the service
-4. You can now use the API mapper under the "Preview" section of the studio. The mapper can be popped out of the studio fullscreen by visiting the deploy host of this service in a web browser. 
 
-##Creating your first request
+
+### Additional steps for Feedhenry MbaaS targets
+
+Additional steps that are required to be run on RHMAP Feedhenry mbaas (non OpenShift)
+
+1. Visit the data browser, depending on your application configuration a "Upgrade Database" action will be available, this means the application is using an old/legacy shared database and it needs to be upgraded to use a dedicated one. Note the application needs to be first finished its initial deploy and be running to perform this task.
+![Public Service](https://raw.githubusercontent.com/feedhenry-templates/fh-api-mapper/master/public/images/databrowser.jpg)
+2. Re-deploy the service
+3. You can now use the API mapper under the "Preview" section of the studio. The mapper can be popped out of the studio fullscreen by visiting the deploy host of this service in a web browser. 
+
+## Creating your first request
 Today, we're going to connect to a GitHub JSON API.
 
 1. To get started, from the home page of the api mapper, select "New Request". 
@@ -28,7 +36,7 @@ Today, we're going to connect to a GitHub JSON API.
 6. Let's try this request. Click the blue "Send Request" button. 
 7. In the "Response" section, verify the "Response Headers" and "Response Body" sections appear as expected. You can now see the response body. 
 
-##Add a Mapping
+## Add a Mapping
 1. Once we've created and saved a request, we can then add a mapping. Click the blue "Add a Mapping" button. 
 2. Once the mapping is created, we see a list of fields the API returns on the left. This API has a lot of fields. We're now going to modify the response which our API returns. 
 3. Click the "owner" field, and the "Field Mapping" panel should update. We can now define transformations on this field. 
@@ -40,13 +48,13 @@ Now, select a transformation called "invert".
 On the left is the previous API response. On the right is the Mapped Response. 
 8. Verify the mapped response has a field named "public" set to true, and the `id` field now reads `_id`. Verify there is no `owner` field. 
 
-##Using the Mapped API
+## Using the Mapped API
 1. Now that we've mapped our API, let's make use of this. First, we're going to test the mapped API using the command line. 
 2. Navigate to the "Sample Code" section. Copy the "cURL Request" to the clipboard, and try the command in a <abbr title="Unix, Linux or Mac">\*nix</abbr> terminal.
 3. Verify the mapped response is returned. 
 4. You can also use the Node.js code snippets. Copy the `Node.js Request Module` snippet into a new file called `test.js`. You can then run this file from the terminal by running `node test.js`. You should see the mapped response output. 
 
-##Writing your own Mappings
+## Writing your own Mappings
 As well as using built-in mappings, you can also write your own transformation functions. Here's how. 
 1. In the studio's code editor, open the `application.js` file in the root directory.
 2. You'll notice the API mapper route is instantiated by providing one optional transformation, called `mixedArrayTransform`. By looking at this, you can probably figure out how to add your own!  
