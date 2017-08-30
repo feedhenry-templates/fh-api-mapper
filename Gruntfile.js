@@ -36,47 +36,6 @@ module.exports = function(grunt) {
           ]
         }
       }
-    },
-    copy: {
-      main: {
-        files:[
-          {
-            cwd : 'node_modules/font-awesome',
-            expand: true,
-            flatten: false,
-            src: '{less,fonts}/**',
-            dest: 'public/lib/font-awesome/'
-          },
-          {
-            cwd : 'node_modules/bootstrap',
-            expand: true,
-            flatten: false,
-            src: '{js,less,fonts}/**',
-            dest: 'public/lib/bootstrap/'
-          },
-          {
-            cwd : 'node_modules/bootstrap-treeview/dist',
-            expand: true,
-            flatten: false,
-            src: '**/*.{js,css,less}',
-            dest: 'public/lib/bootstrap-treeview/'
-          },
-          {
-            cwd : 'node_modules/patternfly',
-            expand: true,
-            flatten: false,
-            src: '{less,components,fonts,dist}/**',
-            dest: 'public/lib/patternfly/'
-          },
-          {
-            cwd : 'node_modules/brace',
-            expand: true,
-            flatten: false,
-            src: '**/*',
-            dest: 'public/lib/brace/'
-          }
-        ]
-      }
     }
   });
 
