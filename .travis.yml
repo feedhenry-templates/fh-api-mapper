@@ -5,8 +5,8 @@ services:
   - mongodb
   - docker
 node_js:
-  - "0.10"
   - "4.4.3"
+  - "6.9.1"
 before_install:
   - npm install -g bower
   - export PHANTOMJS_CDNURL=https://bitbucket.org/ariya/phantomjs/downloads npm install phantomjs
