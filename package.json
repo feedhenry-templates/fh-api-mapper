@@ -22,7 +22,7 @@
     "less-middleware": "^2.0.1",
     "mongoose": "^4.1.4",
     "mongoose-validators": "^0.1.0",
-    "patternfly": "^2.8.0",
+    "patternfly": "1.3.0",
     "request": "2.79.0",
     "stream-buffers": "2.2.0",
     "underscore": "^1.8.3"
