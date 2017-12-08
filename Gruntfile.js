@@ -23,7 +23,7 @@ module.exports = function(grunt) {
           env: {
             FH_LOCAL: true,
             FH_PORT: 8001,
-            FH_MONGODB_CONN_URL : 'localhost:27017'
+            FH_MONGODB_CONN_URL : 'mongodb://localhost:27017'
           }
         }
       }
@@ -103,7 +103,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-nodemon');
   grunt.loadNpmTasks('grunt-mocha-phantomjs');
   grunt.loadNpmTasks('grunt-browserify');
-  
+
   grunt.registerTask('serve', ['copy', 'browserify:client', 'nodemon']);
   grunt.registerTask('test', ['jshint', 'fh:unit']);
   grunt.registerTask('default', ['test']);
