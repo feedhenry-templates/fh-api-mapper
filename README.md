@@ -13,7 +13,13 @@ There are currently some workarounds needed to get the API Mapper up and running
 
 1. Make the newly created service public
 ![Public Service](https://raw.githubusercontent.com/feedhenry-templates/fh-api-mapper/master/public/images/publicservice.jpg)
-2. Visit the data browser, depending on your application configuration a "Upgrade Database" action will be available, this means the application is using an old/legacy shared database and it needs to be upgraded to use a dedicated one. Note the application needs to be first finished its initial deploy and be running to perform this task.
+
+
+### Additional steps for Feedhenry MbaaS targets
+
+Additional steps that are required to be run on RHMAP Feedhenry mbaas (non OpenShift)
+
+1. Visit the data browser, depending on your application configuration a "Upgrade Database" action will be available, this means the application is using an old/legacy shared database and it needs to be upgraded to use a dedicated one. Note the application needs to be first finished its initial deploy and be running to perform this task.
 ![Public Service](https://raw.githubusercontent.com/feedhenry-templates/fh-api-mapper/master/public/images/databrowser.jpg)
 3. Re-deploy the service
 4. You can now use the API mapper under the "Preview" section of the studio. The mapper can be popped out of the studio fullscreen by visiting the deploy host of this service in a web browser.
