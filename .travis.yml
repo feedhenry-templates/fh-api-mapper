@@ -5,8 +5,8 @@ services:
   - mongodb
   - docker
 node_js:
-  - "4.4.3"
-  - "6.9.1"
+  - 4
+  - 6
 before_install:
   - npm install -g bower
   - export PHANTOMJS_CDNURL=https://bitbucket.org/ariya/phantomjs/downloads npm install phantomjs
@@ -14,4 +14,3 @@ before_install:
   - npm install fh-build -g
   - fh-build template
 install: npm install
-
